@@ -5,41 +5,43 @@
 
 ## Contenido
 
-- [Trabajos Prácticos de Clase](#trabajos-prácticos-de-clase)
-  - [Ejercicio 1](#ejercicio-1)
-  - [Ejercicio 2](#ejercicio-2)
-  - [Ejercicio 3](#ejercicio-3)
-  - [Ejercicio 4](#ejercicio-4)
-  - [Ejercicio 5](#ejercicio-5)
-  - [Ejercicio 6](#ejercicio-6)
-  - [Ejercicio 7](#ejercicio-7)
-  - [Ejercicio 8](#ejercicio-8)
-  - [Ejercicio 9](#ejercicio-9)
-  - [Ejercicio 10](#ejercicio-10)
-  - [Ejercicio 11](#ejercicio-11)
-  - [Ejercicio 12](#ejercicio-12)
-- [Ejercicios Complementarios](#ejercicios-complementarios)
-  - [Ejercicio 1](#ejercicio-1-1)
-  - [Ejercicio 2](#ejercicio-2-1)
-  - [Ejercicio 3](#ejercicio-3-1)
-  - [Ejercicio 4](#ejercicio-4-1)
-  - [Ejercicio 5](#ejercicio-5-1)
-  - [Ejercicio 6](#ejercicio-6-1)
-  - [Ejercicio 7](#ejercicio-7-1)
-  - [Ejercicio 8](#ejercicio-8-1)
-  - [Ejercicio 9](#ejercicio-9-1)
-  - [Ejercicio 10](#ejercicio-10-1)
-  - [Ejercicio 11](#ejercicio-11-1)
-  - [Ejercicio 12](#ejercicio-12-1)
-  - [Ejercicio 13](#ejercicio-13)
-  - [Ejercicio 14](#ejercicio-14)
-  - [Ejercicio 15](#ejercicio-15)
-  - [Ejercicio 16](#ejercicio-16)
-  - [Ejercicio 17](#ejercicio-17)
-  - [Ejercicio 18](#ejercicio-18)
-  - [Ejercicio 19](#ejercicio-19)
-  - [Ejercicio 20](#ejercicio-20)
-  - [Ejercicio 21](#ejercicio-21)
+- [Guía de Trabajos Prácticos — Circuitos Secuenciales](#guía-de-trabajos-prácticos--circuitos-secuenciales)
+  - [Contenido](#contenido)
+  - [Trabajos Prácticos de Clase](#trabajos-prácticos-de-clase)
+    - [Ejercicio 1](#ejercicio-1)
+    - [Ejercicio 2](#ejercicio-2)
+    - [Ejercicio 3](#ejercicio-3)
+    - [Ejercicio 4](#ejercicio-4)
+    - [Ejercicio 5](#ejercicio-5)
+    - [Ejercicio 6](#ejercicio-6)
+    - [Ejercicio 7](#ejercicio-7)
+    - [Ejercicio 8](#ejercicio-8)
+    - [Ejercicio 9](#ejercicio-9)
+    - [Ejercicio 10](#ejercicio-10)
+    - [Ejercicio 11](#ejercicio-11)
+    - [Ejercicio 12](#ejercicio-12)
+  - [Ejercicios Complementarios](#ejercicios-complementarios)
+    - [Ejercicio 1](#ejercicio-1-1)
+    - [Ejercicio 2](#ejercicio-2-1)
+    - [Ejercicio 3](#ejercicio-3-1)
+    - [Ejercicio 4](#ejercicio-4-1)
+    - [Ejercicio 5](#ejercicio-5-1)
+    - [Ejercicio 6](#ejercicio-6-1)
+    - [Ejercicio 7](#ejercicio-7-1)
+    - [Ejercicio 8](#ejercicio-8-1)
+    - [Ejercicio 9](#ejercicio-9-1)
+    - [Ejercicio 10](#ejercicio-10-1)
+    - [Ejercicio 11](#ejercicio-11-1)
+    - [Ejercicio 12](#ejercicio-12-1)
+    - [Ejercicio 13](#ejercicio-13)
+    - [Ejercicio 14](#ejercicio-14)
+    - [Ejercicio 15](#ejercicio-15)
+    - [Ejercicio 16](#ejercicio-16)
+    - [Ejercicio 17](#ejercicio-17)
+    - [Ejercicio 18](#ejercicio-18)
+    - [Ejercicio 19](#ejercicio-19)
+    - [Ejercicio 20](#ejercicio-20)
+    - [Ejercicio 21](#ejercicio-21)
 
 ## Trabajos Prácticos de Clase
 
@@ -79,9 +81,8 @@ flip-flops de la siguiente tabla:
 
 ### Ejercicio 3
 
-El funcionamiento de un sistema secuencial, el cual cuenta con dos flip-flops (A y B) de tipo D,
-dos entradas (X e Y) y una salida (Z), está definido mediante las siguientes ecuaciones
-combinacionales:
+El funcionamiento de un sistema secuencial, el cual cuenta con dos flip-flops (A y B) de tipo D, dos
+entradas (X e Y) y una salida (Z), está definido mediante las siguientes ecuaciones combinacionales:
 
 ![Ecuaciones del ejercicio 3](img/sec-ej03-eq.png)
 
@@ -135,8 +136,8 @@ Se solicita:
 ### Ejercicio 9
 
 Dado el siguiente Diagrama de Transición de Estados, construya el correspondiente circuito
-secuencial utilizando FF T. Además, describa brevemente el funcionamiento del circuito y para qué
-se lo utiliza. (Considere para el análisis que el primer estado del circuito es el estado A y que la
+secuencial utilizando FF T. Además, describa brevemente el funcionamiento del circuito y para qué se
+lo utiliza. (Considere para el análisis que el primer estado del circuito es el estado A y que la
 primera transición rotulada con un uno indica que lo que sigue es información a analizar por el
 autómata de estados finitos).
 
@@ -161,8 +162,8 @@ Se solicita: diagrama de transición de estados; tabla de estados; simplificaci�
 ### Ejercicio 11
 
 Diseñe un circuito secuencial del esquema siguiente que analice una cadena de 4 bits según el
-diagrama de transición que se muestra al lado. Considere que los cuatro bits se comienzan a
-analizar después de la llegada de un cero. Utilice biestables T.
+diagrama de transición que se muestra al lado. Considere que los cuatro bits se comienzan a analizar
+después de la llegada de un cero. Utilice biestables T.
 
 Esquema: la ENTRADA (E) `...b3, b2, b1, b0, 0...` ingresa al CIRCUITO SECUENCIAL, que produce la
 SALIDA (S): S = 1 si b0, b1, b2, b3 es: ??
@@ -194,10 +195,10 @@ Se solicita:
 
 ### Ejercicio 1
 
-Elabore la tabla de estados mínima de una máquina secuencial síncrona con una entrada X y una
-salida Z que opera de la siguiente forma: cuando se detecta la llegada de 110 (primero 1, después
-1, después 0), Z se pone a 1, manteniendo este valor hasta detectar la secuencia 010, en cuyo caso
-Z pasa a tomar valor 0 manteniendo este valor hasta que llegue una nueva secuencia 110.
+Elabore la tabla de estados mínima de una máquina secuencial síncrona con una entrada X y una salida
+Z que opera de la siguiente forma: cuando se detecta la llegada de 110 (primero 1, después 1,
+después 0), Z se pone a 1, manteniendo este valor hasta detectar la secuencia 010, en cuyo caso Z
+pasa a tomar valor 0 manteniendo este valor hasta que llegue una nueva secuencia 110.
 
 ### Ejercicio 2
 
@@ -210,19 +211,19 @@ Analice el siguiente circuito y determine:
 
 ### Ejercicio 3
 
-Un circuito secuencial tiene dos entradas y dos salidas. Las entradas (X1, X2) representan un
-número en binario de dos bits, N. Si el valor actual de N es mayor que el valor inmediatamente
-anterior, entonces Z1 = 1. Si dicho valor es menor, entonces la salida Z2 = 1. En cualquier otro
-caso, Z1 = Z2 = 0. Se pide:
+Un circuito secuencial tiene dos entradas y dos salidas. Las entradas (X1, X2) representan un número
+en binario de dos bits, N. Si el valor actual de N es mayor que el valor inmediatamente anterior,
+entonces Z1 = 1. Si dicho valor es menor, entonces la salida Z2 = 1. En cualquier otro caso, Z1 = Z2
+= 0. Se pide:
 
 - Escribir el diagrama de transiciones y la tabla de estados correspondientes.
 - Diseñe el circuito con biestables JK.
 
 ### Ejercicio 4
 
-Un detector de temperatura produce una salida codificada con dos bits, cuyo valor indica el nivel
-de calor existente en el ambiente (varía de 0 a 3). Se desea realizar una alarma contra incendio
-que funcione del siguiente modo:
+Un detector de temperatura produce una salida codificada con dos bits, cuyo valor indica el nivel de
+calor existente en el ambiente (varía de 0 a 3). Se desea realizar una alarma contra incendio que
+funcione del siguiente modo:
 
 - Si la alarma está desactivada, se activará cuando transcurran dos o más impulsos consecutivos de
   reloj con nivel 2 de temperatura, o uno o más con nivel 3.
@@ -267,13 +268,13 @@ Se solicita:
 
 ### Ejercicio 7
 
-Construya las tablas de estado y excitación de un biestable XZ, en el que la entrada X es igual a
-R de un RS y Z es igual a la entrada negada S de un RS.
+Construya las tablas de estado y excitación de un biestable XZ, en el que la entrada X es igual a R
+de un RS y Z es igual a la entrada negada S de un RS.
 
 ### Ejercicio 8
 
-Construya las tablas de estado y excitación de un biestable XT, en el que la entrada T es igual a
-la entrada K de un JK y X es igual a J negada de un JK.
+Construya las tablas de estado y excitación de un biestable XT, en el que la entrada T es igual a la
+entrada K de un JK y X es igual a J negada de un JK.
 
 ### Ejercicio 9
 
@@ -306,15 +307,15 @@ valdrá cero en los demás casos.
 
 ### Ejercicio 14
 
-Construir un circuito secuencial compuesto por una línea de entrada y una de salida, donde la
-salida vale cero, salvo si llegan tres ceros o tres unos consecutivos (serie), en cuyo caso la
-salida valdrá 1, cada paquete de bits a analizar es de 4 bits.
+Construir un circuito secuencial compuesto por una línea de entrada y una de salida, donde la salida
+vale cero, salvo si llegan tres ceros o tres unos consecutivos (serie), en cuyo caso la salida
+valdrá 1, cada paquete de bits a analizar es de 4 bits.
 
 ### Ejercicio 15
 
-Construir un circuito secuencial compuesto por una línea de entrada y una de salida, donde la
-salida vale cero, salvo si llegan tres ceros o tres unos consecutivos (serie), en cuyo caso la
-salida valdrá 1, cada paquete de bits a analizar es de 3 bits.
+Construir un circuito secuencial compuesto por una línea de entrada y una de salida, donde la salida
+vale cero, salvo si llegan tres ceros o tres unos consecutivos (serie), en cuyo caso la salida
+valdrá 1, cada paquete de bits a analizar es de 3 bits.
 
 ### Ejercicio 16
 
@@ -339,11 +340,11 @@ entrada 0 y una en B con una entrada 1.
 
 ### Ejercicio 18
 
-Un ascensor se mueve entre 3 pisos. En cada piso existe un botón para solicitar el ascensor, y en
-el interior hay 3 botones, uno para cada piso, con los cuales se indica el piso al que se desea ir.
-El ascensor tiene capacidad para una sola persona. Se trata de que el sistema que gobierne el
-comportamiento del ascensor sea lo más eficaz posible. Como es lógico el ascensor puede estar
-vacío, lleno, parado o en movimiento.
+Un ascensor se mueve entre 3 pisos. En cada piso existe un botón para solicitar el ascensor, y en el
+interior hay 3 botones, uno para cada piso, con los cuales se indica el piso al que se desea ir. El
+ascensor tiene capacidad para una sola persona. Se trata de que el sistema que gobierne el
+comportamiento del ascensor sea lo más eficaz posible. Como es lógico el ascensor puede estar vacío,
+lleno, parado o en movimiento.
 
 Diseñe un circuito secuencial que simule el funcionamiento del ascensor descripto, indicando
 entradas, salidas, estados, y funciones de comportamiento y salida en forma de tablas y diagramas.
