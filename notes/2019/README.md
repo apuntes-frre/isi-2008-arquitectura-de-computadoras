@@ -33,6 +33,8 @@
 
 ## UNIDAD TEMATICA I: CIRCUITOS COMBINACIONALES
 
+📒 **Apuntes:** [teoria/UT-1/](teoria/UT-1/)
+
 **CONTENIDOS:** Algebra de Boole. Funciones y formas canonicas. Generalizacion de las formas
 canonicas. Simplificacion. Valor economico de la simplificacion. Metodos de simplificacion.
 Circuitos digitales basicos: sumadores, sustractores, convertidores de codigo. Empleo de los
@@ -44,6 +46,8 @@ circuitos combinacionales.
 2. DISEÑAR CIRCUITOS COMBINACIONALES BASICOS.
 
 ## UNIDAD TEMATICA II: INTRODUCCION A LA ARQUITECTURA DE COMPUTADORAS
+
+📒 **Apuntes:** [teoria/UT-2/](teoria/UT-2/)
 
 **CONTENIDOS:** Concepto de sistema de Informacion y procesamiento de datos. Computadoras digitales
 y sistemas digitales. Las generaciones de computadoras. Sistemas de numeracion. Representacion de
@@ -64,6 +68,8 @@ numericos, codigos alfanumericos. Codigos redundantes: concepto, tipos.
 
 ## UNIDAD TEMATICA III: CIRCUITOS SECUENCIALES
 
+📒 **Apuntes:** [teoria/UT-3/](teoria/UT-3/)
+
 **CONTENIDOS:** Circuitos secuenciales. Elementos de memoria: Biestables, distintos tipos.
 Registros: contadores. Registros de desplazamiento, de acumulacion. Elementos auxiliares. Tipos de
 circuitos integrados.
@@ -75,6 +81,8 @@ circuitos integrados.
 3. RECONOCER DISTINTOS TIPOS DE CIRCUITOS INTEGRADOS.
 
 ## UNIDAD TEMATICA IV: ARQUITECTURA DE LOS PROCESADORES
+
+📒 **Apuntes:** [teoria/UT-4/](teoria/UT-4/)
 
 **CONTENIDOS:** Descripcion e interrelacion de los componentes de un computador: Unidad central de
 proceso, memorias, unidades de entrada y salida y canales. Memorias: caracteristicas, clasificacion,
@@ -94,6 +102,8 @@ microcodigo. Plataformas RISC y CISC.
 
 ## UNIDAD TEMATICA V: LENGUAJE DE MAQUINA
 
+📒 **Apuntes:** [teoria/UT-5/](teoria/UT-5/)
+
 **CONTENIDOS:** Lenguaje de maquina o absoluto: concepto, relacion con el procesador y la memoria.
 Assembler y lenguajes de alto nivel. Conjunto de instrucciones de un microprocesador o de un
 microcontrolador. Programas de aplicacion.
@@ -106,6 +116,8 @@ OBJETIVOS ESPECIFICOS
 4. CONFECCIONAR PROGRAMAS EN LEGUAJES DE BAJO NIVEL.
 
 ## UNIDAD TEMATICA VI: UNIDADES DE ENTRADA – SALIDA
+
+📒 **Apuntes:** [teoria/UT-6/](teoria/UT-6/)
 
 **CONTENIDOS:** Unidades de Entrada/Salida descripcion y equipamiento auxiliar asociado. Canales,
 Controladores. Interfases. Rendimiento de los perifericos.

@@ -1,1993 +1,1843 @@
-# UCP — Unidad Central de Proceso
+# Unidad Temática VI — Unidades de Entrada–Salida
 
 ## Contenido
 
-- [PROCESADOR Y MICROPROCESADOR (UCP)](#procesador-y-microprocesador-ucp)
-- [MODOS DE DIRECCIONAMIENTO](#modos-de-direccionamiento)
-- [FORMATO Y CLASIFICACIÓN DE LAS INSTRUCCIONES](#formato-y-clasificación-de-las-instrucciones)
-- [SECUENCIAMIENTO DE LA INSTRUCCIONES](#secuenciamiento-de-la-instrucciones)
+- [Unidades de Entrada/Salida (Canales e Interrupciones)](#unidades-de-entradasalida-canales-e-interrupciones)
+  - [INTRODUCCIÓN](#introducción)
+  - [CONCEPTOS Y TÉCNICAS DE BASE](#conceptos-y-técnicas-de-base)
+  - [LA INTERFACE EXTERNA](#la-interface-externa)
+  - [Noción de Multiplaje](#noción-de-multiplaje)
+  - [Líneas Ómnibus](#líneas-ómnibus)
+  - [LOS TIPOS DE CANALES](#los-tipos-de-canales)
+  - [Canal Multiplado por Bloques](#canal-multiplado-por-bloques)
+  - [CONTROLADORES PERIFERICOS](#controladores-perifericos)
+  - [SUBRUTINA – PILA](#subrutina-pila)
+  - [INTERRUPCIONES](#interrupciones)
+  - [Acuse de una interrupción](#acuse-de-una-interrupción)
+  - [Instrucciones de gobierno del sistema de interrupción](#instrucciones-de-gobierno-del-sistema-de-interrupción)
+  - [Canales y Potencias de Ordenador](#canales-y-potencias-de-ordenador)
+  - [INTERCAMBIOS DE INFORMACIÓN CON EL EXTERIOR](#intercambios-de-información-con-el-exterior)
+  - [Entrada/Salida](#entradasalida)
+  - [DISPOSITIVOS EXTERNOS](#dispositivos-externos)
+  - [MÓDULOS DE E/S](#módulos-de-es)
+  - [TÉCNICAS DE E/S](#técnicas-de-es)
+  - [E/S Programada](#es-programada)
+  - [E/S Mediante Interrupciones](#es-mediante-interrupciones)
+  - [Acceso Directo a Memoria](#acceso-directo-a-memoria)
+  - [INTERRUPCIONES](#interrupciones-1)
+  - [Desarrollo de una Interrupción](#desarrollo-de-una-interrupción)
+  - [Interrupciones Múltiples y Prioritarias](#interrupciones-múltiples-y-prioritarias)
+- [Periféricos](#periféricos)
+  - [ESTRUCTURA LÓGICA DE UN DISPOSITIVO DE ALMACENAMIENTO](#estructura-lógica-de-un-dispositivo-de-almacenamiento)
+  - [Unidades de disco flexible o disquete](#unidades-de-disco-flexible-o-disquete)
+  - [Otros Dispositivos de almacenamiento](#otros-dispositivos-de-almacenamiento)
+  - [Unidad LS-120 o Superdisk](#unidad-ls-120-o-superdisk)
+  - [Ventajas](#ventajas)
+  - [Inconvenientes](#inconvenientes)
+  - [Pantallas FED y SED](#pantallas-fed-y-sed)
+  - [Ventajas](#ventajas-1)
+  - [Inconvenientes](#inconvenientes-1)
+  - [Pantallas OLED](#pantallas-oled)
+  - [Ventajas](#ventajas-2)
+  - [Inconvenientes](#inconvenientes-2)
+  - [Pantallas LCD](#pantallas-lcd)
+  - [Ventajas](#ventajas-3)
+  - [Inconvenientes](#inconvenientes-3)
+  - [Pantallas de Plasma](#pantallas-de-plasma)
+  - [Ventajas](#ventajas-4)
+  - [Inconvenientes](#inconvenientes-4)
+  - [Pantallas Láser](#pantallas-láser)
+  - [Ventajas](#ventajas-5)
+  - [Inconvenientes](#inconvenientes-5)
+  - [El teclado y el ratón](#el-teclado-y-el-ratón)
+  - [Introducción](#introducción-1)
+  - [El teclado](#el-teclado)
+  - [Generalidades](#generalidades)
+  - [El controlador](#el-controlador)
 
-## PROCESADOR Y MICROPROCESADOR (UCP)
+## Unidades de Entrada/Salida (Canales e Interrupciones)
 
-### Introducción
+### INTRODUCCIÓN
 
-Para analizar el funcionamiento de un computador digital partimos de la siguiente base: un programa es registrado en memoria antes de comenzar su ejecución. Esta memoria se llama Memoria Central o Memoria Principal y entorno suyo se organiza el resto de las diferentes unidades de la máquina. Esta memoria almacena dos clases de información: las instrucciones del programa que la máquina deberá ejecutar y los datos (operandos) con los cuales efectuará la máquina los tratamientos dictados por las instrucciones. La Unidad de Control (Unidad de Instrucciones o Unidad de Gobierno) tratará las instrucciones y la Unidad Aritmética y Lógica (Unidad de Proceso) tratará los datos, de acuerdo a lo “indicado” por la Unidad de Control (UC).
+Los intercambios de información con el exterior exigen dos tipos de unidades entre el ordenador o su memoria, por una parte, y los órganos periféricos por otra.
 
-La UC extrae de la memoria central la nueva instrucción a ejecutar, la analiza y establece las conexiones eléctricas correspondientes dentro de la ALU, extrae de la memoria central los datos implicados por la instrucción, desencadena el tratamiento de dichos datos en la ALU y, eventualmente, almacena el resultado en MC. La ALU opera con los datos que recibe siguiendo órdenes de la UC.
+1.  Las **unidades de intercambio o canales** capacitan para las transferencias de información entre el calculador y cualquier unidad externa.
 
-Al conjunto UC y ALU se lo denomina Unidad Central de Procesamiento (UCP) o Procesador Central (cuando están integradas en una sola pastilla -chip- se denomina microprocesador).
+2.  Las **unidades de control**, o **unidades de enlace** o también **controladores de periféricos**, que se encargan de gobernar uno o varios órganos periféricos de una determinada clase, obedeciendo órdenes recibidas del calculador.
 
-La UC necesita dos registros para operar:
+A estos dos tipos de unidades se añadirá el **sistema de interrupciones** del calculador, que permite al medio exterior avisar al calculador sobre acontecimientos exteriores, como puede ser el final de una operación de entrada – salida.
 
-1)  Contador de instrucciones, contador de programa o contador ordinal, que contiene la dirección de la próxima instrucción por ejecutarse. Este registro aumenta su contenido en uno para pasar a la siguiente instrucción.
-2)  Registro de instrucción, que contiene la instrucción extraída de la MC. Este registro tiene (al menos en Abacus) dos partes: el código de operación, que indica que tratamiento se debe seguir, y la dirección del operando.
+<img src="Pictures/10000000000003AB000001BE1437D8F0.jpg" style="width:14.919cm;height:6.525cm" />
 
-La UC tiene un órgano denominado Generador de secuencias o Secuenciador que, luego de analizar el código de operación, distribuye las órdenes al conjunto de unidades del computador para hacerles ejecutar las distintas fases de la instrucción en curso.
+**INTRODUCCION HISTORICA AL CONCEPTO DE SIMULTANEIDAD ENTRE PROCESAMIENTO Y ENTRADAS – SALIDAS**
 
-### 
+El problema radica en la diferencia de velocidad entre la ejecución de las instrucciones del programa en el computador y los ritmos de transferencia mucho más lentos impuestos por los periféricos. Este problema ha impulsado a buscar procedimientos para ejecutar simultáneamente un programa y una operación de entrada – salida, después un programa y varias operaciones de entrada – salida. Para resolver los problemas anteriores se citan los siguientes procedimientos:
 
-### Encaminamiento de las Informaciones
+1.  **Modo bloqueado:** el calculador ejecuta el programa de entrada – salida esperando, a cada nueva instrucción de transferencia, que el elemento periférico esté disponible. De esta forma, el calculador se encuentra bloqueado durante el desarrollo completo de la entrada – salida, con la consecuencia de que el porcentaje del tiempo activo de la unidad central puede llegar a ser muy pequeño (del 0,1% con las unidades periféricas más lentas).
+2.  **Modo por Prueba de Estado:** se incluye en el programa, con una periodicidad adecuada, puntos de prueba para conocer si la unidad periférica estaba presta a realizar la operación. Esta técnica, muy enojosa para el programador, no puede hacer frente más que a necesidades muy particulares.
 
-A fin de conocer y comprender el funcionamiento de un computador, vamos a describir la forma en que se ejecutan las transferencias de información en la UCP. Para esto utilizaremos una máquina hipotética que llamaremos Abacus.
+3.  **Modo por Interrupción de Programa:** en este procedimiento, al calculador se le descarga de la vigilancia periódica de los periféricos y son estos los que lo interrumpen para avisarle que están disponibles. La interrupción permite detener momentáneamente el programa en curso para permitir que el programa de transferencia sea ejecutado con prioridad. El modo por interrupción permite cierta simultaneidad entre cálculos y entradas – salidas, retrasando al programa de cálculo una cantidad de tiempo igual a la suma de los tiempos de ejecución del programa de interrupción.
 
-#### 
+4.  **Modo Automático por Suspensión de Programa o Modo Canal:** en el modo anterior la transferencia de una palabra implicaba el desarrollo de una programa de interrupción que dura de 10 a 20 ciclos de memoria, de los que solo uno es empleado realmente para la transferencia. En este procedimiento se crean unidades automáticas de intercambio o canales, capaces de tomar completamente a su cargo la transferencia de todo un bloque de informaciones.
 
-#### Convenciones de Gráfico y Lenguaje
+Cuando el canal necesita intercambiar una información con la memoria, no produce ya una interrupción de programa, sino simplemente una solicitud de servicio para que le sea concedido un ciclo de memoria, con objeto de realizar dicho intercambio. Por consiguiente, la simultaneidad entre programa y entrada-salida es casi total (ver figura). La realización de una operación de entrada-salida se desarrolla de la forma siguiente:
 
-Un registro será esquematizado por un rectángulo. Las entradas y salidas positivas serán simbolizadas por una sola entrada y por una sola salida respectivamente.
+1)  Es el programa quien inicializa la operación: las instrucciones proveen al canal de todas las informaciones necesarias a la operación: número y emplazamiento de los datos por transferir, dirección de la unidad de entrada – salida, condiciones bajo las cuales debe terminarse la transferencia, etc.; una instrucción especial lanza la transferencia y el programa puede continuar independientemente.
 
-No se representan las entradas y salidas negativas. Las puertas impulsionales que franquean la entrada a los diferentes biestables de un registro serán esquematizadas por una sola puerta. Utilizaremos las dos simbolizaciones de la siguiente. Figura:
+2)  La transferencia se efectúa al ritmo del equipo periférico bajo control del canal, que **roba ciclos** al calculador.
 
-<img src="./ObjectReplacements/Object 1" style="width:8.147cm;height:4.075cm" />
+3)  El canal avisa que la transferencia ha acabado generalmente mediante una interrupción. El programa de interrupción podrá preguntar entonces al canal en que condiciones se ha efectuado aquella.
 
-Fig.1. Entrada de información en un registro.
+En general, el programa que ha lanzado la operación de entrada – salida puede ejecutar a cada instante una instrucción de prueba de entrada – salida, que le permite conocer en que punto se encuentra la operación.
 
-La salida de un registro desembocará generalmente sobre un bus. Dado que varios registros pudieran desembocar sobre el mismo bus, tendrán puertas de salida gobernadas por señales de nivel. Un conjunto de registros podría estar situado entre dos buses como se ilustra en la siguiente figura:
+Se distinguen dos tipos de canales automáticos: **los canales simples o selectores** que no pueden gestionar más de una transferencia a la vez, y los **canales multiplados en el tiempo**, capaces de gestionar varias transferencias simultáneamente.
 
-<img src="./ObjectReplacements/Object 2" style="width:9.447cm;height:5.53cm" />
+<img src="Pictures/100000000000037B000001AB00F672C2.jpg" style="width:14.924cm;height:5.854cm" />
 
-Fig. 2. Registros situados entre dos buses
+1.  **Encadenamiento Automático de las Transferencias:** En el modo precedente, el ordenador está obligado a inicializar cada transferencia cargando las informaciones necesarias en los registros del canal. A fin de aliviar al ordenador de esta tarea, se concibe el canal como una unidad poseedora de su propio programa. La unidad central generará en memoria central un **programa de control de entrada – salida** o **programa de canal** definiendo las diferentes transferencias sucesivas a realizar por el canal. Para lanzar este programa de canal, la unidad central proporcionará su dirección al canal que se encargará de su ejecución completa.
 
-En el caso de una transferencia entre registros, la salida de información de un registro es habilitada por una señal de nivel, una vez estabilizados los niveles en el bus en donde desemboca esta señal, se activa una señal de impulso que habilita la entrada en el registro destino, como se ve en la siguiente figura:
+El programa de control de entrada – salida permite encadenar varias transferencias sin intervención de la unidad central. Se distinguen dos clases de encadenamiento: el **encadenamiento de datos**, que después de transferir datos desde (o hacia) una tabla en memoria, permite pasar automáticamente a otra tabla; el **encadenamiento de funciones**, que permite hacer ejecutar sucesivamente varias transferencias sobre varios registros diferentes en un mismo órgano periférico.
 
-<img src="Pictures/10000000000000A9000000EB032521B2.jpg" style="width:4.159cm;height:5.791cm" />
+### CONCEPTOS Y TÉCNICAS DE BASE
 
-Fig. 3 Transferencia de información entre registros
+Noción de Interface
 
-La apertura de la puerta de nivel por la señal SR1 permitirá hacer subir al bus intermediario los niveles de tensión dados por los biestables del registro R1. Una vez estabilizados estos niveles podrá enviarse el impulso ER2, que autorizará la carga en R2 del contenido latente en el bus. Es preciso entonces mantener la señal SR1 durante un intervalo suficiente para que los niveles se estabilicen en el bus intermediario antes de enviar el impulso ER2.
+Se denomina **Interface** a las especificaciones de conexión entre un canal y cualquier tipo de unidad periférica. Es la caja negra que permite adaptar las señales del periférico a las especificaciones de la interface ordenador. La interface, está formada físicamente por un cierto número de conectores, salidos del canal, en los cuales pueden ir a enchufarse. Es necesario precisar además las especificaciones de formato y de tiempo de las señales dadas o esperadas por el canal.
 
-<img src="./ObjectReplacements/Object 3" style="width:9.421cm;height:2.836cm" />
+Básicamente, la interface se compone de dos tipos de hilos:
 
-Fig. 4.
+1.  **Hilos de información**, que llevan en paralelo la información por transmitir, en forma de niveles;
 
-En una máquina, estas señales estarán sincronizadas normalmente con un reloj productor de impulsos periódicos.
+2.  **Hilos de gobierno y sincronización**, que capacitan para el diálogo de las dos unidades interconectadas.
 
-<img src="./ObjectReplacements/Object 4" style="width:9.43cm;height:3.145cm" />
+<img src="Pictures/10000000000002B50000021B949FCFC8.jpg" style="width:13.018cm;height:9.947cm" />
 
-Fig. 5.
+**Descripción de una Salida de Información:** La unidad de intercambio posicionará la señal de nivel E/S para indicar que se trata de una salida de información, posicionará la información por salir bajo la forma de niveles en las líneas de información IN<sub>0</sub> a IN<sub>n</sub> y, por último, enviará un impulso DEM de demande de servicio. Después permanecerá en espera.
 
-#### Descripción de la Unidad Central de Abacus
+El equipo exterior reconocerá la demanda DEM, probará el hilo de gobierno E/S para saber si la operación consiste en una entrada o en una salida de información. Como E/S vale 1, el equipo exterior muestreará los hilos de información IN<sub>0</sub> a IN<sub>n</sub> (apertura, mediante un impulso, de las puertas de entrada a un registro tampón). Dicho impulso podrá ser también enviado al canal como señal de acuerdo, que indica que la demanda de salida ha sido reconocida y muestreada la información (ADEM). (Ver figura)
 
-Características Generales:
+**Descripción de una Entrada de información:** El canal pondrá E/S a 0 y enviará el impulso DEM. La solicitud de entrada será reconocida por el equipo periférico, que deberá efectuar los niveles de información IN<sub>0</sub> a IN<sub>n</sub>, y, después, enviará la señal de acuerdo ADEM. La lectura será realizada por el canal tras recepción de ADEM.
 
-- Instrucción de una sola dirección.
-- Transferencias en paralelo.
-- Máquina Síncrona (lo que implica que todos los elementos de la máquina están sincronizados con un mismo reloj).
-- El reloj producirá un batido cada θ segundos.
-- El ciclo de base de la memoria será de 2 θ.
-- La longitud de la palabra será de n bits.
-- La longitud del Código de Operación será de p bits.
-- La longitud de la palabra es suficiente para que los m bits de la parte de dirección permitan direccionar toda la memoria.
+### LA INTERFACE EXTERNA
 
-<img src="./ObjectReplacements/Object 5" style="width:14.917cm;height:6.458cm" />
+Tipos de Interface
 
-Fig. 6 Esquema simplificado de Abacus
+La interfaz entre el periférico y el módulo de E/S debe ajustarse a la naturaleza y la forma de operar del periférico. Una de las principales características de la interfaz es si es serie o paralela. En una **interfaz paralela**, hay varias líneas conectando el módulo de E/S y el periférico, y se transfieren varios bits simultáneamente a través del bus de datos.
 
-Abacus es una máquina organizada en torno a dos buses, que son el bus de memoria (bus M) que transfiere las palabras leídas de, o escritas en memoria y el bus de selección (bus S) que transfiere las direcciones.
+En una interfaz serie, hay sólo una línea para transmitir los datos, y los bits deben transmitirse uno a uno. Las interfaces paralelas se utilizan usualmente para las impresoras y unidades de cinta magnéticas. La interfaz serie son más propias del módem y el mouse. En cualquier caso, el módulo de E/S debe establecer un diálogo con el periférico. En términos generales, el diálogo para una operación de escritura es como sigue:
 
-Resumen de los registros de Abacus:
+1.  El módulo de E/S envía una señal de control solicitando permiso para enviar datos.
 
-S: Registro de Selección de Memoria m bits.
+2.  El periférico reconoce la solicitud.
 
-P: Contador Ordinal o de Programa m bits.
+3.  El módulo de E/S transfiere los datos (una palabra o un bloque según el periférico).
 
-M: Registro de Intercambio o de Palabra n bits.
+4.  El periférico reconoce la recepción de los datos.
 
-I: Registro de instrucción con dos partes:
+Una operación de lectura se realiza en forma similar. Para el funcionamiento del módulo de E/S es clave disponer de un registro de acoplo (buffer) interno que pueda almacenar los datos a transferir entre el periférico y el resto del sistema. Este buffer permite que el módulo de E/S pueda compensar las diferencias de velocidad entre el bus del sistema y sus líneas externas. Hay que tener en cuenta que la velocidad de transmisión en serie es más lenta que la paralela ya que los bits se transmiten uno a uno. El módulo de E/S de la figura 6.15 (b) debe tener un registro que convierte en paralelo los datos, cuando viene del periférico, y un registro que convierte en serie los datos, cuando provienen de la parte central. Por ello, es que la interface en serie es más compleja que la paralela.
 
-CO: Código de Operación p bits.
+Configuraciones Punto a Punto y Multipunto
 
-D: Dirección m bits.
+La conexión entre un módulo de E/S del computador y los dispositivos externos pueden ser punto a punto o multipunto. Una interfaz punto a punto proporciona una línea específica entre el módulo de E/S y el dispositivo externo. En los sistemas pequeños (PCs, Estaciones de Trabajo), existen usualmente enlaces punto a punto para el teclado, la impresora, y el módem externo.
 
-AC: Acumulador n bits.
+Las interfaces externas multipunto, utilizadas para soportar dispositivos de almacenamiento masivo (discos y cintas) y dispositivos multimedia (CD-ROMs, equipos de video y audio), tienen bastante importancia. Estas interfaces multipunto de hecho son buses externos, y poseen el mismo tipo de lógica que por ejemplo la interface SCSI, usualmente es considerada como un bus, y es utilizada para conectar dispositivos periféricos externos.
 
-Estudiaremos el desarrollo de algunas instrucciones a fin de profundizar el esquema anterior y conocer las transferencias de informaciones necesarias y el comportamiento de las señales que las gobiernan.
+### Noción de Multiplaje
 
-##### 
+El multiplaje consiste en desviar la información transportada por un bus hacia otro escogido entre varios o en concentrar en un solo bus las informaciones procedentes de varios buses diferentes. **Es parecido a los multiplexores ver apunte de memoria**
 
-##### La Suma de Abacus
+El multiplaje permite concentrar varias vías de entrada en una sola o distribuir una vía de salida en varias vías. Los sistemas de multiplaje permiten conectar varias unidades externas a un mismo canal.
 
-|     |           |
-|-----|-----------|
-| SUM | DIRECCION |
+<img src="Pictures/10000000000003760000022DCAE694B2.jpg" style="width:14.919cm;height:8.714cm" />
 
-Suma el contenido de la célula de memoria designada por la dirección con el contenido del acumulador. Se descompone en cuatro fases:
+A veces se utilizará este método en los canales simples, es decir, en aquellas unidades de intercambio capaces solo de controlar una transferencia simultáneamente. Entonces el direccionamiento de las unidades externas se efectuará en estrella, un hilo por unidad, después de decodificar la dirección en el canal.
 
-*Fase 1:* Búsqueda de la Instrucción.
+<img src="Pictures/1000000000000399000002B1E8A306E8.jpg" style="width:14.293cm;height:10.545cm" />
 
-Suponiendo que la dirección de la instrucción por ejecutar se halle en el contador ordinal, es preciso:
+### Líneas Ómnibus
 
-Transferir el contenido del Contador Ordinal al Registro de Selección de Memoria (RSM): (P) → S
+Para conectar varias unidades externas en un canal, puede también emplearse una línea ómnibus que las una.
 
-Lanzar un ciclo de memoria, de tal modo que sea transferido el contenido de la célula de memoria direccionada por el registro S al registro de palabra. ((S)) → M.
+<img src="Pictures/100000000000044600000158E921C049.jpg" style="width:14.921cm;height:4.337cm" />
 
-Análisis del Proceso:
+Si la unidad externa no resultase seleccionada, se comportará transparentemente en lo que se refiere a la información, lo que quiere decir que la transmite sin alterarla. El direccionamiento puede realizarse siguiendo la técnica en estrella descrita anteriormente. Es posible también, emplear la línea ómnibus para el direccionamiento: un hilo especial indica, entonces, que la información emitida por el canal es una dirección. La unidad externa atravesada comprueba este hilo a cada transferencia. Para el caso en que aquella detecte que se trata de una dirección, compara la dirección transmitida con la suya propia. Si hubiera identidad entre ambas, la unidad externa se pone en estado de diálogo con el canal; si no sucediera así, transmite la dirección a la unidad contigua. Esta técnica de direccionamiento y de transferencias por bus la emplean, sobre todo, los canales multiplados en el tiempo.
 
-\(P\) → S. Durante el último θ de la instrucción precedente, la señas SRP mantiene abierta la puerta de salida del registro P, por lo que la información de P está latente en el bus S bajo la forma de niveles lógicos. Bastará con validar esta información al primer batido de reloj de la instrucción por medio de la señal de muestreo (de impulso) ENS para introducirla en el registro S.
+Concentración y Fraccionamiento de las Informaciones
 
-((S)) → M. Será necesario lanzar un ciclo de memoria mediante la señal impulsional ICM (inicio de ciclo de memoria), indicar que se trata de una lectura, manteniendo por ejemplo la señal LEC durante todo el intervalo del ciclo (y en cualquier caso hasta el inicio de la regeneración) y, si fuera preciso, poner a cero el registro M antes de la lectura de los núcleos (PACM).
+Los periféricos trabajan normalmente a nivel de carácter (6 u 8 bits), mientras que los ordenadores lo hacen, en general, a nivel de la palabra (varios caracteres). Ello obliga, bien en el canal, bien en la unidad de control de un determinado periférico, a realizar las concentraciones y fraccionamientos pertinentes. Generalmente, esta operación se llevará a cabo en el canal, puesto que este es común a varios periféricos.
 
-<img src="./ObjectReplacements/Object 6" style="width:11.109cm;height:5.429cm" />
+Las operaciones de fraccionamiento y concentración se conseguirán a menudo por sucesivos desplazamientos sobre dos registros supuestos uno seguido del otro: un registro de palabra de comunicación con la memoria y un registro de carácter de comunicación con el exterior.
 
-Fig. 7. Búsqueda de la instrucción
+<img src="Pictures/1000000000000394000002077CEE032B.jpg" style="width:15.238cm;height:7.902cm" />
 
-<img src="./ObjectReplacements/Object 7" style="width:11.109cm;height:5.429cm" />
+En la figura, con motivo de una operación de salida, los 4 caracteres de la palabra de memoria serán enviados sucesivamente hacia el exterior, siendo transferido primero el carácter de mayor peso.
 
-Fig. 8. Cronograma de la búsqueda de la instrucción
+Diferentes Técnicas de Ejecución de una Transferencia Elemental
 
-Cronograma de búsqueda de la instrucción
+Llamaremos **transferencia elemental** a la transferencia de una información (carácter o palabra) desde una posición de memoria central a una unidad externa (o viceversa, según se trate de una entrada o una salida). La ejecución de una transferencia elemental supone que se conozcan las informaciones siguientes:
 
-La fase de búsqueda de la instrucción puede resumirse así:
+- Información pidiendo el lanzamiento de la transferencia: DEM;
 
-\(P\) → S SRP, ENS
+- Indicación del sentido de la transferencia (entrada o salida): SEN;
 
-((S)) → M ICM, PACM, LEC
+- Dirección de almacenamiento en memoria de la información transferida: DIR;
 
-*Fase 2:* Búsqueda del Operando.
+Las diferentes técnicas de ejecución de una transferencia elemental dependen de la manera como sean suministradas al computador estas tres informaciones.
 
-Debe enviarse la instrucción contenida en el registro M al registro I para proceder a su decodificación: (M) → I, la parte de dirección D de la instrucción, que especifica la dirección del operando ha de ser transferida al registro S: (D) → S, de manera que, tras un semiciclo de lectura, el operando se encuentre en el registro M: ((S)) → M.
+Distinguiremos los siguientes modos:
 
-Análisis paso a paso del proceso:
+**Transferencia Programada:** Se ejecuta cuando el programa llega a una instrucción de transferencia. Es el ordenador quien inicializa la demanda de transferencia (DEM). Las informaciones complementarias son suministradas por la instrucción, que puede adoptar dos formas:
 
-\(M\) → I. La instrucción se encuentra en el registro M antes del fin del primer θ del ciclo, se abre la puerta de salida del registro M al bus M durante este primer θ, para que, así mantenida la información en el bus M, pueda forzarse su introducción en I gracias a la señal de muestreo ENI, sincronizada con el segundo batido del reloj del ciclo de memoria.
+ENT DIR Entrar información y almacenarla en la dirección DIR.
 
-\(D\) → S. El registro I se divide en dos partes: una parte de control, con el CO e informaciones complementarias, y una parte de dirección. La decodificación de la primera parte indica que esta dirección es la del operando que debe ahora localizarse en la memoria.
+SAL DIR Leer información almacenada en la dirección DIR y hacerla salir.
 
-Por consiguiente, es preciso enviar la parte de dirección del registro I al registro S abriendo la puerta de nivel (señal SRD) para mantener la información en el bus S. Al siguiente batido se abrirá la puerta impulsional de entrada en S (señal ENS).
+<img src="Pictures/10000000000002B00000017171136A1E.jpg" style="width:13.333cm;height:7.269cm" />
 
-((S)) → M. Se borrará el registro M (señal PACM) simultáneamente con la introducción en S y se lanzará un ciclo de memoria por medio de un impulso ICM, indicando que se trata de una lectura gracias al mantenimiento durante todo el nuevo ciclo del nivel LEC.
+**Transferencia por Instrucción Forzada:** La transferencia por instrucción forzada es inicializada por la unidad externa, que genera la instrucción de entrada – salida y fuerza su ejecución prioritaria en cuanto a la unidad central ha concluido la instrucción en curso. El programa queda suspendido durante el tiempo de ejecución de esta instrucción.
 
-<img src="./ObjectReplacements/Object 8" style="width:13.328cm;height:7.758cm" />
+<img src="Pictures/10000000000002EA000001A14D5E5E29.jpg" style="width:13.651cm;height:7.867cm" />
 
-Fig. 9. Transferencia de la instrucción y búsqueda del operando
+**Transferencia por Robo de Ciclo:** La transferencia por robo de ciclo se inicializa a petición de la unidad exterior. La unidad central termina el ciclo de memoria en curso y concede el próximo ciclo a la unidad exterior. Esta indica si se trata de una lectura o de una escritura y proporciona la dirección de almacenamiento. El programa en curso queda en suspenso durante un ciclo de memoria.
 
-<img src="./ObjectReplacements/Object 9" style="width:14.605cm;height:12.353cm" />
+<img src="Pictures/10000000000002F90000019234ACDA2F.jpg" style="width:12.698cm;height:7.9cm" />
 
-La fase de búsqueda del operando puede resumirse así:
+**Transferencia por Acceso Directo a Memoria:** Se supone que la memoria posee dos vías de acceso (que podrían llamarse muelles de acceso). Una de las vías está reservada al ordenador, la otra a la unidad exterior. Las peticiones de ciclo de memoria son dirigidas a la unidad de control de acceso a memoria, tanto si proceden de la unidad central como si de la unidad exterior. Esta unidad de control gestiona las prioridades de acceso de la unidad central y de la unidad externa.
 
-\(M\) → I SRM, ENI
+<img src="Pictures/10000000000002EF000001B0B39A3F64.jpg" style="width:14.286cm;height:8.184cm" />
 
-\(D\) → S SRD, ENS
+Contemplando desde esta última, el proceso es el mismo que en el caso del robo del ciclo, con la única diferencia que la solicitud es dirigida al controlador de acceso a memoria y no a la unidad central.
 
-((S)) → M ICM, PACM, LEC
+El programa en curso no resulta suspendido durante el ciclo de memoria solicitado, excepto cuando la unidad central hubiera pedido simultáneamente un ciclo de memoria. Generalmente los sistemas de acceso directo a la memoria son interesantes si se dispone de varios bloques independientes de memoria. En la medida que el programa, de una parte, y las entradas – salidas, de otro, conciernan a bloques diferentes, se acercaría el proceso a la simultaneidad total.
 
-*Fase 3:* Ejecución de la Suma.
-
-Se trata de sumar el contenido de M con el contenido de AC: (M) + (AC) → AC.
-
-Los niveles lógicos correspondientes a los registros M y AC durante todo el tiempo de trabajo del sumador, consagrado esencialmente a la propagación del arrastre. Se consigue por las señales SRM, ENA, SUM. Terminada la suma, una señal EAC introduce el resultado en el AC.
-
-<img src="Pictures/1000000000000173000000D2149AC834.png" style="width:9.814cm;height:5.556cm" />
-
-Fig. 11. Ejecución de la Suma
-
-<img src="./ObjectReplacements/Object 10" style="width:13.005cm;height:9.273cm" />
-
-Fig. 12. Cronograma de la Ejecución de Suma
-
-La fase de procesamiento del operando puede resumirse así:
-
-\(M\) + (AC) → AC SRM, ENA, SUM, EAC
-
-*Fase 4:* Preparación de la próxima instrucción.
-
-Esta fase se dedica esencialmente a incrementar el contador de programa en 1: (P) + 1 → P, enviándole un impulso de cuenta INCP para que al final de la instrucción contenga la dirección de la próxima instrucción. Esta última reanudará nuevamente el proceso: (P) → S, ciclo de búsqueda de la instrucción, etc.
-
-<img src="./ObjectReplacements/Object 11" style="width:10.144cm;height:6.948cm" />
-
-Fig. 13. Preparación de la siguiente instrucción
-
-La fase de preparación de la próxima instrucción puede resumirse así:
-
-\(P\) + 1 → P INCP
-
-\(P\) → S SRP, ENS
-
-Síntesis de la suma en Abacus:
-
-<img src="./ObjectReplacements/Object 12" style="width:14.928cm;height:10.622cm" />
-
-Fig. 14. Cronograma de la suma en abacus
-
-\(P\) → S SRP, ENS
-
-((S)) → M ICM, PACM, LEC
-
-\(M\) → I SRM, ENI
-
-\(D\) → S SRD, ENS
-
-((S)) → M ICM, PACM, LEC
-
-\(M\) + (AC) → AC SRM, ENA, SUM, EAC
-
-\(P\) + 1 → P INCP
-
-\(P\) → S SRP, ENS
-
-Instrucción de Almacenamiento en Abacus:
-
-El primer ciclo de la instrucción es idéntico al de la suma. El segundo ciclo consiste en almacenar el contenido del acumulador en memoria, en la dirección especificada por la instrucción. Entonces será preciso reproducir en M el contenido del acumulador, justo antes de la escritura en memoria.
-
-\(D\) → S SRD, ENS
-
-(AC) → M SAC, ENM
-
-\(M\) → (S) ICM, ESC
-
-<img src="./ObjectReplacements/Object 13" style="width:13.644cm;height:4.972cm" />
-
-Fig. 15. Almacenamiento del Acumulador
-
-<img src="./ObjectReplacements/Object 14" style="width:11.739cm;height:8.647cm" />
-
-Fig. 16. Cronograma del Almacenamiento
-
-Instrucción de Salto incondicional en Abacus:
-
-La información de la parte de dirección de la instrucción debe ser transferida simultáneamente a S para buscar la próxima instrucción y a P para actualizar el contador: (D) → S, (D) → P.
-
-Obsérvese que esta instrucción no dura más que un ciclo de memoria y que no hay que incrementar en 1 el contador como ocurre en las otras instrucciones.
-
-<img src="Pictures/10000000000001500000009F48CC0F74.png" style="width:8.888cm;height:4.207cm" />
-
-Fig. 17. Carga de la dirección de salto
-
-<img src="./ObjectReplacements/Object 15" style="width:11.882cm;height:12.379cm" />
-
-Fig. 18. Cronograma del Salto incondicional
-
-Resumen del desarrollo de la operación de salto incondicional
-
-\(P\) → S SRP, ENS
-
-((S)) → M ICM, PACM, LEC
-
-\(M\) → I SRM, ENI
-
-\(D\) → P SRD, ENS
-
-\(D\) → S SRD, ENP, ENS
-
-##### Señales de Gobierno de Abacus
-
-Son todas las señales de impulsos o de nivel empleadas para gobernar las distintas operaciones en el desarrollo de una instrucción. Las clasificaremos en tres categorías:
+El siguiente cuadro permite comparar las cuatro técnicas de ejecución de una transferencia elemental, en función de dos parámetros: el máximo tiempo de espera de la unidad exterior desde que se lanza una demanda de transferencia y el tiempo que el programa en curso resulta detenido.
 
 <table>
 <tbody>
 <tr>
-<td colspan="4">Señales de transferencia:</td>
+<td>TECNICA EMPLEADA</td>
+<td>TIEMPO MAXIMO DE ESPERA DE LA UNIDAD EXTERIOR</td>
+<td>TIEMPO RESTADO AL PROGRAMA EN CURSO</td>
 </tr>
 <tr>
-<td>ENS</td>
-<td>Impulso</td>
-<td>(bus S)</td>
-<td>→ S</td>
+<td>Programada</td>
+<td>Hasta el final de la instrucción en curso, más inicio del programa solicitado de interrupción.</td>
+<td>Procesamiento de un programa de interrupción.</td>
 </tr>
 <tr>
-<td>PACM</td>
-<td>Impulso</td>
-<td>0</td>
-<td>→ M</td>
+<td>Por instrucción forzada</td>
+<td>Duración de la instrucción más larga del repertorio.</td>
+<td>Una instrucción generalmente ejecutada en uno o dos ciclos de memoria.</td>
 </tr>
 <tr>
-<td>SRM</td>
-<td>Nivel</td>
-<td>(M)</td>
-<td>→ bus M</td>
-</tr>
-<tr>
-<td>ENM</td>
-<td>Impulso</td>
-<td>(bus M)</td>
-<td>→ M</td>
-</tr>
-<tr>
-<td>ENI</td>
-<td>Impulso</td>
-<td>(bus M)</td>
-<td>→ I</td>
-</tr>
-<tr>
-<td>ENA</td>
-<td>Nivel</td>
-<td>(bus M)</td>
-<td>→ UAL</td>
-</tr>
-<tr>
-<td>SAC</td>
-<td>Nivel</td>
-<td>(AC) bus</td>
-<td>→ M</td>
-</tr>
-<tr>
-<td>ENP</td>
-<td>Impulso</td>
-<td>(bus S)</td>
-<td>→ P</td>
-</tr>
-<tr>
-<td>SRD</td>
-<td>Nivel</td>
-<td>(D) bus</td>
-<td>→ S</td>
-</tr>
-<tr>
-<td>SRP</td>
-<td>Nivel</td>
-<td>(P) bus</td>
-<td>→ S</td>
-</tr>
-<tr>
-<td>INCP</td>
-<td>Impulso</td>
-<td>(P) + 1</td>
-<td>→ P</td>
+<td><p>Por robo de ciclo</p>
+<p>Por acceso directo</p></td>
+<td><p>Un ciclo de memoria.</p>
+<p>Un ciclo de memoria.</p></td>
+<td><p>Un ciclo de memoria.</p>
+<p>Nada, o un ciclo de memoria.</p></td>
 </tr>
 </tbody>
 </table>
+
+### LOS TIPOS DE CANALES
+
+Enlace Programado
+
+No es propiamente un canal, sino un medio de acceso controlado por el programa. En efecto, cada transferencia elemental está gobernada por una instrucción del programa en curso. Por el hecho de estar controlados por el programa, tales enlaces pueden utilizarse tanto en modo bloqueado como, mucho más a menudo, en modo por interrupción. Casi siempre aparecen integrados en la unidad central. Son necesarias 4 instrucciones de entrada – salida para realizar entradas – salidas en modo programado:
 
 <table>
 <tbody>
 <tr>
-<td colspan="3">Señales de gobierno de la memoria:</td>
+<td rowspan="2">Instrucciones de gobierno de transferencias de información</td>
+<td>SAL M</td>
+<td>Para extraer el contenido de la dirección M hacia las líneas de salida de información de la interfase.</td>
 </tr>
 <tr>
-<td>ICM</td>
-<td>Impulso</td>
-<td>Inicio ciclo memoria</td>
+<td>ENT M</td>
+<td>Para almacenar en la dirección M una información presente en las líneas de entrada de información a la interfase. </td>
 </tr>
 <tr>
-<td>LEC</td>
-<td>Nivel</td>
-<td>Ciclo de lectura</td>
+<td rowspan="2">Instrucciones de control general de las operaciones de entrada – salida</td>
+<td>GCP</td>
+<td>Permite direccionar una unidad de control de periférico y especificarle la operación por ejecutar.</td>
 </tr>
 <tr>
-<td>ESC</td>
-<td>Nivel</td>
-<td>Ciclo de escritura</td>
+<td>PRE</td>
+<td>Permite adquirir una información descriptiva del estado del periférico anteriormente direccionado.</td>
 </tr>
 </tbody>
 </table>
 
-<table>
-<tbody>
-<tr>
-<td colspan="3">Señales de gobierno de la unidad aritmético-lógica:</td>
-</tr>
-<tr>
-<td>CAR</td>
-<td>Nivel</td>
-<td>Carga acumulador</td>
-</tr>
-<tr>
-<td>SUM</td>
-<td>Nivel</td>
-<td>Suma </td>
-</tr>
-<tr>
-<td>SUS</td>
-<td>Nivel</td>
-<td>Sustracción</td>
-</tr>
-<tr>
-<td>Etc</td>
-<td>. . .</td>
-<td>. . .</td>
-</tr>
-<tr>
-<td>EAC</td>
-<td>Impulso</td>
-<td>Introducción del resultado en el AC</td>
-</tr>
-</tbody>
-</table>
+Las señales de interfase SI, NI, y SC, NC corresponden respectivamente a estos cuatro tipos de operación:
 
-<img src="./ObjectReplacements/Object 16" style="width:16.499cm;height:8.149cm" />
+- SI: niveles lógicos posicionados sobre las líneas de salida de información.
+- NI: peticiones de entrada de información.
+- SC: niveles lógicos posicionados sobre las líneas de salida de control.
+- NC: peticiones de entrada de estados.
 
-Fig. 19. Esquema de Abacus
+<img src="Pictures/10000000000003AC000002C3E4477B77.jpg" style="width:14.923cm;height:12.488cm" />
 
-A fin de presentar esta “Unidad” que reúne los elementos anteriormente descriptos, recurrimos a la definición de “Abacus”. Máquina hipotética descripta por Meinadier y al concepto de “Ruta de Datos” del mismo autor.
+En Abacus, una operación de salida SAL, la información permanece memorizada en el registro M hasta ser tomada en cuneta por el órgano exterior, las puertas SRM y SRI permanecen abiertas para mantener activos los niveles lógicos de las líneas de salida de información y la señal SI (salida de niveles de información) permanece activa.
 
-### 
+El controlador envía entonces al controlador del periférico previamente escogido, una señal impulsional DEM. Al recibirla éste, muestrea la información y transmite al computador una señal de acuerdo ADEM para liberarle.
 
-### Organización y Componentes de la Ruta de Datos
+<img src="Pictures/10000000000003030000018900879B7A.jpg" style="width:14.921cm;height:7.267cm" />
 
-#### 
+<img src="Pictures/100000000000032900000237F32E68F0.jpg" style="width:14.6cm;height:10.338cm" />
 
-#### Ruta de Datos
+Canal Automático: Modo Canal.
 
-Es el conjunto de órganos de la máquina que intervienen para transferir, memorizar y procesar las informaciones (instrucciones, direcciones y operandos) procedentes de la MC.
+Los canales automáticos son capaces de gestionar el conjunto de una operación de entrada – salida sin intervención de la unidad central, excepto para inicializar y concluir dicha operación. Las transferencias elementales pueden ser efectuadas, bien por instrucción forzada, bien por robo de ciclo, bien por acceso directo a la memoria. Se les llama canales simples cuando no gestionan más que una operación de entrada – salida a la vez. Describiremos una unidad de este tipo en que las transferencias se consiguen por robo de ciclo, interesándonos exclusivamente en los problemas de intercambio de informaciones.
 
-Buses de Interconexión: Para la transferencia de información.
+Desde este estricto punto de vista, la operación de entrada – salida queda enteramente definida por: el sentido de la transferencia por realizar (entrada o salida) y la zona de almacenamiento en memoria de las informaciones por transferir. Esta zona puede delimitarse mediante la dirección de su primera palabra (DIR) y su número de palabras (CDP).
 
-Registros y memorias: Para su almacenamiento.
+<img src="Pictures/100000000000025800000167903A256B.jpg" style="width:12.061cm;height:6.738cm" />
 
-Unidades funcionales: Para su procesamiento.
+<img src="Pictures/100000000000031A000002C94493007D.jpg" style="width:15.236cm;height:14.289cm" />
 
-Las señales de gobierno están distribuidas por toda la ruta autorizando las diferentes operaciones. Se las llama microórdenes y son generadas por el secuenciador.
+La unidad central es quien inicializa la operación por programa. Selecciona el periférico (indicando eventualmente el sentido de la transferencia por efectuar) y carga las informaciones que definen a la zona de almacenamiento en memoria en dos registros del canal, a los que llamaremos DEC (dirección en curso) para la dirección de la zona y CDP (cuenta de palabras), para el número de palabras. (Esta carga puede realizarse partiendo de instrucciones del tipo de salida directa en enlace programado).
 
-Por una parte haremos la distinción entre unidad de instrucciones y unidad de procesamiento. Esta distinción se basa en la diferencia entre dos tipos de información: Instrucciones y direcciones por un lado, operandos por el otro. Del mismo modo haremos la distinción entre ruta de datos y distribución de microórdenes.
+Una vez efectuada la inicialización, la operación de entrada – salida se desarrolla ya al ritmo de la unidad periférica. Es a petición de ésta que el canal ejecuta una transferencia elemental, utilizando el contenido del registro DEC como dirección de almacenamiento en memoria, y después actualiza la dirección en curso, sumando 1 al registro DEC, y la cuenta de palabras, restando 1 al registro CDP.
 
-Esta distinción también se basa en la diferencia entre dos tipos de información: las informaciones conocidas del programador (instrucciones, direcciones y operandos) por una parte, y las informaciones desconocidas del programador; que son las microórdenes. Los puntos de contacto entre ruta de datos y distribuidor de microórdenes se sitúan a dos niveles: 1) El registro de instrucción, puesto que las microórdenes por distribuir dependen del código de operación; 2) El impacto de las microórdenes sobre los diversos componentes de la ruta de datos (puede considerarse a la MC parte de la ruta de datos).
+La transferencia termina cuando el canal detecta que el registro contador de palabras llega a cero o cuando el controlador de periférico envía una señal de fin de información. En este momento genera el canal una interrupción para indicar a la unidad central que ha concluido la operación de entrada–salida.
 
-Dimensión de la ruta de Datos: Es el número de dígitos transmitidos en paralelo por la ruta. La dimensión puede variar a lo largo de una misma ruta de datos. Por ejemplo, en una máquina como Abacus, la dimensión de la ruta de datos es igual a la dimensión de la palabra de máquina, en lo que se refiere a las instrucciones de los operandos; en cambio, las direcciones se transfieren sobre un número más restringido de dígitos.
+Tal modo de funcionamiento, soportado por dos registros, uno para la dirección en curso y otro para la cuenta de palabras, es designado generalmente como modo canal. A la correspondiente unidad de intercambio se le llama canal, por excelencia.
 
-El estudio de la ruta de datos abarcará:
+<img src="Pictures/100000000000035E000002E500E4CBA1.jpg" style="width:14.919cm;height:12.704cm" />
 
-Los registros y su interconexión.
+Encadenamiento de Datos.
 
-El encadenamiento de los operandos y la utilización de las unidades funcionales.
+En el canal automático, para pasar de una zona de memoria a otra, la unidad central debía desarrollar, después de la interrupción de fin de transferencia correspondiente a la primera zona, un programa cuyo objetivo sería recargar los registros DEC y CDP con las características de la segunda zona y relanzar la operación de entrada o de salida. El encadenamiento de datos consiste en efectuar esta operación de carga de dichos registros bajo control del canal, de tal suerte que se pase automáticamente de una zona a otra dentro de una operación de entrada – salida, sin implicar a la unidad central. Para conseguirlo se agregan al final de la zona en curso, las nuevas palabras de control y direcciones características de la zona siguiente, en el caso de que hubiera encadenamiento, y suponiendo, además que las informaciones de control caben en dos palabras de máquina.
 
-El encadenamiento de las direcciones y las técnicas de direccionamiento de la MC.
+|     |     |     |                   |
+|-----|-----|-----|-------------------|
+| IT: | =   | 0   | No interrupción   |
+|     | =   | 1   | Interrupción      |
+| ED: | =   | 0   | No encadenamiento |
+|     | =   | 1   | Encadenamiento    |
 
-#### 
+<img src="Pictures/1000000000000149000000C250877007.jpg" style="width:6.35cm;height:2.39cm" />
 
-#### 
+<img src="Pictures/100000000000034B000001A1F73AE55C.jpg" style="width:14.924cm;height:6.772cm" />
 
-#### Registros de la Ruta de Datos y su Interconexión
+La operación de entrada – salida definida por las zonas de la figura se descompone según el siguiente esquema:
 
-*Plano Funcional*: Se distinguen dos tipos de registros.
+Al nivel de la unidad central:
 
-**Registros no direccionables**: Poseen una función bien definida y exclusiva. Ejemplo: RI, AC y Multiplicador Cociente, Contador de Programa, R. de Selección del Memoria., Contador de Desplazamientos. Algunos de estos registros pueden permanecer desconocidos del programador. Se dirá que le son transparentes. Otros son implícitamente diseccionados por el programador, como es el caso del AC de Abacus en cuanto a todas las instrucciones aritméticas y lógicas.
+- Cargar la doble palabra de control 1 en los registros de canal;
+- Iniciar la transferencia;
 
-**Registros direccionables**: Son los que el programador puede emplear para conservar determinadas informaciones en el transcurso del cálculo. Entre los distintos registros direccionables se aprecian tres categorías:
+Al nivel del canal:
 
-*Registros aritméticos:* Para conservar resultados parciales.
+- Transferir la primera zona;
+- Cargar las palabras de control 2, puesto que el encadenamiento está pedido en 1;
+- Transferir la segunda zona;
+- Generar una interrupción pedida en 2.
 
-*Registros de direccionamiento:* Para conservar elementos fijos de direccionamiento de partes de programas o de vectores.
+Programa de Canal
 
-*Registros Banalizados:* Un registro direccionable que puede usarse indistintamente como registro aritmético o de direccionamiento.
+El canal de los calculadores evolucionados es una unidad programable, capaz de leer, decodificar y ejecutar un **programa de gobierno de entrada – salida** o **programa de canal**, registrado en memoria central, con los mismos derechos que la unidad central lee, decodifica y ejecuta un programa de procesamiento. El programa de canal permite a la vez el encadenamiento de datos y el de instrucciones de canal. Descripción de una operación de entrada – salda (figura 21).
 
-*Plano Estructural:* Se distinguirán tres posibles organizaciones de registros direccionables:
+<img src="Pictures/1000000000000377000003A7F1E472FF.jpg" style="width:14.891cm;height:16.648cm" />
 
-**Registros independientes**: La dirección de los registros necesita ser decodificada para obtener las señales de apertura o de clausura de las puertas de los registros.
+1.  En el curso del programa de unidad central, se genera en memoria una lista de instrucciones de canal. Es el **programa de gobierno de entrada – salida**, también llamado **programa canal**.
+2.  La unidad central ejecuta una instrucción de entrada – salida que proporciona al canal la dirección del órgano periférico interesado y la de la primera instrucción del programa canal. (Estas direcciones están comprendidas en la instrucción o en registros direccionados por la instrucción). Si el órgano periférico designado está libre, se le pone en actividad, si no, la unidad central es avisada de que el programa de canal no debe arrancar. Supongamos que se cumple la primera hipótesis. La dirección de la primera instrucción de canal es enviada y almacenada en el contador de instrucciones del canal. A partir de este instante, el programa de canal se desarrollará sin intervención de la unidad central.
 
-**Memorias locales**: La dirección del registro le será dada a la memoria sin decodificación previa. En comparación con un conjunto de registros independientes presentan una ventaja económica (menos puntos de entrada y de salida, un solo Circuito Integrado), pero, como contrapartida, no autorizan simultáneamente más que una sola operación de lectura o escritura.
+3.  El canal va a buscar en memoria la primera instrucción de canal, que consta de los siguientes elementos:
 
-**Seudo-Registros**: Son registros direccionables que carecen de existencia física dentro de la ruta de datos. Son simulados en MC o en M. Local.
+|                  |                      |                    |             |
+|------------------|----------------------|--------------------|-------------|
+| C. O. Periférica | Dirección 1ª palabra | Cuenta de palabras | Indicadores |
 
-Las interconexiones entre registros pueden ser directas o a través de buses. La interconexión por bus tiene, frente a las conexiones directas, la ventaja de ser barata, pero no permite transferencias simultáneas.
+El canal transmite al controlador del periférico el código de operación que le es destinado. En este momento, la operación de entrada – salida queda inicializada y un proceso idéntico se desarrolla cada vez que el canal pide una nueva instrucción de canal.
 
-<img src="./ObjectReplacements/Object 17" style="width:6.666cm;height:5.576cm" /> <img src="./ObjectReplacements/Object 18" style="width:7.932cm;height:3.552cm" />
+4.  Las demandas de transferencia elemental de información, una vez inicializada la operación de entrada – salida, emanan del controlador de periférico, que trabaja a su propio ritmo. Al recibir una de estas demandas, el canal efectúa la transferencia pedida utilizando y actualizando las informaciones dirección en curso (que sustituye a dirección de la primera palabra) y cuenta de palabras.
 
-Fig. 20 Interconexión Directa de 6 registros 2 a 2 Interconexión por bus de 6 registros
+5.  Una transferencia se terminará, bien cuando sea nulo el contenido del contador de palabras, bien al recibirse una señal de fin de transferencia procedente del controlador de periférico. El canal comprobará entonces los indicadores, en número de tres, para saber lo que ha de hacer:
 
-### Encaminamiento de los Operandos y utilización de las Unidades Funcionales
+6.  - **Encadenamiento de datos:** si este indicador está puesto, el canal pasará a la siguiente instrucción de canal, ignorando el nuevo código de operación periférica.
+    - **Encadenamiento de gobierno:** si el indicador está puesto, el canal pasará a la siguiente instrucción de canal, utilizando el nuevo COP.
+    - **Interrupción:** se generará una interrupción al final de la transferencia, si el correspondiente indicador está activado.
 
-Veremos esquemas de organización de la ruta de los operandos, demostrativos de las relaciones entre estos diversos elementos, como se encuentran en las pequeñas máquinas constituidas por unidades aritméticas y lógicas combinacionales.
+El programa de canal está controlado por un cierto número de instrucciones de entrada – salida, entre las cuales he aquí las más importantes:
 
-#### Esquemas Con Una Sola Unidad Funcional
+- Inicio de entrada – salida, detención de entrada – salida, prueba de entrada – salida: las dos primeras instrucciones permiten inicializar o detener una operación de entrada – salida, señalando el periférico y la dirección de la primera instrucción de canal. La tercera se emplea para obtener informaciones acerca del estado actual de una operación de entrada – salida, sin alterar el funcionamiento de ésta.
 
-**Utilización de los Registros Aritméticos Montados como ML** (memoria local)
+Las informaciones de estado, devueltas por el canal direccionado, comprenderán la dirección de la instrucción de canal en curso y el contenido del contador de palabras (excepto para la instrucción inicio de entrada – salida), así como ciertos indicadores, en particular: interrupción solicitada y no acordada; estado del órgano periférico direccionado (dispuesto, no operativo, ocupado); estado del controlador de periférico (dispuesto, no operativo, ocupado); órgano periférico en espera de una nueva operación (almacén de tarjetas vacío, detección de fin de papel en la impresora); error de paridad producido en el intercambio con la memoria; error de paridad en la transferencia de datos al exterior.
 
-Las operaciones se llevan a cabo entre el registro M y uno de los registros aritméticos de la memoria local o el acumulador. El resultado obtenido en el AC puede ser almacenado en ML. El acumulador sería innecesario si se cumplieran las dos hipótesis siguientes:
+- Prueba de órgano periférico: permite obtener informaciones, más precisas que con la instrucción de prueba de entrada – salida, acerca del estado de un órgano periférico; tales informaciones son suministradas por el controlador del periférico.
 
-Toda operación aritmética implica a un operando en ML y a un operando en MC y el resultado sustituye el operando de la ML.
+- Identificación de una interrupción: esta instrucción permite, tras recibirse una interrupción emitida por el canal, identificar al órgano provocador de la interrupción y conocer la causa de ella. La información de estado devuelta por el canal comprende, por una parte, la dirección del periférico causante de la interrupción, por otra parte, indicadores concernientes a la operación que ha dado lugar a la interrupción, en particular:
 
-La ML está cableada de manera que la palabra seleccionada pueda ser utilizada en lectura hasta que se introduzca allí una nueva información.
+- - Desbordamiento de datos (en el curso de una operación de entrada).
+  - Longitud incorrecta, si no existe concordancia entre cuenta de palabras nula detectada por el canal y final de transferencia enviada por el periférico.
+  - Contador de palabras nulo.
+  - Final de transferencia.
+  - Error de paridad en el curso de la transferencia, etc.
 
-<img src="./ObjectReplacements/Object 19" style="width:12.562cm;height:6.117cm" />
+Canal Multiplado en el Tiempo
 
-Fig. 21. Ruta de datos con registros aritméticos organizados como memoria local.
+El canal multiplado en el tiempo es capaz de gestionar simultáneamente varias transferencias entre memoria y órganos periféricos. Cada una de estas transferencias es controlada por un programa de canal.
 
-##### 
+Por consiguiente existirá, asociado a cada controlador de periférico conectado al canal, un **subcanal**, para conservar las informaciones que debe utilizar el canal en el curso de la ejecución y de la finalización de una instrucción de canal. Entre estas informaciones, se encuentran: la dirección de la instrucción de canal en la memoria; la dirección en curso y la cuenta de palabras de la zona de entrada – salida; los indicadores de encadenamientos e interrupciones.
 
-##### Unidades Funcionales con Registros Aritméticos Independientes
+Al transferir una información entre la memoria central y uno de los controladores de periféricos, son transmitidas las informaciones de control al canal por el subcanal asociado, y devueltas después de utilizadas (dirección en curso incrementada, contador de palabras decrementado).
 
-La preparación de la ruta de datos para la ejecución de una operación consiste en abrir las puertas para permitir que los dos operandos estén presentes en las entradas de la unidad funcional y en posicionar la unidad funcional para ejecutar la operación solicitada. Después de esperar el tiempo necesario a la ejecución de la operación, bastará con enviar un impulso para muestrear el resultado en el registro escogido, en consecuencia no es imprescindible un registro tampón en la unidad funcional.
+Las transferencias de informaciones están superpuestas en el tiempo, de manera que un controlador no se liga al canal más que el tiempo necesario a la transferencia de una información (dirección, orden, dato o estado). El diálogo entre el canal y los controladores de periféricos se realiza a través de un bus y de un hilo de prioridad.
 
-<img src="./ObjectReplacements/Object 20" style="width:14.995cm;height:4.498cm" />
+<img src="Pictures/10000000000003460000019C557FE466.jpg" style="width:14.921cm;height:7.23cm" />
 
-Fig. 22. Ruta de datos con registros aritméticos independientes
+<img src="Pictures/1000000000000359000001B93D647FC4.jpg" style="width:14.921cm;height:7.089cm" />
 
-##### 
+Se distinguen 2 clases de diálogos entre canal y controladores de periféricos:
 
-##### Combinación de Registros Independientes y de una Memoria Local
+1.  Los inicializados por el canal para lanzar una operación de entrada – salida, o para comprobar el estado de una unidad periférica.
 
-Esta organización permite en particular procesar fácilmente operandos de longitud múltiple en relación con la dimensión de la ruta de datos; se ejecutan las operaciones con un operando sobre n palabras en MC y otro sobre n registros en ML, almacenando los resultados intermedios en los registros independientes, como sucede en la multiplicación o división, por ejemplo. Un conjunto de n células de ML con un operando en longitud múltiple se denomina, a menudo, seudo-registro, porque simula un registro aritmético de longitud múltiple.
+2.  Los inicializados por un controlador de periférico. Generalmente se trata de solicitud de ejecución de una transferencia elemental de entrada o de salida, cuando la unidad periférica está dispuesta. Como pueden producirse varias solicitudes simultaneas, una prioridad cableada establecerá la selección de la solicitud a satisfacer.
 
-<img src="./ObjectReplacements/Object 21" style="width:13.721cm;height:7.816cm" />
+**Diálogo inicializado por el canal:** El canal pone en los hilos de información del bus la dirección del periférico y valida esta dirección por una señal de selección SEL.
 
-Fig. 23. Ruta de datos con memoria local y registros independientes
+Los controladores de periférico detectan la señal SEL, comparan la información del bus con su propia dirección y se muestran transparentes si ambas no coinciden.
 
-##### 
+Cuando sí coinciden, el controlador se reconoce y no transmite la información, sino que se conecta. Generalmente pone en los hilos de información su “estado” y lo acompaña por una señal de validación ESTD.
 
-##### Adaptación de las unidades funcionales al formato de los operandos
+<img src="Pictures/1000000000000346000001E5B362F73B.jpg" style="width:14.921cm;height:8.678cm" />
 
-Los operando por procesar pueden presentarse bajo diferentes formatos: formato decimal; formato binario fijo, de simple y doble longitud; formato binario flotante, de simple y doble longitud. Es posible hacer ejecutar todas las operaciones aritméticas con estos operandos por una sola unidad funcional, bien porque se utilice una cuya dimensión sea igual a la del mayor formato (en tal caso se emplea solo parcialmente con los operandos cortos), bien porque se utilice una unidad de pequeña dimensión, en cuyo caso ha de emplearse total y repetitivamente para procesar cada operando largo.
+**Diálogo inicializado por un controlador de periférico:** Uno o varios controladores emiten sobre la línea ómnibus una señal de demanda de servicio DES. La selección del controlador de mayor prioridad, entre los que han generado una demanda, se hace por intermedio de la línea de prioridad que, saliendo del canal, se comunica con los distintos controladores según su orden de prioridad. En respuesta a la DES, el canal envía una señal PRI por medio de la línea de prioridad. Los controladores se comportarán transparentemente a la señal PRI, excepto si han emitido una DES. El primer controlador atravesado que haya emitido una DES, no transmitirá la señal PRI, pondrá su dirección sobre los hilos de información del bus y la acompañara por una señal de validez DIR. El canal aprobará la dirección por una señal ADIR y el periférico será conectado. El canal cargará en sus registros las informaciones de intercambio específicas de dicho periférico (DEC y CDP).
 
-#### 
+El controlador del mismo enviará una demanda de transferencia DT, acompañada por una señal indicando si se trata de una entrada o de una salida. En el primer caso, pondrá simultáneamente la información sobre el bus; en el segundo, esperará a la información procedente del canal. En general, es posible efectuar sucesivamente varias transferencias elementales del mismo sentido si el controlador repone cada vez la señal DT. El servicio del canal concluye cuando el controlador activa la señal FDES (fin de demanda de servicio). El canal reactualiza, a partir de sus registros, las informaciones en el subcanal del órgano periférico direccionado. Si aún el canal detecta la señal DES, esto quiere decir que otro controlador tiene presentada igualmente una demanda de servicio, se realiza nuevamente todo lo descrito anteriormente.
 
-#### 
+<img src="Pictures/1000000000000363000002E598FC1037.jpg" style="width:14.917cm;height:12.732cm" />
 
-#### Esquemas Con Varias Unidades Funcionales
+### Canal Multiplado por Bloques
 
-Especialización de las Unidades Funcionales:
+Permite optimizar el caudal global entre discos y memoria central. Sigue siendo un canal simple, esto es, limitado a una sola transferencia a la vez, pero autoriza una cierta “multiprogramación” entre las diferentes solicitudes de transferencia.
 
-Acabamos de ver que es posible realizar con una sola unidad funcional operaciones con operandos de formatos diferentes. Una solución más costosa, pero más eficaz, consiste en utilizar varias unidades funcionales adaptando cada una a un tipo de operación o a un particular formato en los operandos. Así podrá haber una unidad funcional de procesamiento de caracteres y de aritmética decimal; una unidad para la aritmética fija, una unidad para la aritmética flotante, etc.
+Una vez inicializada una orden de transferencia debe esperarse a que el sector direccionado pase bajo la cabeza de lectura – escritura y que este tiempo de espera es estadísticamente igual a la mitad de la duración de giro del disco. El canal multiplado por bloques intenta emplear el tiempo de espera para efectuar otra transferencia. Para conseguirlo, se instrumentan los dos medios siguientes:
 
-Operaciones Simultáneas:
+- **En el canal:** un conjunto de registros para almacenar las direcciones de los primeros sectores a los que afecten las diferentes instrucciones de canal del o de los programas de entrada – salida.
+- **En el controlador:** la posibilidad de identificar el número del sector que va a pasar enseguida bajo la cabeza de lectura – escritura y de transmitirlo al canal.
 
-Pudiera ser necesario emplear varias unidades funcionales simultáneamente, bien para la ejecución de una instrucción, bien para permitir un cierto grado de simultaneidad entre instrucciones diferentes. La ruta de datos de la siguiente figura autoriza operaciones simultáneas puesto que cada registro se conecta en forma independiente a todos los buses de entrada y de salida de las diferentes unidades funcionales.
+Un dispositivo de comparación del número del sector que va a activarse, con los números de los sectores direccionados, capacita al canal para atender prioritariamente a las operaciones que presentan el menor tiempo de espera. Esto evita la acumulación de los tiempos de espera que se produce en el canal selector ordinario, y por tanto aumenta el caudal global del sistema.
 
-<img src="./ObjectReplacements/Object 22" style="width:16.129cm;height:4.904cm" />
+Unidad de Intercambio Flotante (o Canal Flotante)
 
-Fig. 24. Ruta de datos con varias unidades funcionales
+Los órganos periféricos más rápidos (discos, tambores, etc.) bloquearía por si solos a un canal multiplado: por esta razón se les conecta a un canal selector. Cuando un sistema informático posee un cierto número de estos órganos conviene, por economía, agruparlos sobre un número reducido de canales selectores, pudiendo servir cada uno de estos a varios órganos periféricos. Es evidente que los órganos conectados a un mismo canal no pueden funcionar simultáneamente.
 
-## MODOS DE DIRECCIONAMIENTO
+Puede suceder, que en el curso de explotación, determinadas operaciones de entrada – salida se vean obligadas a esperar a que el canal correspondiente se libere, mientras que otros canales se muestran inactivos. Para evitar tal situación, Borroughs ha introducido el concepto de **canal flotante** o **unidad de intercambio flotante**: un conjunto de canales selectores y controladores de periféricos son interconectados entre sí, de tal forma que cualquier canal pueda direccionar a cualquier controlador y mantenerlo conectado mientras dure la operación de entrada – salida.
 
-### Diferentes Clases de Direccionamiento
+Esta organización supone la existencia de dos niveles de selección:
 
-Direccionamiento Normal, Directo o Absoluto.
+1.  Un primer nivel, situado entre la unidad central y los canales, permite a aquella seleccionar el primer canal libre de la lista de los canales, a la inicialización de una operación de entrada – salida.
 
-Direccionamiento Inmediato.
+2.  Un segundo nivel, llamado **intercambiador de entrada – salida**, permite al canal así seleccionado conectarse a la unidad periférica direccionada por la instrucción de inicio de entrada – salida.
 
-Direccionamiento Indirecto
+Canales Especializados
 
-Direccionamiento Indexado
+La evolución de las unidades de intercambio hacia una autonomía cada vez más acentuada respecto de la unidad central conduce a convertirlas en verdaderos pequeños ordenadores, que ejecutan su programa de forma similar a la unidad central.
 
-Direccionamiento Relativo
+Tanto es así, que se corre el riesgo de caer en dos tentaciones:
 
-Direccionamiento por Base y Desplazamiento.
+- Sustituir los canales por ordenadores de programa registrado (las entradas – salidas son gestionadas, no por los canales, sino por una decena de pequeños calculadores).
 
-Direccionamiento por Referencia al Programa.
+- Hacerle hacer algo más que la simple gestión de las entradas – salidas.
 
-Direccionamiento por Página o Yuxtaposición.
+Esto resulta particularmente útil en dos campos aplicación:
 
-Las diferentes técnicas de direccionamiento equivalen generalmente a una transformación de la parte de dirección de la instrucción en la dirección que se transferirá finalmente al registro de selección en memoria para obtener la información deseada. Llamaremos a esta última *dirección efectiva*. El tipo de procesamiento que debe sufrir el contenido de la zona de dirección viene especificado, o por el código de operación cuando éste impone un tipo determinado, o por la configuración binaria de una parte de la instrucción que contiene lo que convendremos en llamar las *condiciones de direccionamiento*. La instrucción en un calculador de una dirección de tres partes:
+1.  **La teleinformática:** el canal desempeña el papel de concentrado – difusor, encargado de agrupar los mensajes provenientes de diferentes terminales o de difundir las respuestas. En este caso, el canal desempeña el papel de tampón respecto del calculador central y le descarga de todos los mecanismos de transmisión, detección de errores, retransmisión, etc.
 
-|  |  |  |
-|----|----|----|
-| CO | CD | D |
-| Código de Operación | Condiciones de Direccionamiento | Zona de Dirección de Memoria |
+2.  **El control industrial:** la vigilancia de una instalación industrial requiere la recolección periódica, con ciclos de algunos segundos, de varios miles de magnitudes analógicas o lógicas. En tal caso, el papel del canal podría ser:
 
-### Direccionamiento Inmediato: 
+En lo que se refiere a magnitudes analógicas, que representan temperaturas o presiones, compararlas con ciertos niveles. Según el resultado de esta comparación el canal podría: ignorar, guardarla en memoria para un posterior análisis, o bien alertar mediante interrupción al calculador central para que este reaccione sobre el proceso.
 
-No es propiamente un direccionamiento, puesto que la parte de dirección de la instrucción contiene ya el operando que se quiere procesar. Este tipo de direccionamiento no consume ciclo de memoria.
+En cuanto a las magnitudes lógicas (variables binarias) comparar el nuevo estado con el precedente y no interrumpir a la unidad central más que para advertirla de los cambios producidos.
 
-<img src="Pictures/10000000000001A900000067747B93D7.jpg" style="width:13.263cm;height:2.926cm" />
+### CONTROLADORES PERIFERICOS
 
-Fig. 25. Direccionamiento inmediato
+Cualquier clase de órgano periférico exige un controlador específico. A veces se considera al controlador como parte del equipo periférico; sin embargo, cuando actúa en común para varios órganos periféricos idénticos (por ejemplo, unidades de cinta magnética), se le considera unidad lógica independiente.
 
-### Direccionamiento Normal (directo y absoluto):
+La parte de control del periférico es evidentemente específica del periférico asociado. No obstante, esta parte recibe y decodifica el código de operación periférica (primera información de una instrucción de canal) y, en respuesta a determinadas instrucciones de prueba o, también, al final de una operación de entrada – salida, emite informaciones de estado hacia el canal. Tanto el COP como el estado contienen informaciones específicas de cada periférico. A modo de ejemplo se pueden citar algunos tipos de COP y estados concernientes a un bobinador de cinta magnética:
 
-La zona de dirección de la instrucción contiene la dirección efectiva del operando. El direccionamiento normal exige un ciclo de memoria para obtener el operando. Su limitación es que proporciona un espacio de direcciones reducido.
+- **Código de operación periférica:** lectura, lectura hacia atrás, escritura, búsqueda de indicativo de bloque, espacio adelante, rebobinar, etc.
 
-<img src="Pictures/100000000000012C000000AC9FEBF62F.jpg" style="width:8.186cm;height:4.736cm" />
+- **Estados:** ocupado, no operativo, dispuesto, rebobinando, etc.
 
-Fig. 26. Direccionamiento normal
+La complejidad de los controladores es muy variable: es absolutamente diferente controlar una máquina de escribir en funciones exclusivas de salida, una unidad de discos rápidos dotada de evolucionados medios para detección o corrección de errores y una unidad osciloscópica gráfica dotada de generadores de vectores y de caracteres así como de la posibilidad de modular el contraste y el color.
 
-### 
+En el primer caso, bastará con un circuito de control puramente cableado; en el segundo caso, se podrá recurrir a un sistema parcialmente microprogramado. Por último, en el tercer caso, quizá no se dude en utilizar un pequeño ordenador.
 
-### 
+Algunas veces, en los pequeños ordenares, los controladores de periféricos van integrados en la unidad central, solución que resulta particularmente económico si la máquina está microprogramada.
 
-### Direccionamiento Indirecto:
+### SUBRUTINA – PILA
 
-La parte de dirección de la instrucción contiene, no la dirección de la información pedida, sino la dirección de una palabra de memoria donde se encontrará la dirección efectiva de la información. Por tanto, la localización de un operando direccionado indirectamente exigirá dos ciclos de memoria: un ciclo para buscar la dirección efectiva, otro ciclo para buscar el contenido del operando. Su ventaja es que permite ampliar el espacio de direcciones con respecto al direccionamiento directo.
+Una subrutina es una secuencia que contiene en sí instrucciones para ejecutar una tarea dada, y se incorpora en un programa más grande. En cualquier punto del programa se puede invocar o llamar a la subrutina. Es decir, en ese punto, se ordena al computador que pase a ejecutar la subrutina completa y retornar después al punto en que tuvo lugar la llamada.
 
-<img src="Pictures/10000000000001FF000000DF6AE8BE20.jpg" style="width:14.568cm;height:6.348cm" />
+Las subrutinas permiten la reutilización de código, con esto se ahorra esfuerzo de programación, y además permiten que los programas se puedan subdividir en unidades más pequeñas.
 
-Fig. 27. Direccionamiento indirecto
+El uso de subrutinas requiere de dos instrucciones básicas: una instrucción de llamada “CALL”, que produce una bifurcación desde la posición actual a la subrutina; y una instrucción de retorno de la subrutina “RETURN” al lugar desde el que se llamó. Ambas son formas alternativas de instrucciones de bifurcación. Cuando se encuentra una instrucción de llamada a una subrutina, la CPU **interrumpe** la ejecución del programa principal e inicia la ejecución de la subrutina. La sentencia RETURN hace que la CPU vuelva al programa de llamada y continúe con la ejecución de la instrucción que sigue a la correspondiente CALL.
 
-### 
+La ejecución de la instrucción de llamado a la subrutina en el programa principal se lleva a cabo de la siguiente manera:
 
-### 
+- La dirección asociada a la primera instrucción de la subrutina se transfiere al CP.
+- La dirección de regreso al programa principal se inserta en la cima pila.
+- El computador ejecuta las instrucciones del programa de subrutina.
+- Cuando la última instrucción de la subrutina es alcanzada, el computador ejecuta una instrucción de regreso sacando la dirección colocada en la cima de la pila y colocándolo en el CP.
+- Continúa la ejecución del programa principal, ya que el CP contiene la dirección de la próxima instrucción del programa principal.
 
-### Direccionamiento Relativo:
+Hay que resaltar los siguientes puntos:
 
-La dirección relativa no indica la posición de la información en la memoria en valor absoluto, sino que la sitúa en relación a una dirección de referencia. Esta, a su vez, está almacenada en un registro frecuentemente llamado registro de traslación. La dirección efectiva se obtendrá sumando la dirección relativa con la dirección de referencia. Las técnicas de direccionamiento relativo se emplean especialmente cuando la longitud de la palabra de memoria es insuficiente para permitir direccionar a toda la memoria.
+- Una subrutina puede llamarse desde distintas posiciones.
+- Una subrutina puede contener llamadas a otras subrutinas.
+- Cada llamada a subrutina está emparejada con un retorno en el programa llamado.
 
-#### Direccionamiento por base y desplazamiento: 
+Las pilas no sólo soportan varias llamadas de subrutinas al mismo tiempo, sino que también soportan los parámetros que deben transferirse al procedimiento llamado. El procedimiento invocado puede acceder a los parámetros en la pila.
 
-Un registro de la máquina, llamado registro de base, contiene la dirección de referencia (primera dirección de un programa o de una zona de datos, por ejemplo). A la información que alberga la parte de dirección se le llama desplazamiento. La dirección es la suma de la base y del desplazamiento. Algunos calculadores admiten varios registros de base. La instrucción debe especificar entonces la dirección de registro de base escogido.
+Al volver, los parámetros de retorno pueden colocarse también en la pila, debajo de la dirección de retorno. El conjunto de parámetros completo que se almacena en la llamada a un procedimiento, incluyendo la dirección de retorno, se denomina **marco de pila**.
 
-<img src="./ObjectReplacements/Object 23" style="width:9.312cm;height:4.419cm" />
+\
 
-Fig. 28. Direccionamiento por base y desplazamiento
+### INTERRUPCIONES
 
-#### Direccionamiento por Referencia al Programa: 
+Prácticamente todos los computadores disponen de un mecanismo mediante el cual los módulos de E/S pueden interrumpir el procesamiento normal de la CPU. Una interrupción es precisamente una suspensión temporaria de la ejecución de un programa, para pasar a ejecutar una subrutina de servicio de interrupción.
 
-El contenido del contador de programa sirve de dirección de referencia. Con este sistema es posible generalmente direccionar dos zonas de memoria a un lado y a otro de la instrucción en curso, según que la parte de dirección se sume o se reste con el contenido del contador.
+Con el uso de interrupciones, el procesador puede dedicarse a ejecutar otras instrucciones mientras una operación de E/S está en curso. Por lo tanto, una operación de E/S se pude realizar concurrentemente con la ejecución de otra instrucción. Como consecuencia de lo declarado anteriormente, las interrupciones proporcionan una forma de mejorar la eficiencia del procesador.
 
-<img src="Pictures/10000000000001AA0000011315188F53.jpg" style="width:11.012cm;height:7.161cm" />
+Hay que mencionar que el programa que se esté ejecutando no tiene que incluir ningún código para posibilitar las interrupciones; el sistema operativo y la BIOS (Basic Input Output System) son los responsables de detener el programa que se esté ejecutando y después permitir que prosiga en el mismo punto.
 
-Fig. 29. Direccionamiento por referencia al programa
+A continuación se enumeran las clases de interrupciones más comunes:
 
-#### Direccionamiento por Página (o por Yuxtaposición): 
+- **Interrupción por errores o por averías de máquina:** fallo de alimentación eléctrica; error de paridad en memoria.
 
-Se considera a la memoria dividida en zonas de 2<sup>n</sup> palabras llamadas páginas. En general la parte de dirección de la instrucción contiene n bits, por lo que no capacita a la máquina para direccionar más palabras que las que tiene una página. La dirección efectiva se obtendrá por yuxtaposición del número de página (o dirección de página), supuesto conocido y de la parte de dirección de la instrucción, que suministra la dirección dentro de la página.
+- **Interrupción por causa del programa** (o desvío)**:** instrucción o dirección incorrecta; operaciones imposibles: desbordamiento de capacidad, división por cero, etc., intentos de ejecución de instrucciones o de escritura en memoria no permitidos por el estado de la máquina.
 
-Las condiciones de direccionamiento, en la mayoría de los pequeños ordenadores organizados por páginas, poseen un BIT de direccionamiento que, según su valor, implica el direccionamiento absoluto, es decir dentro de la página cero, o el direccionamiento dentro de la página de la instrucción en curso por yuxtaposición de los bits de mayor peso del contador de programa y de la dirección dentro de la página. En este caso, el direccionamiento por yuxtaposición puede ser considerado como un direccionamiento por referencia al principio de la página en curso.
+- **Interrupción por entrada – salida:** generada por el canal para avisar el fin de una operación de entrada – salida o de una anomalía acaecida en el transcurso de una entrada – salida.
 
-<span id="anchor"></span><img src="./ObjectReplacements/Object 24" style="width:14.81cm;height:5.927cm" />
+- **Interrupción externa:** utilizada para avisar a la máquina acerca de cualquier modificación interesante del medio exterior, especialmente en control de procesos industriales.
 
-Fig. 30. Dirección en la página cero o en la página de la instrucción
+- **Interrupción de recuento:** para contar impulsos procedentes de un reloj, por ejemplo.
 
-### 
+Determinados computadores presentan una sola posibilidad de interrupción, en cuyo caso se pasarán todas las causas de interrupción a través de un OR lógico y el programa de interrupción deberá comenzar por comprobar un conjunto de indicadores, para detectar cual pueda ser la causa de la misma
 
-### Direccionamiento Indexado:
+Otros poseen varios niveles de interrupción. A cada nivel de interrupción le corresponde un hilo proveniente de la causa o causas de interrupción y también un programa asociado. Dichos niveles pueden estar jerarquizados, lo que significa que están clasificados por orden de las prioridades respectivas y que un programa de interrupción puede ser, a su vez, interrumpido por una demanda de interrupción clasificada en un nivel superior de prioridad. El programa interrumpido pasa entonces al estado de espera.
 
-Se obtiene la dirección efectiva sumando a la parte de dirección de la instrucción el contenido de un registro de la unidad central llamado registro índice; a menudo se llama índice al contenido. El registro de índice admite un cierto número de operaciones, como carga, lectura, incremento o decremento en 1, comparación. El programador lo utiliza para tratar, mediante una sola instrucción en un bucle de programa, datos almacenados vectorialmente en células sucesivas de la memoria. El direccionamiento correspondiente es indexado, lo que quiere decir que la dirección especificada en la instrucción es la primera célula del vector y a ella se suma el valor del índice, inicialmente puesto a cero e incrementado en 1 cada vez que se ejecute la instrucción de fin de bucle. Esta última compara el índice con el número de elementos del vector y origina un salto al principio del bucle mientras quede algún elemento por procesar.
+<img src="Pictures/10000000000003680000017F7EE69893.jpg" style="width:14.926cm;height:6.105cm" />
 
-<img src="Pictures/1000000000000153000000B0E354346D.jpg" style="width:11.389cm;height:5.856cm" />
+<img src="Pictures/100000000000047C00000167E93798E7.jpg" style="width:14.915cm;height:6.35cm" />
 
-Fig. 31. Indexación
+El esquema de la figura representa la actividad de los programas, en el transcurso del tiempo, para un sistema jerarquizado de interrupción de 8 niveles. El nivel 0 es de mayor prioridad que el 1, éste más que el 2, etc. El nivel 7 corresponde al programa de retaguardia que, en el caso de la figura, se ve interrumpido por una interrupción de nivel 5, cuyo programa comienza a ser ejecutado cuando es interrumpido por un nivel 4 más prioritario, etc. .Al acabar de ejecutarse un programa cualquiera de interrupción, el control se transfiere al programa en espera de nivel más elevado.
 
-En algunos calculadores el índice se inicializa en (n-1), donde n representa el número de elementos del vector, la dirección especificada en la instrucción es la última del vector, el índice se incrementa en 1 a cada pasada y se sale del bucle cuando el índice es cero. Otras máquinas poseen dos registros por índice, uno contiene el índice, el otro contiene el valor máximo de este índice, ambos resultan comparados al momento de la instrucción de fin de bucle y se origina un salto al principio del mismo mientras no se produzca coincidencia entre los dos valores.
+Los pequeños ordenadores especializados en la guía de procesos poseen frecuentemente sistemas de interrupción bastante elaborados. En general, presentan varias de las características del tipo siguiente de organización modular:
 
-Combinación de los diferentes tipos de direccionamiento.
+- Las interrupciones están agrupadas en un cierto número de niveles jerárquicos, esto es, cada uno de ellos posee una prioridad diferente: un programa de un determinado nivel de prioridad puede verse interrumpido por un programa solicitado por una interrupción de nivel superior;
 
-Es posible combinar, dentro de los límites impuestos por la concepción de la máquina o por el simple sentido común, los diversos tipos de direccionamiento.
+- Un nivel agrupa varios subniveles, cada cual con su hilo de interrupción y su prioridad dentro del nivel; los programas asociados a los subniveles de un mismo nivel no pueden interrumpirse unos a otros, siendo únicamente efectiva su prioridad en caso de elección entre varios de ellos, si se encontrasen simultáneamente en estado de espera;
 
-<img src="Pictures/100000000000022E000000DEB4703413.jpg" style="width:15.21cm;height:6.031cm" />
+- Un subnivel agrupa, a su vez, varias demandas de interrupciones, cuyas causas son investigadas por prueba de los indicadores.
 
-Fig. 32. Lógica de direccionamiento relativo con indexación
+**Descripción de un sistema jerarquizado de interrupciones prioritarias**
 
-<img src="Pictures/1000000000000184000000E40228A2B6.jpg" style="width:9.813cm;height:5.819cm" />
+Cada nivel de interrupción tiene asociados cuatro biestables, que definen los diferentes estados posibles del nivel.
 
-Fig. 33. Sumador de direcciones con 3 entradas
+<img src="Pictures/1000000000000346000001BE3E1D8099.jpg" style="width:14.921cm;height:8.042cm" />
 
-### 
+**Estado desactivado:** el nivel no acepta ninguna demanda de interrupción.
 
-### 
+**Estado activado:** el nivel acepta y memoriza una demanda de interrupción. Un nivel de interrupción puede ser activado o desactivado por programa.
 
-### Relación entre los tipos de direccionamiento
+**Estado de espera:** el nivel pasa al estado de espera si recibe una señal de demanda de interrupción. Varias razones pueden diferir la consideración operativa de la interrupción. Primeramente, es preciso que el nivel esté autorizado, puesto que, en efecto, se distinguen dos formas del estado de espera:
 
-#### 
+- **Estado de espera inhibido:** el nivel ha resultado inhibido por programa de tal manera que la interrupción ha podido ser memorizada pero no tomada en cuenta por el ordenador. También se suele decir que el nivel ha sido *enmascarado*.
 
-#### Pre-indexación y Post-indexación
+- **Estado de espera autorizado:** la interrupción puede ser tomada en cuenta por el ordenador, si se han satisfecho las siguientes condiciones:
 
-Se denomina pre-indexación al direccionamiento por suma desplazamiento, y post-indexación al direccionamiento por suma del índice.
+- 1.  No existe ningún nivel de prioridad superior en el estado autorizado de espera;
+  2.  La unidad central se encuentra en una fase interrumpible (generalmente en final de instrucción). El nivel pasa entonces al estado activo.
 
-#### Combinación de los diferentes tipos de direccionamiento
+- 1.  - **Estado activo:** implica que la unidad central tome en cuenta la interrupción y se mantiene durante toda la ejecución del programa de interrupción.
 
-Es posible combinar, dentro de los límites impuestos por la concepción de la máquina y por el sentido común, los diversos tipos de direccionamiento. Véase la siguiente figura:
+Nótese que a cada nivel de interrupción se asocian dos señales: una, impulsional, procedente del exterior, para pedir la interrupción, otra de larga duración, que el calculador deja activada hasta tanto no se haya tratado la interrupción, es decir, hasta que el nivel sea capaz de aceptar una nueva demanda de interrupción (ver figura).
 
-<img src="Pictures/100000000000022E000000DEB4703413.jpg" style="width:15.21cm;height:6.031cm" />
+### Acuse de una interrupción
 
-Fig. 34. Lógica del direccionamiento relativo con indexación
+Corresponde a un paso al estado activo. A cada nivel de interrupción se asocia, por cableado, un conjunto de posiciones de memoria (registros, palabras de la memoria local o de la memoria central).
 
-Las máquinas potentes con pre- y post-indexación, efectúan el cálculo de direcciones en un sumador de direcciones con tres entradas.
+Tales posiciones de memoria se dividen en dos partes: la primera contiene todas las informaciones necesarias al arranque del programa de interrupción (en especial, la dirección de su primera instrucción); la segunda sirve para almacenar las informaciones que caracterizan al estado del programa en el instante de la interrupción, para su posterior reanudación (estado de los diferentes indicadores, contador ordinal, eventualmente registro de base).
 
-<img src="Pictures/1000000000000184000000E40228A2B6.jpg" style="width:11.077cm;height:6.549cm" />
+<img src="Pictures/100000000000039D000001F37A09CA49.jpg" style="width:14.954cm;height:8.428cm" />
 
-Fig. 35. Sumador de direcciones con tres entradas
+El paso de una interrupción al estado activo consiste en memorizar el estado del programa, almacenando las informaciones pertinentes en las posiciones asociadas de memoria y en instaurar después un nuevo estado del programa, buscando las informaciones necesarias al arranque del programa de interrupción.
 
-Si se combinan pre-indexación, post-indexación y direccionamiento indirecto es preciso establecer una norma de prioridad entre los tres tipos de direccionamiento. Generalmente se acepta el orden que permite direccionar, por medio de una sola instrucción, un elemento de un vector cuya dirección del primer elemento del vector se encuentra en una célula de memoria, cuya dirección es definida relativamente al contenido de un registro base:
+La última instrucción de un programa de interrupción es una especial, cuya finalidad es la de restaurar el estado del programa en el momento de la interrupción, yendo a rescatar en las posiciones asociadas de memoria las informaciones preservadas. Además, desactiva el nivel de interrupción, lo que le permite responder a otra posible señal de interrupción.
 
-1)  Pre-indexación, es decir, se obtiene en primer lugar la dirección absoluta de la célula de memoria que contiene la dirección del primer elemento del vector:
+### Instrucciones de gobierno del sistema de interrupción
 
-Base + Desplazamiento
-
-2)  Direccionamiento indirecto, es decir, la célula de memoria hallada anteriormente será el nuevo desplazamiento, pudiendo ahora encontrar la célula de memoria del primer elemento del vector:
-
-(Base + Desplazamiento)
-
-3)  Post-indexación, para obtener la dirección del elemento buscado dentro del vector, puesto que el registro de índice tendrá el número de orden elemento en el vector:
-
-Dirección efectiva = (Base + Desplazamiento) + índice
-
-Algunas máquinas con direccionamiento indirecto en cascada permiten también una eventual indexación por cada nivel de indirección, basándose en los indicadores de indirección e indexación repetidos en las palabras que albergan las sucesivas direcciones
-
-#### 
-
-#### Resumen sobre tipos de direccionamiento
-
-|  |  |
-|----|----|
-| Operando inmediato | Operando = (D) |
-| Direccionamiento normal (directo y absoluto) | Dirección efectiva = (D) |
-| Direccionamiento indirecto | Dirección efectiva = ((D)) |
-| Direccionamiento relativo |  |
-| \- base y desplazamiento (pre-indexación) | Dirección efectiva = (B) + (D) |
-| \- por referencia la programa | Dirección efectiva = (P) ± (D) |
-| \- en la página de la instrucción | Dirección efectiva = dirección de página + (D) |
-| Direccionamiento indexado (post-indexación) | Dirección efectiva = (D) + (X) |
-
-## FORMATO Y CLASIFICACIÓN DE LAS INSTRUCCIONES
-
-Un formato de instrucciones define la descripción en bits de una instrucción, en términos de las distintas partes que la componen. Un formato de instrucciones debe incluir un código de operación e, implícita o explícitamente, ningún o algunos operandos. Cada operando implícito se referencia utilizando uno de los modos de direccionamiento estudiados. El formato debe, implícita o explícitamente, indicar el modo de direccionamiento para cada operando. En la mayoría de los repertorios de instrucciones se emplea más de un formato de instrucción.
-
-### 
-
-### Longitud de instrucción
-
-El aspecto más básico a considerar en el formato de instrucción es la longitud de la instrucción. Este aspecto afecta, y se ve afectado, por el tamaño de la memoria, su organización, la estructura de buses, complejidad de la CPU y velocidad de la CPU. En la medida que se contemplen más códigos de operación y más operandos en la instrucción, se hará más fácil el trabajo del programador, logrando programas más cortos que realicen las mismas tareas. Por otra parte, disponer de más modos de direccionamiento dará más flexibilidad al programador para implementar ciertas funciones, tales como la gestión de tablas y las bifurcaciones multi-rama.
-
-Además de poder direccionar rangos de memoria grandes. Todo esto requiere bits, resultando en instrucciones de longitud cada vez más largas. Además debe cumplirse que el tamaño de la instrucción sea igual al tamaño de las transferencias a memoria (en un sistema basado en un bus, igual al tamaño del bus de datos), o que uno fuera múltiplo del otro. De no ser así, no conseguiremos un número entero de instrucciones durante un ciclo de búsqueda de la instrucción. Otra consideración a tener en cuenta es la velocidad de la memoria.
-
-Esta no es tan rápida como la velocidad de la CPU, y puede convertirse en un cuello de botella si el procesador puede ejecutar las instrucciones más rápido de lo que puede captarlas. Una solución a esto es utilizar memoria caché, otra es utilizar instrucciones más cortas. Otro punto a tener en cuenta es que la longitud de la instrucción debiera ser un múltiplo de la longitud de un carácter, que normalmente es de 8 bits, y de la longitud de los números en punto fijo.
-
-### 
-
-### 
-
-### Asignación de los bits
-
-Otro aspecto a considerar es como asignar los bits en un formato de instrucción determinado. Para una longitud de instrucción dada, existe un compromiso entre el número de códigos de operación y la capacidad de direccionamiento. Cuanto mayor sea el número de códigos de operación, mayor cantidad de bits para el campo CO, por ende, menor cantidad de bits para el direccionamiento de los operandos.
-
-Existe un refinamiento interesante que es el uso de códigos de operación de longitud variable. De modo que existe una longitud mínima de CO, pero, para algunos códigos, se pueden especificar operaciones adicionales utilizando más bits de la instrucción. Los siguientes factores, relacionados entre sí, afectan a la definición del uso dado a los bits de direccionamiento.
-
-- *Número de modos de direccionamiento*: en algunos casos, un modo de direccionamiento puede indicarse de manera explícita, en otros casos, debe hacerlo de forma explícita, de modo que se necesitará uno o más bits de modo.
-
-- *Número de operandos*: la cantidad de operandos que puede ser direccionada por una sola instrucción afecta significativamente el número de bits asignado a direccionamiento, asimismo, si una instrucción puede direccionar dos operandos, estos podrían tener un modo de direccionamiento distinto, debiendo quizás expresar ambos explícitamente o uno de ellos en forma implícita.
-
-- *Registros frente a memoria*: una máquina debe disponer de registros para traer los datos a la CPU a fin de procesarlos. Cuanto más registros tenga, más fácil será la programación y, considerando un número entre 8 y 32 registros como aceptable, solo se necesita una cantidad mínima de bits para direccionarlos.
-
-- *Número de conjunto de registros*: Si en lugar de tener un banco de registros de 16 registros, por ejemplo, se divide en 2 o más bancos, esta partición requiere menos bits de la instrucción. Por ejemplo, con dos conjuntos de 8 registros, solo se necesitan 3 bits para identificar un registro, el código de operación determina de forma implícita que conjunto de registro se está referenciando.
-- *Rango de direcciones*: El rango de direcciones que puede utilizarse está relacionado con el número de bits de direccionamiento. Dado que esto impone una limitación severa, raramente se emplea direccionamiento directo.
-
-- *Granularidad de las direcciones*: Para direcciones que hacen referencia a memoria, en un sistema con palabras de 16 o 32 bits, una dirección puede referenciar una palabra o un byte, según elija el diseñador. Un direccionamiento por bytes permite manipular caracteres, pero requiere de más bits de direcciones.
-
-### 
-
-### 
-
-### Clasificación de las Instrucciones
-
-En general, las instrucciones de cualquier tipo de ordenador se clasifican en los siguientes tipos, según el trabajo que realicen:
-
-1)  Instrucciones aritméticas. Realizan las operaciones de tipo aritmético que admite el procesador, ejemplo Suma.
-
-2)  Instrucciones lógicas. Efectúan operaciones de tipo lógico, por ej. AND.
-
-3)  Instrucciones de lectura y escritura de memoria. Se encargan de trasladar datos a/o desde las diferentes posiciones de memoria hasta cualquier registro de trabajo del ordenador.
-
-4)  Instrucciones de bifurcación. Sirven para efectuar roturas en las secuencias del programa y son capaces de modificar el contenido del Contador de Programa. La bifurcación puede ser condicional o incondicional.
-
-5)  Instrucciones de salto a subrutina y retorno. Se rompe la secuencia del programa accediendo a zonas de programa repetitivas (subrutinas). También se modifica el Contador de Programa. En este caso, el valor del Cont. de Programa se almacena en memoria a fin de retornar al programa principal una vez concluida la subrutina.
-
-6)  Instrucciones de transferencia entre registros. Sirven para intercambiar los contenidos de los registros de trabajo de la CPU. Dentro de este grupo se encuentra también las instrucciones que producen desplazamientos y rotaciones de los bits de los registros hacia ambos lados.
-
-7)  Instrucciones especiales. Instrucciones que originan la entrada o salida de los datos, instrucción de “paro” para detener el programa, de “no operar”, consume un tiempo sin producir ninguna variación y otras instrucciones específicas.
-
-### Ejemplos
-
-En un primer lugar vamos a definir una serie de formatos conceptuales, esto son:
-
-Forma general de una instrucción
-
-|     |           |
-|-----|-----------|
-| CO  | Dirección |
-
-Máquina de 4 direcciones
-
-|  |  |  |  |  |
-|----|----|----|----|----|
-| CO | Dirección 1<sup>er</sup> Operando | Dirección 2º Operando | Dirección resultado | Dirección próxima instr. |
-
-Máquina de 3 direcciones
-
-|  |  |  |  |
-|----|----|----|----|
-| CO | Dirección 1<sup>er</sup> Operando | Dirección 2º Operando | Dirección resultado |
-
-Máquina de 2 direcciones
-
-|     |                                   |                       |
-|-----|-----------------------------------|-----------------------|
-| CO  | Dirección 1<sup>er</sup> Operando | Dirección 2º Operando |
-
-A fin de dar una comprensión acabada de los distintos formatos de instrucción utilizaremos el ejemplo de SuperAbacus. Para esto vamos a describir la conformación de SuperAbacus: posee un conjunto de registros banalizados, utilizables como registros aritméticos o, según las condiciones de direccionamiento, como registros de base o de índice. Todos los cálculos se realizan en un solo sumador, que actúa como ALU y de unidad de cálculo de direcciones. No posee contador ordinal, el registro R0 actuará como tal y su incremento se consigue por transferencia vía el sumador. Es de destacar que el ciclo de memoria es de 4 impulsos de reloj. El esquema de SuperAbacus se observa en la siguiente figura.
-
-#### 
-
-#### Primer ejemplo de instrucción y direccionamiento:
-
-SuperAbacus tendrá una palabra de 24 bits con el siguiente formato:
-
-<table>
-<tbody>
-<tr>
-<td>0</td>
-<td></td>
-<td></td>
-<td></td>
-<td>4</td>
-<td>5</td>
-<td>6</td>
-<td>7</td>
-<td> 8</td>
-<td></td>
-<td>10</td>
-<td> 11</td>
-<td></td>
-<td></td>
-<td>14</td>
-<td> 15</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td>23</td>
-</tr>
-<tr>
-<td colspan="5">CO</td>
-<td>I</td>
-<td colspan="2">CD</td>
-<td colspan="3">X</td>
-<td colspan="4">R</td>
-<td colspan="9">D</td>
-</tr>
-</tbody>
-</table>
+Son instrucciones para activar (o desactivar), autorizar (o inhibir), desencadenar uno o varios niveles de interrupción. Si el calculador consta de muchos niveles de interrupción, se agrupan éstos de manera que puedan ser direccionados con mayor sencillez. Estas instrucciones pueden tener el siguiente formato:
 
 <table>
 <tbody>
 <tr>
 <td>CO</td>
-<td>5 bits</td>
-<td colspan="5">Código de operación, capaz para 32 instrucciones</td>
+<td>COMP.</td>
+<td>Dirección de grupo</td>
+<td>Configuración binaria</td>
 </tr>
 <tr>
-<td>I</td>
-<td>1 bit</td>
-<td colspan="5">I = 0 : direccionamiento directo, I = 1 : direccionamiento indirecto (un nivel)</td>
-</tr>
-<tr>
-<td>CD</td>
-<td>2 bits</td>
-<td colspan="4"><p>CD = 00 : direccionamiento inmediato</p>
-<p>CD = 01 : direccionamiento absoluto de las 512 primeras palabras </p></td>
+<td></td>
+<td></td>
+<td></td>
 <td></td>
 </tr>
 <tr>
 <td></td>
 <td></td>
-<td><p>CD = 10 </p>
-<p>CD = 11 </p></td>
-<td>} </td>
-<td>direccionamiento relativo por referencia al contador de programa</td>
-<td>{</td>
-<td><p>(R0)-(D)</p>
-<p>(R0)+(D)</p></td>
+<td></td>
+<td>Cada nivel de grupo está representado por un bit puesto a 1, o 0, según que la operación afecte, o no, a este nivel.</td>
 </tr>
 <tr>
-<td>X</td>
-<td>3 bits</td>
-<td colspan="5">Direccionamiento indexado. Si X = 000: no indexado, sino, X indica la dirección de uno de lo registros R1 a R7, que tendrá que usarse como registro índice.</td>
+<td></td>
+<td></td>
+<td colspan="2"><p>Permite escoger el grupo implicado de niveles.</p></td>
 </tr>
 <tr>
-<td>R</td>
-<td>4 bits</td>
-<td colspan="5">Direcciona el registro aritmético: capaz de direccionar los registro R0 a R15</td>
+<td></td>
+<td colspan="3"><p>Complemento al código de operación, especificando la operación precisa a efectuar; activación, inhibición, autorización, desencadenamiento.</p></td>
 </tr>
 <tr>
-<td>D</td>
-<td>9 bits</td>
-<td colspan="5">Elemento de la dirección en memoria, capaz de direccionar una zona de 512 palabras, cuya posición depende de las condiciones de direccionamiento.</td>
+<td colspan="4"><p>Código de operación definiendo un gobierno de interrupción.</p></td>
 </tr>
 </tbody>
 </table>
 
-Las operaciones se ejecutan sobre un operando albergado en un registro y un operando tomado de la memoria, y el resultado ocupa el lugar del operando del registro. Por ejemplo, SUM R4 M suma los contenidos de la célula de memoria direccionada por M y del registro R4 y envía el resultado a R4.
+Cuando el número de interrupciones es muy limitado, se destina un registro de la unidad central para albergar lo que se ha convenido en llamar la **máscara de interrupción**. Se establece una asociación entre cada nivel de interrupción y un bit de este registro, que indica si la interrupción es autorizada o inhibida – enmascarada, se dirá entonces. La máscara de interrupción puede cargarse mediante una instrucción especial, donde el número de niveles de interrupción está limitado a 5.
 
-<img src="./ObjectReplacements/Object 25" style="width:16.489cm;height:12.49cm" />
+**INFLUENCIA DE LOS SISTEMAS DE ENTRADA – SALIDA SOBRE LA ORGANIZACIÓN GENERAL DE LAS MAQUINAS**
 
-Ejemplo de instrucción de suma con direccionamiento relativo e indexación:
+Los tipos y los rendimientos de los canales asociados a una unidad central dependen:
+
+1.  de la potencia de procesamiento de la unidad central;
+2.  del tipo de aplicación;
+3.  del número y de las características de las diferentes clases de unidades periféricas conectables.
+
+### Canales y Potencias de Ordenador
+
+**Ordenadores Pequeños**: El enlace programado es, a menudo, el único acceso en los ordenadores muy pequeños. Los distintos periféricos trabajan, en tal caso, por interrupciones. Con frecuencia, se encuentra también:
+
+1.  el equivalente a un canal selector: las palabras de control (dirección en curso y cuenta de palabras) se almacenan generalmente en memoria central, mientras que la incrementación de la dirección y la decrementación del contador de palabras se, ejecutan en la unidad central; una transferencia elemental consume entonces 3 ó 5 ciclos, según que la dirección y el contador de palabras puedan acomodarse, o no, en una sola palabra de memoria;
+2.  en algunas máquinas pequeñas de uso en tiempo real, un sistema de acceso directo a memoria en un ciclo, a sabiendas de que el elemento externo debe proporcionar la dirección de almacenamiento.
+
+**Ordenadores Medios:** En máquinas ya un poco más importantes se emplea:
+
+1.  bien el equivalente a un canal multiplado en el tiempo. Es la unidad central quién realiza las funciones del canal, es decir, que la unidad central hace de canal multiplado simulando las funciones de los canales autónomos. Los subcanales están en memoria central en el caso de los sistemas menos evolucionados, en memoria local en los más evolucionados.
+
+2.  bien la posibilidad de implantar varios canales selectores, generalmente poseedores de sus propios registros de dirección en curso y de cuenta de palabras. Algunos modelos tienen canales selectores independientes de la unidad central, mientras que es todavía ésta quién desempeña el papel de canal multiplado.
+
+**Ordenadores grandes:** Generalmente permiten la conexión:
+
+1.  de un canal multiplado para las unidades periféricas lentas (líneas de transmisión, lectoras, perforadoras de tarjetas y de cinta, eventualmente bobinadores de cinta magnética);
+
+2.  de un cierto número de canales selectores para los elementos periféricos rápidos (memorias de masa con núcleos, discos, tambores y, a veces, cintas magnéticas).
+
+Estos canales funcionan independientemente de la unidad central y, en general, acceden directamente a la memoria por intermedio de un controlador de memoria que gestiona sus respectivas prioridades.
+
+Organización en torno a un bus único
+
+Todo el sistema se organiza en torno a un bus único, el unibus, al cual se conectan la unidad central, los bloques de memoria central y los controladores de los órganos periféricos (constituyendo cada uno su propio canal).
+
+En lo que concierne al direccionamiento, todos los registros de los controladores de periférico (registro tampón de intercambio, registros de dirección en curso y de cuenta de palabras, registros de C.O.P. y de estado) son conocidos de la unidad central por direcciones que siguen a las de la memoria central. Por consiguiente, no existe instrucción especial de entrada – salida, sino que todas las instrucciones capaces de direccionar a la memoria central son utilizables para operar sobre estos registros.
+
+La instrucción de base es la de movimiento, con dos direcciones: copia el contenido del elemento direccionado por la primera en el elemento indicado por la segunda.
+
+Estructuralmente, el unibus contiene, además de los hilos de información y de dirección, un gran número de hilos de servicio correspondientes a las señales de diálogo, de interrupción y, a las señales de protección que impiden que un diálogo se vea perturbado por la intervención de una tercera unidad. De manera muy esquemática, el funcionamiento regulado por el controlador de unibus es el siguiente:
+
+Una unidad pide utilizar el bus. Su demanda permanece bloqueada hasta tanto el diálogo en curso no haya terminado. En caso positivo, esta solicitud es comparada con las otras que pueda haber presentes y no se ve atendida inmediatamente más que si procede de la unidad de más elevada prioridad.
+
+Esta se convierte en la unidad **maestra**. Envía sobre el bus la dirección de otra unidad que se autoidentifica y se convierte en la unidad **esclava**, obedeciendo las órdenes de la unidad maestra durante el tiempo necesario a una transferencia de información. La unidad central es siempre maestra, la memoria central siempre esclava.
+
+Este concepto de unibus permite la transferencia directa de unidad periférica a unidad periférica (sin transitar por una zona tampón en memoria), en la medida que una de las unidades pueda ser sincronizada con la otra. Entonces, la primera se comporta, en lo que se refiere a los diálogos transportados por el unibus, como esclava de la segunda.
+
+**Influencia de las entradas – salidas sobre la organización de la memoria central en los grandes ordenadores**
+
+En las máquinas muy potentes la memoria se divide generalmente en bloques independientes, de tal forma que la unidad central y varias unidades de intercambio pueden acceder simultáneamente a la misma en la medida que las diferentes referencias a memoria conciernan a bloques diferentes.
+
+La figura representa el tipo más corriente de organización, donde existe una interconexión de un determinado número de procesadores (procesador central o procesadores de entrada – salida) y de bloques de memoria.
+
+Generalmente las distintas unidades funcionan de manera asíncrona entre sí. Cada bloque de memoria está provisto de un número de muelles de acceso igual al número máximo de procesadores susceptibles de conectársele. Cada procesador está comunicado con los diferentes bloques de memoria por un bus.
+
+Cuando pide un ciclo de memoria envía sobre este bus una demanda de ciclo, acompañada de la dirección de memoria. Dicha demanda es simultáneamente recibida por los distintos bloques, que decodifican los dígitos correspondientes a la dirección de bloque.
+
+Cuando un bloque se auto – identifica, lanza, si está libre, un ciclo de memoria para atender a esta demanda, si no, la memoriza en el muelle de acceso para atenderla ulteriormente.
+
+En caso de conflicto de acceso, el controlador de bloque se encarga de regular las prioridades. Son posibles varias estrategias:
+
+1.  **Primer llegado, primer atendido:** Implica una lógica poniendo cíclicamente en memoria la cronología de las demandas;
+
+2.  **Prioridad fija asociada a cada procesador**. Se define una jerarquía de prioridades entre los canales selectores, todos ellos prioritarios frente al canal multiplado, y éste frente a la unidad central. El inconveniente de tal solución es que se corre el riesgo de bloquear al sistema y perder informaciones cuando un procesador de muy alta prioridad tuviera una tasa demasiado fuerte de transferencia;
+
+3.  **Escrutación cíclica de los diferentes muelles:** siempre en el mismo orden. El peligro señalado en el punto 2 se evita en la medida que, tras haber concedido un ciclo a un procesador, se atienda el resto de las demandas antes de concederle otro. Por otro lado, esta solución no siempre es posible cuando determinados periféricos pidan tasas muy fuertes de transferencia.
+
+La organización esquematizada en la figura es típicamente del tipo de los multiprocesadores. Habrá multiprocesador, en un sentido estricto, bajo estas dos hipótesis:
+
+1.  Se añade una segunda unidad central;
+2.  los canales son, en sí. pequeños ordenadores.
+
+### INTERCAMBIOS DE INFORMACIÓN CON EL EXTERIOR
+
+### Entrada/Salida
+
+Junto con la CPU y la MEMORIA, el tercer elemento clave de un computador es el conjunto de MÓDULOS DE E/S. Cada módulo se conecta al Bus del Sistema o a un conmutador central y controla uno o más dispositivos periféricos.
+
+Los módulos de E/S están dotados de la lógica necesaria para permitir la comunicación entre el bus y el periférico.
+
+¿Por qué es necesario disponer de un intermediario entre el bus y el periférico? ¿Por qué no conectar los periféricos directamente al bus del sistema? Hay varias razones:
+
+- Existe una gran variedad de periféricos, con formas de funcionamiento diferentes. Disponer de la lógica de cada tipo en la CPU resulta poco práctico.
+
+- A menudo, la velocidad de transferencia de datos de los periféricos es mucho menor que la de la memoria o la CPU. Por ello no es práctico utilizar un bus de alta velocidad para comunicarse con un periférico.
+
+- Con frecuencia, los periféricos utilizan datos con formatos y tamaños de palabra diferentes a los del computador al que se conectan.
+
+El Módulo de E/S tiene dos funciones principales:
+
+1.  Realizar la interfaz entre la CPU y la memoria a través del bus del sistema o un conmutador central.
+
+2.  Realizar la interfaz entre uno o más dispositivos periféricos mediante enlaces de datos específicos.
+
+### DISPOSITIVOS EXTERNOS
+
+Los dispositivos externos se pueden clasificar en 3 categorías:
+
+- **De interacción con los humanos:** permiten la comunicación con el usuario del computador (teclado, impresora, scanner, mouse, etc.)
+
+- **De interacción con máquinas:** permiten la comunicación con elementos del equipo (discos, unidades de cinta, etc.)
+
+- **De comunicación:** permiten la comunicación con dispositivos remotos (módem).
+
+**DATOS**: se intercambian en forma de un conjunto de bits que son enviados a, o recibidos desde el módulo de E/S.
+
+**SEÑALES DE CONTROL**: determinan la función que debe realizar el dispositivo, tales como **enviar datos al módulo de E/S**, Entrada (INPUT) o Lectura (READ), **aceptar datos desde el módulo de E/S**, ****Salida (OUTPUT) o Escritura (WRITE), **indicar el estado** o **realizar alguna función de control particular del** dispositivo (por ejemplo situar la cabeza del disco).
+
+**SEÑALES DE ESTADO**: Indican el estado del dispositivo (READY / BUSY).
+
+La **LÓGICA DE CONTROL** asociada al dispositivo controla su operación en respuesta a las indicaciones del módulo de E/S.
+
+El **TRANSDUCTOR** convierte las señales eléctricas asociadas al dato a otra forma de energía (en el caso de una salida) y viceversa en el caso de una entrada. Usualmente, existe un BUFFER asociado al transductor para almacenar temporalmente el dato que se está transfiriendo entre el módulo de E/S y el exterior.
+
+**Ejemplos: TECLADO/MONITOR**
+
+**Entrada desde el Teclado:** cuando el usuario pulsa una tecla, se genera una señal electrónica interpretada por el transductor del teclado que la traduce al patrón binario del correspondiente código ASCII. Ese patrón se transmite al módulo de E/S del computador. En el computador, el texto se almacena utilizando el mismo código ASCII.
+
+**Salida hacia el Monitor:** los códigos ASCII se transmiten al dispositivo externo desde el módulo de E/S. El transductor del dispositivo interpreta este código y envía las señales electrónicas precisas para que muestre en pantalla el carácter indicado o realice la función de control solicitada.
+
+### MÓDULOS DE E/S
+
+Función del Módulo
+
+Es el responsable del control de uno o más dispositivos externos, y del intercambio de datos entre esos dispositivos y la memoria principal y/o los registros de la CPU. Por ello, el módulo tiene una interfaz interna al computador (con CPU y Memoria) y otra externa al computador (con el dispositivo externo).
+
+Las funciones principales son:
+
+- Control y temporización
+- Comunicación con la CPU
+- Comunicación con los dispositivos.
+- Almacenamiento temporal de datos.
+- Detección de errores.
+
+En cualquier momento la CPU puede comunicarse con uno o más dispositivos externos en cualquier orden, según las necesidades de E/S del programa. Los recursos internos, tales como la memoria principal y el bus del sistema, deben compartirse entre las distintas actividades, incluyendo la E/S de datos. Por ello, la función de E/S incluye requerimientos de **control** y **temporización** para coordinar el tráfico entre los recursos internos y los dispositivos externos. Por ejemplo, el control de la transferencia de datos desde un dispositivo externo a la CPU podría implicar la siguiente secuencia de pasos:
+
+1.  La CPU interroga al módulo para comprobar el estado del dispositivo conectado al mismo.
+2.  El módulo de E/S devuelve el estado del dispositivo (READY / BUSY).
+
+3.  Si el dispositivo está LISTO para transmitir, la CPU solicita la transferencia del dato mediante una orden al módulo de E/S.
+
+4.  El módulo de E/S obtiene un dato del dispositivo externo.
+
+5.  Los datos se transfieren desde el módulo de E/S a la CPU.
+
+Si el sistema utiliza un bus, entonces cada una de las interacciones entre la CPU y el módulo de E/S implica uno o más arbitrajes del bus. Para cumplir con los pasos descriptos, el módulo de E/S debe poder entablar comunicación con la CPU y con el dispositivo externo. La comunicación con la CPU implica:
+
+- **Decodificación de órdenes:** las órdenes provenientes de CPU están presentes en las líneas de control del bus. Por ejemplo. Un controlador de disco podría recibir las órdenes: LEER SECTOR, ESCRIBIR SECTOR, BUSCAR pista, ETC. Los parámetros necesarios para llevar a cabo la instrucción se envía por las líneas de datos (ejemplo BUSCAR pista).
+- **Datos:** la CPU y el módulo de E/S intercambian datos a través de las líneas de datos del bus.
+- **Información de estado:** puesto que los periféricos son lentos, es importante conocer el estado del módulo de E/S (puede suceder que el dispositivo no esté preparado por encontrarse respondiendo a una orden de E/S previa). Esta situación se indica con una señal de estado (BUSY, READY). También puede haber señales para indicar situaciones de error.
+- **Reconocimiento de Dirección:** cada dispositivo de E/S tiene una dirección. Un módulo de E/S reconoce una única dirección para cada uno de los periféricos que controla.
+
+Por otra parte, el módulo de E/S debe ser capaz de **comunicarse con el dispositivo**. Esta comunicación implica intercambiar órdenes, información de estado y datos.
+
+Una tarea esencial para el módulo de E/S es el **almacenamiento temporal de datos** (buffering), para equilibrar las diferencias de velocidades entre la CPU y los dispositivos externos. Los datos provenientes de la memoria se envían al módulo de E/S en ráfagas rápidas. Estos se almacenan temporalmente en el módulo de E/S y después se envían al periférico a la velocidad de éste. En el sentido contrario, los datos se almacenan en el módulo para no mantener a la memoria ocupada en una transferencia lenta. Así el módulo de E/S debe ser capaz de operar a la velocidad del dispositivo y de la memoria.
+
+Por último, el módulo de E/S debe ocuparse también de la detección de errores y de informar de estos errores a la CPU. Ejemplos de estos errores pueden ser: la impresora no está encendida, el papel está atascado, disco dañado, el diskette no está en la unidad, etc. Otros errores están dados por la modificación accidental en los bits al transmitirse desde el dispositivo al módulo de E/S. Para ello se utiliza algún código detector de errores (ASCII utiliza un bit de paridad. Al recibir un byte, el módulo comprueba la paridad para determinar si se produjo error o no).
+
+Estructura del módulo de E/S
+
+- El módulo de E/S se conecta al resto del computador a través de un conjunto de líneas (por ejemplo, las líneas del bus del sistema).
+- Los datos que se transfieren a y desde el módulo se almacenan temporalmente en uno o más registros de datos.
+- Además puede haber uno o más registros de estado que proporcionan información sobre el estado actual. Un registro de estado puede funcionar, también, como un registro de control para recibir información de control de la CPU.
+- La lógica del módulo interactúa con la CPU a través de una serie de líneas de control, a través de las cuales la CPU envía las órdenes al módulo de E/S.
+- Las líneas de control pueden ser utilizadas por el módulo de E/S, por ejemplo, para las señales de arbitraje y estado.
+- El módulo, además, debe reconocer y generar las direcciones de los dispositivos que controla. Cada módulo de E/S tiene una dirección única, o, si controla varios dispositivos, un conjunto único de direcciones.
+- Por último, el módulo de E/S dispone de una lógica específica para la interfaz con cada uno de los dispositivos que controla.
+- El funcionamiento del módulo de E/S permite que la CPU vea una amplia gama de dispositivos de una forma simplificada. El módulo de E/S oculta detalles de temporización, formatos, electromecánica de los dispositivos, para que la CPU pueda funcionar únicamente en términos de órdenes LECTURA y ESCRITURA y de abrir y cerrar archivos.
+- Un módulo de E/S que se encarga de la mayoría de los detalles de procesamiento, presentando a la CPU una interfaz de alto nivel se denomina CANAL DE E/S o PROCESADOR DE E/S. Un módulo simple, que requiera un control detallado se denomina CONTROLADOR DE DISPOSITIVO. Los CONTROLADORES usualmente aparecen en microcomputadoras, mientras que los CANALES se utilizan en grandes computadoras y los minicomputadores utilizan ambos tipos.
+
+### TÉCNICAS DE E/S
+
+Son posibles tres técnicas para las operaciones de E/S:
+
+1.  **E/S Programada:** la CPU ejecuta un programa que controla directamente la operación de E/S, incluyendo la comprobación del estado del dispositivo, el envío de una orden de lectura o escritura y la transferencia del dato. Cuando la CPU envía una orden al módulo de E/S debe esperar hasta que la E/S concluya. Si la CPU es más rápida que el módulo de E/S, este tiempo de ESPERA se desperdicia
+
+2.  **E/S Mediante Interrupciones:** la CPU proporciona la orden de E/S, continúa ejecutando otras instrucciones y es interrumpida por el módulo de E/S cuando éste termina su trabajo.
+
+3.  **DMA (Acceso Directo a Memoria):** en los dos casos anteriores, la CPU es la encargada de extraer los datos de memoria principal en una salida, y de almacenar los datos de memoria principal en una entrada. Para que esto no ocurra se utiliza DMA. En este caso, el módulo de E/S y la memoria principal intercambian datos directamente sin intervención de la CPU.
+
+### E/S Programada
+
+Cuando la CPU está ejecutando un programa y encuentra una instrucción de E/S, ejecuta dicha instrucción enviando una orden al módulo de E/S correspondiente. El módulo de E/S realiza la acción solicitada y luego activa los bits apropiados en el registro de estado de E/S. El módulo de E/S no realiza ninguna otra acción para avisar a la CPU (no la interrumpe), por lo cual es la CPU la responsable de comprobar periódicamente el estado del módulo de E/S hasta que se determine que la operación ha terminado. Para explicar la técnica de E/S programada, la consideraremos primero desde el punto de vista de las órdenes de E/S que envía la CPU al módulo, y después el punto de vista de las instrucciones de E/S que ejecuta la CPU.
+
+- Órdenes de E/S
+
+Al ejecutar una instrucción de E/S la CPU proporciona:
+
+- **Dirección:** Especificando módulo de E/S y dispositivo externo
+- **Orden de E/S**.
+
+Hay 4 tipos de **órdenes de E/S**: control, test, lectura y escritura.
+
+**Control:** se utiliza para activar el periférico e indicarle qué hacer. Por ejemplo rebobinar, en el caso de una cinta magnética. Estas órdenes son específicas del tipo particular de dispositivo periférico.
+
+**Test:** se utiliza para comprobar las condiciones de estado asociadas con el módulo de E/S y sus periféricos. La CPU podrá comprobar si el periférico está conectado y disponible para su uso. También podrá saber si la operación de E/S más reciente ha finalizado o si se ha producido algún error.
+
+**Lectura:** hace que el módulo de E/S capte un dato de un periférico y lo sitúe en un buffer interno (registro de datos). Después la CPU puede obtener el dato solicitando que el módulo de E/S lo ponga en el bus de datos.
+
+**Escritura:** hace que el módulo de E/S tome un dato, del bus de datos, y posteriormente lo transmita hacia el periférico de destino.
+
+Por ejemplo, si se desea leer un bloque de datos (de cinta o disco) y almacenarlo en memoria. Los datos se leen palabra a palabra. Por cada palabra leída, la CPU debe permanecer en un ciclo de comprobación de estado hasta que determine que la palabra está disponible en el registro de datos del módulo de E/S. Aquí se verifica la principal desventaja de esta técnica: es un proceso que consume tiempo y mantiene a la CPU innecesariamente inactiva.
+
+- Instrucciones de E/S
+
+La forma de la instrucción de E/S depende de la manera de direccionar los dispositivos externos. Normalmente hay muchos dispositivos externos conectados al sistema a través de los módulos de E/S. Cada dispositivo tiene asociado un identificador único o dirección. Cuando la CPU envía una orden de E/S, esa orden tiene asociada la dirección del dispositivo deseado. Así, cada módulo de E/S debe interpretar las líneas de dirección para determinar si la orden es para él.
+
+Cuando la CPU, la memoria principal y las E/S comparten un bus común, son posibles dos modos de direccionamiento:
+
+- **Asignado en memoria (memory mapped)**: existe un único espacio de direcciones para las posiciones de memoria y los dispositivos de E/S. La CPU considera a los registros de estado y de datos de los módulos de E/S como posiciones de memoria y utiliza las mismas instrucciones de máquina para acceder tanto a memoria como a los dispositivos de E/S.
+
+Así, con 10 líneas de dirección se puede acceder a un total de 1024 posiciones de memoria y direcciones de E/S en cualquier combinación. Así se necesita una sola línea de lectura y una sola línea de escritura en el bus.
+
+- **E/S aislada**: el bus dispone de líneas de lectura y escritura para memoria principal y líneas de lectura y escritura para E/S. Así, el sistema puede direccionar 1024 posiciones de memoria y 1024 direcciones de E/S. Con la E/S aislada, los puertos de E/S sólo son accesibles mediante una orden específica de E/S, que activa las líneas de órdenes de E/S del bus.
+
+La mayoría de las CPU disponen de un conjunto relativamente grande de instrucciones distintas para acceder a memoria. Si se utiliza E/S aislada, sólo existen unas pocas instrucciones de E/S.
+
+Por eso, una ventaja de la primera es que se puede utilizar este amplio repertorio de instrucciones, permitiendo una programación más eficiente. Una desventaja es que se utiliza parte del espacio en memoria. Cualquiera de las dos técnicas se utiliza.
+
+### E/S Mediante Interrupciones
+
+Ya vimos que el problema de la E/S programada, es que la CPU debe esperar un tiempo considerable a que el módulo de E/S esté preparado para recibir o transmitir datos. Mientras espera, la CPU debe comprobar repetidamente el estado del módulo de E/S. Como consecuencia, se degrada el nivel de prestaciones de todo el sistema.
+
+Una alternativa es que la CPU tras enviar la orden de E/S continúe realizando algún trabajo útil. Después, el módulo de E/S interrumpirá a la CPU para solicitar su servicio cuando esté listo para intercambiar datos con ella. La CPU ejecuta entonces la transferencia de datos y después continúa con el procesamiento previo.
+
+Desde el punto de vista de la CPU las acciones para una entrada son las que siguen:
+
+1.  La CPU envía la orden READ de lectura y pasa a realizar otro trabajo (puede estar ejecutando programas distintos al mismo tiempo).
+
+2.  Al final de cada ciclo de instrucción la CPU comprueba las interrupciones. Cuando se pide la interrupción desde el módulo de E/S, la CPU guarda el contenido de los registros del programa en curso y procesa la interrupción.
+
+3.  En este caso, la CPU lee la palabra de datos del módulo de E/S y la almacena en memoria.
+
+4.  Después recupera el contexto (contenido de los registros) del programa que estaba ejecutando (o de otro programa) y continúa su ejecución.
+
+La E/S con interrupciones es más eficiente que la programada porque elimina las esperas innecesarias. No obstante, las E/S con interrupciones consumen gran cantidad de tiempo de la CPU puesto que cada palabra de datos que va desde la memoria al módulo de E/S o viceversa debe pasar a través de la CPU.
+
+Procesamiento de la interrupción
+
+Cuando un dispositivo de E/S termina una operación de E/S se produce la siguiente secuencia de eventos en el HW:
+
+1.  El dispositivo envía una señal de interrupción al procesador.
+
+2.  El procesador termina la ejecución de la instrucción en curso antes de responder a la interrupción.
+
+3.  El procesador comprueba si hay interrupciones, determina que hay una y envía una señal de reconocimiento al dispositivo que originó la interrupción. La señal de reconocimiento hace que el dispositivo desactive su señal de interrupción.
+
+4.  Ahora el procesador debe prepararse para transferir el control a la rutina de interrupción. Para empezar, debe guardar la información necesaria para continuar el programa en curso en el punto en que se interrumpió (CP y Registro de Estado del Procesador).
+5.  El procesador carga en el CP la posición de inicio del programa de gestión de la interrupción solicitada. Según la arquitectura del computador y el sistema operativo puede haber un sólo programa, uno por cada tipo de interrupción, o uno por cada dispositivo y cada tipo de interrupción. Si hay más de una rutina de gestión de interrupción, el procesador debe determinar que programa llamará. Esta información puede haber sido incluida en la señal de interrupción original, o el procesador puede tener que enviar una solicitud al dispositivo que originó la interrupción para que éste responda con la información necesaria.
+
+Una vez que el CP se ha cargado, el procesador continúa con el ciclo de instrucción siguiente, que comienza con la búsqueda de la instrucción (del programa de gestión de interrupciones)
+
+6.  Una vez que la rutina de gestión de interrupciones comienza a ejecutarse, se asegura en primer término, de guardar el contenido de todos los registros de la instrucción previa.
+
+7.  Luego continúa con el procesamiento de la interrupción: examen de la información de estado, relativa a la operación de E/S; envío al dispositivo de E/S de órdenes o señales de reconocimiento adicionales.
+
+8.  Cuando el procesamiento de la interrupción termina los valores de los registros de la instrucción previa son restaurados.
+
+9.  Se ejecutará la siguiente instrucción del programa interrumpido.
+
+Cuestiones de Diseño
+
+Hay 2 cuestiones fundamentales que surgen al momento de implementar E/S con interrupciones:
+
+1.  ¿Cómo determina la CPU qué dispositivo provocó la interrupción?
+
+Hay 4 tipos de técnicas:
+
+1)  *Múltiples líneas de interrupción*: entre la CPU y los módulos de E/S. Esta técnica no resulta práctica, ya que no es conveniente asignar varias líneas del bus a ser líneas de interrupción. Incluso si se utilizan varias líneas, es probable que a cada una se conecten varios módulos de E/S. Por ello, es conveniente utilizar alguna de las otras 3 técnicas.
+2)  *Consulta software (software poll)*: cuando la CPU detecta una interrupción, se origina una bifurcación a una rutina de servicio de interrupción que se encarga de consultar a cada módulo de E/S para determinar cuál ha provocado la interrupción.
+
+La consulta podría realizarse mediante una línea específica; por ejemplo, la CPU activa TEST_E/S y sitúa la dirección de un módulo de E/S en las líneas de dirección. Si ese módulo solicitó la interrupción, responde afirmativamente. Otra alternativa sería que cada módulo disponga de un registro de estado direccionable. La CPU lee el estado del registro de cada módulo para determinar cuál solicitó la interrupción. Una vez identificado el módulo se produce una bifurcación para que la CPU ejecute la rutina de servicio específica para ese dispositivo. La desventaja de esta técnica es el tiempo que consume.
+
+3)  *Conexión en cadena (Daisy Chain*): consiste en utilizar una conexión en cadena de los módulos de E/S. Proporciona una consulta HW. Todos los módulos de E/S comparten una línea común para solicitar interrupciones. La línea de reconocimiento de interrupción se conecta encadenando los módulos uno tras otro. Cuando la CPU recibe una interrupción, activa el reconocimiento de interrupción. Esta señal se propaga a través de la secuencia de módulos de E/S hasta que alcanza el módulo que solicitó la interrupción. Normalmente este módulo responde colocando una palabra en las líneas de datos. Esta palabra se llama *vector* y es la dirección del módulo de E/S o algún otro tipo de identificador específico. La CPU utiliza el vector como un puntero a la rutina de servicio general en primer lugar. Esta técnica se conoce con el nombre de *interrupciones vectorizadas*.
+
+Si el módulo de mayor prioridad no desea utilizar el bus activa su señal BPRO (salida de prioridad del bus). Al comienzo de un ciclo de reloj, cualquier módulo puede pedir el control de bus desactivando su línea BPRO. Esto hace que se desactive la línea BPRN del siguiente módulo de la cadena, que a su vez desactiva su línea BPRO. Así, la señal se propaga a lo largo de la cadena. Al final de esta respuesta en cadena, hay un único módulo con su señal BPRN (indica que ningún módulo de mayor prioridad solicita el bus) activada y su señal BPRO desactivada. Este módulo es el que tiene prioridad.
+
+4)  *Arbitraje de Bus*: Un módulo de E/S debe disponer del control del bus para poder activar la línea de petición de interrupción. Así, sólo un módulo puede activar la línea en un instante. Cuando la CPU detecta una interrupción, responde mediante la línea de reconocimiento de interrupción. Después, el módulo que solicitó la interrupción sitúa su vector en las líneas de datos.
+
+1.  Si se han producido varias interrupciones, ¿cómo decide la CPU cuál interrupción procesar?
+
+Las técnicas mencionadas para determinar qué módulo de E/S solicitó la interrupción también proporcionan una forma de asignar prioridades cuando más de un dispositivo solicita atención de interrupción. Con varias líneas de interrupción, la CPU selecciona la línea de mayor prioridad. Con la consulta de software, el orden en que se consultan los módulos determina la prioridad. El orden de los módulos de la conexión en cadena determina la prioridad, igual que el arbitraje de bus establece que quien debe transmitir es el que tiene el control de la línea.
+
+### Acceso Directo a Memoria
+
+En las dos técnicas anteriores veíamos que se presentaban los siguientes inconvenientes:
+
+- La velocidad de transferencia de E/S está limitada por la velocidad a la cual la CPU puede comprobar y dar servicio a un dispositivo.
+- La CPU debe dedicarse a la gestión de las transferencias de E/S; debe ejecutarse cierto número de instrucciones por cada transferencia de E/S.
+
+Con E/S programada se logra gran velocidad de E/S a expensas de no hacer nada más. Con Interrupciones la CPU puede ejecutar otra instrucción mientras se procesa la E/S, a expensas de la velocidad de E/S (es decir, la CPU queda liberada para ejecutar otras instrucciones, como resultado disminuye la velocidad de E/S). Cuando hay que transferir grandes volúmenes de datos, se requiere una técnica más eficiente: el DMA.
+
+Para implementarlo es necesario incorporar un módulo adicional al bus del sistema: el módulo DMA. Cuando la CPU desea leer o escribir un bloque de datos, envía una orden al módulo DMA indicando:
+
+- Si se trata de una lectura o una escritura.
+- La dirección del dispositivo de E/S en cuestión.
+- La posición inicial de memoria de donde se lee o adonde se escribe.
+- El número de palabras a leer o escribir.
+
+Después la CPU continúa con otro trabajo. El módulo DMA transfiere el bloque completo de datos a memoria, sin intervención de la CPU. Cuando la transferencia termina el módulo DMA envía una señal de interrupción a la CPU. Así la CPU sólo interviene al comienzo y al final de la transferencia.
+
+El módulo DMA debe tomar el control del bus para transferir datos. Para ello, debe utilizarlo sólo **cuando la CPU no lo necesita**, o **debe forzar a la CPU a que se detenga temporalmente**. Esta última técnica es la más frecuente y recibe el nombre de ROBO DE CICLO porque el módulo DMA roba un ciclo del bus.
+
+Funciona de la siguiente forma. Al finalizar el procesamiento de una instrucción la CPU se detiene, justo antes de necesitar el bus. Entonces el módulo DMA transfiere una palabra y devuelve el control a la CPU. En este caso la CPU no debe resguardar el contenido de los registros, y sólo espera durante 1 ciclo del bus. La CPU es lenta ejecutando los programas, pero para una transferencia E/S de varias palabras el DMA es mucho más eficiente que cualquiera de las técnicas mencionadas anteriormente.
+
+1.  1)  **Bus único, DMA independiente:** El bus del sistema es utilizado para el intercambio de datos con los módulos de E/S y con la memoria (es decir, que la transferencia de cada palabra consume dos ciclos de bus).
+
+2.  1)  **Bus único, DMA-E/S integrados:** En este caso, se integran las funciones DMA y E/S, esto significa que existe un camino entre el módulo de DMA y uno o más módulos de E/S que no incluyen al bus del sistema. La lógica DMA puede ser parte de un módulo de E/S, o puede ser un módulo separado que controla a uno o más módulos de E/S.
+
+3.  1)  **Bus de E/S:** En este caso, se conectan los módulos de E/S a un módulo DMA mediante un bus de E/S, esto reduce a uno el número de interfaces de E/S en el módulo DMA y permite una configuración fácilmente ampliable.
+
+En los dos últimos casos (b y c), el bus del sistema, que el módulo DMA comparte con la CPU y la memoria, es usado por el módulo DMA **sólo para intercambiar datos con la Memoria**. El intercambio de datos entre los módulos DMA y E/S se produce **fuera del bus del sistema.**
+
+### INTERRUPCIONES
+
+Prácticamente todos los computadores disponen de un mecanismo mediante el cual los módulos de E/S pueden interrumpir el procesamiento normal de la CPU. Una interrupción es precisamente una suspensión temporaria de la ejecución de un programa, para pasar a ejecutar una subrutina de servicio de interrupción.
+
+Con el uso de interrupciones, el procesador puede dedicarse a ejecutar otras instrucciones mientras una operación de E/S está en curso. Por lo tanto, una operación de E/S se pude realizar concurrentemente con la ejecución de otra instrucción. Como consecuencia de lo declarado anteriormente, las interrupciones proporcionan una forma de mejorar la eficiencia del procesador. Hay que mencionar que el programa que se esté ejecutando no tiene que incluir ningún código para posibilitar las interrupciones; el sistema operativo y la BIOS (Basic Input Output System) son los responsables de detener el programa que se esté ejecutando y después permitir que prosiga en el mismo punto.
+
+El MEINADIER enumera las clases de interrupciones más comunes.
+
+Existen interrupciones por software (mediante una instrucción de máquina específica) e interrupciones por hardware.
+
+Las interrupciones por HW **externas** (a la UCP) tienen lugar cuando una interfaz activa su señal de solicitud de interrupción (denominada IRQ – Interrupt Request – en las PCs), que por un línea de control del bus llega a un chip. Cada línea IRQ que sale de una interfaz tiene un subíndice n (del 0 al 15 en una PC) que la identifica. Todas las IRQ entran a un chip “árbitro de interrupciones”, que decide cuál interfaz interrumpirá primero, para el caso que se activen varias IRQ simultáneamente, es decir, que da curso sólo a la que tiene subíndice n menor, las restantes tienen que esperar.
+
+Este chip activa una línea que llega al procesador (designada INTR), para indicarle que hay una solicitud de interrupción activa. Así, cada vez que termina de ejecutar una instrucción, el procesador sensa si la línea de control INTR está activa (indicadora de solicitud de interrupción). Si el programa en ejecución lo permite, el mismo es interrumpido. De no ser así, dicha solicitud espera hasta ser atendida. Las interrupciones por HW **internas** (designadas a veces “excepciones”) ocurren en el interior de la CPU, si hay algún problema mientras se ejecuta una instrucción.
+
+Por ejemplo, la impresora de una PC suele usar la señal de IRQ de su interfaz para indicar falta de papel, lo cual origina que la subrutina que atiende a este evento indique el mismo con un aviso en pantalla.
+
+Una interrupción por SW se realiza ejecutando el código de una instrucción que ordena llamar a subrutinas del sistema operativo o de la ROM BIOS cuando necesita el servicio de una de ellas. A diferencia de las interrupciones por HW, una interrupción por SW queda establecido en qué momento de la ejecución de un programa sucederá, pues se trata de una **instrucción** que está en determinado lugar de n programa, que llama a dichas subrutinas. En esencia, la interrupción por HW es activada por una señal IRQ y la interrupción por SW es activada mediante una instrucción de máquina.
+
+Para localizar la subrutina, ya sea de una interrupción por SW o por HW, existe en memoria una zona llamada de “**vectores interrupción**” donde para cada número de IRQ y de INT (para el caso de interrupción por SW) existen dos celdas consecutivas de memoria que indican la dirección de la subrutina que atiende a esa interrupción. Por tal motivo a cada par de estas celdas se las llama “**vector interrupción**”, en el sentido que contienen un número que “**apunta**” hacia donde está dicha subrutina, y a las interrupciones que encuentran su subrutina de esta manera, se las llama “**interrupciones vectorizadas**”. A su vez la dirección donde están las dos celdas (vector) que corresponde a cada IRQ o INT se localiza en función del número de IRQ o de INT.
+
+Las **interrupciones son vectorizadas**, cuando el dispositivo que interrumpe coloca la dirección de memoria, donde se debe bifurcar, sobre las líneas de datos del bus (esa dirección es denominada **vector interrupción**), la cual es enviada a la CPU para luego transferir el control directamente al programa de atención del dispositivo que interrumpe.
+
+### Desarrollo de una Interrupción
+
+Cuando el dispositivo externo pasa a estar preparado para aceptar datos del procesador, el módulo de E/S de este dispositivo externo envía una señal de petición de interrupción al procesador. La interrupción se inicia colocando un 1 sobre la línea de interrupción del bus. Esto notifica a la CPU que un dispositivo desea atención. El procesador responde suspendiendo la operación del programa que se estaba ejecutando (pero completa la instrucción que se estaba ejecutando en el momento de recibir la interrupción), y salta a un programa que da servicio a ese dispositivo concreto, conocido como gestor de interrupción o programa de atención de la interrupción, y prosigue con la ejecución del programa original después de haber dado servicio al dispositivo.
+
+Para permitir el uso de interrupciones, se añade un ciclo de interrupción al ciclo de instrucción. En el ciclo de interrupción, el procesador comprueba si se ha producido alguna interrupción, indicada por la presencia de una señal interrupción. Si no hay señales de interrupción pendientes, el procesador continúa con la siguiente instrucción del programa en curso. Si hay alguna interrupción pendiente, el procesador hace lo siguiente:
+
+1.  Suspende la ejecución del programa en curso y guarda su contexto. Esto significa almacenar la dirección de la siguiente instrucción a ejecutar (contenido actual del contador de programa) y cualquier otro dato relevante de la actividad en curso del procesador. De esta forma el programa puede ser reiniciado cuando se finalice el programa de atención a la interrupción.
+
+2.  El dispositivo que genera la interrupción debe ser identificado.
+
+3.  Se carga el contador del programa con la dirección de comienzo de una rutina de gestión de interrupción.
+
+4.  A continuación el procesador accede a la primera instrucción del programa de gestión de interrupción, que dará servicio a la interrupción. Generalmente el programa de gestión de la interrupción forma parte del sistema operativo y de la BIOS. Normalmente, este programa determina el origen de la interrupción y realiza todas las acciones que sean necesarias.
+
+5.  Cuando la interrupción ha sido atendida, el estado del programa que fue interrumpido debe ser restaurado. El regreso de una interrupción es similar al regreso de una subrutina. Se sacan los valores de la pila y la dirección de regreso se transfiere al CP.
+
+6.  La operación del programa original debe ser reiniciado en el punto en el cual había sido interrumpido.
+
+### Interrupciones Múltiples y Prioritarias
+
+Hasta ahora únicamente se ha tratado la existencia de una sola interrupción. Supóngase, no obstante, que se pueden producir varias interrupciones simultáneamente. Por ejemplo, un programa puede estar recibiendo datos a través de una línea de comunicación e imprimiendo resultados. La impresora generará interrupciones cada vez que complete una operación de escritura. El controlador de la línea de comunicación generará una interrupción cada vez que llegue una unidad de datos. La unidad de datos puede ser un carácter o un bloque, según el protocolo de comunicación. En cualquier caso, es posible que se produzca una interrupción de comunicaciones mientras se está procesando la interrupción de la impresora.
+
+Se pueden seguir 2 alternativas para tratar las interrupciones múltiples.
+
+El método más común de manipular interrupciones múltiples, es comenzar la rutina de servicio haciendo un sondeo de los dispositivos examinando el registro de status (o registro de estado) de cada uno, a fin de identificar aquella que ha generado la requisición. La rutina de servicio prueba cada fuente para buscar si la señal esta activada. Una vez que se haya identificado al dispositivo que produjo la interrupción se descartan las demás interrupciones hasta que se haya completado una rutina de servicio para una fuente particular. El dispositivo que no es atendido mantendrá la interrupción hasta cuando sea atendido.
+
+En este caso se desactivan las interrupciones por un período corto, mientras se está procesando una interrupción (ya que si no se desactiva el sistema de interrupciones, la interrupción que se esta atendiendo podría ser interrumpida por otra interrupción). Una interrupción inhabilitada simplemente significa que el procesador puede y debe ignorar la señal de petición de interrupción. Si se produce una interrupción en ese momento, generalmente se mantiene pendiente y será examinada por el procesador una vez éste haya habilitado las interrupciones. Así, cuando un programa se está ejecutando y se produce una interrupción, las interrupciones se inhabilitan inmediatamente.
+
+Después de que la rutina de gestión de interrupción termine, las interrupciones se habilitan antes de volver al programa que se estaba ejecutando anteriormente, es decir, todavía no se retoma el programa ya que el procesador debe comprobar si se han producido interrupciones adicionales. Esta aproximación es correcta y simple, puesto que las interrupciones se manejan en un orden secuencial estricto.
+
+Desventajas de esta alternativa:
+
+- Consume mucho tiempo.
+- El orden en que se haga esta interrogación determina quién será atendido en primer lugar, es decir, que no tiene en cuenta la prioridad relativa.
+
+Estas desventajas podrían implicar lo siguiente: por ejemplo, cuando llega una entrada desde la línea de comunicaciones, ésta debe absorberse rápidamente para dejar espacio a los datos siguientes. Si los primeros datos no se han procesado antes de que lleguen los siguientes, estos se pueden perder.
+
+Una segunda alternativa consiste en definir prioridades para las interrupciones y permitir que una interrupción de prioridad más alta pueda interrumpir a un gestor de interrupción de prioridad menor. Una interrupción prioritaria es un sistema de interrupción que establece una prioridad sobre varias fuentes para determinar a quién va a atender primero, cuando llegan dos o más requisiciones simultáneamente.
+
+Como ejemplo de esta segunda alternativa, considérese un sistema con 3 dispositivos de E/S: una impresora, un disco, y una línea de comunicaciones, con prioridad crecientes de 2, 4 y 5 respectivamente. Supongamos que un programa se empieza a ejecuta en t = 0. En t = 10, la impresora produce una interrupción; la información del programa que es estaba ejecutando se sitúa en la pila del sistema, y la ejecución continúa con la rutina de servicio de interrupción de la impresora. Mientras se está ejecutando esta rutina, en t = 15, se produce una interrupción de comunicaciones. Como la línea de comunicaciones tiene una prioridad mayor que la impresora, se acepta la interrupción. La rutina de la impresora se interrumpe, su estado se introduce en la pila, y la ejecución continúa con la rutina de comunicaciones. Mientras se está ejecutando esta rutina, el disco ocasiona una interrupción en t =20. Puesto que esta interrupción tiene una prioridad menor, simplemente se retiene, y la rutina de comunicaciones se ejecuta hasta que termina.
+
+Cuando la rutina de comunicaciones termina (t = 25), se restaura el estado previo del procesador, que corresponde a la ejecución de la rutina de la impresora. No obstante, antes incluso de que pueda ejecutarse una sola instrucción de esa rutina, el procesador acepta la interrupción, de mayor prioridad, generado por el disco y el control se transfiere a la rutina de disco. Sólo cuando esta rutina termina (t = 35), la rutina de la impresora puede reanudarse. Cuando termina esa rutina (t = 40), el control vuelve finalmente al programa que se estaba ejecutando en el principio.
+
+El establecer la prioridad de las interrupciones simultáneas se puede lograr mediante la programación o por medio de circuitos integrados externos a la CPU que asignan la prioridad de los dispositivos que pueden generar interrupciones y permiten que se tramite sólo la del dispositivo de mayor nivel de prioridad que esté interrumpiendo en ese momento.
+
+- Por programación: Por este método hay solamente una dirección de vector para todas las interrupciones. El programa de servicio comienza en la dirección vector y sondea las fuentes de interrupción en secuencia. El orden en el cual se prueban las fuentes determina la prioridad de cada petición de interrupción.
+
+La fuente de mayor prioridad se prueba primero y si su señal de interrupción está activada el control se bifurca a otra rutina de servicio para esta fuente. En caso contrario, se prueba la siguiente fuente en prioridad y así sucesivamente. Así, la rutina de servicio inicial para todas las interrupciones consiste de un programa que prueba las fuentes de interrupción en secuencia y que se bifurca a una de las muchas rutinas de servicio.
+
+- Por CI: Esta acepta peticiones de interrupción de muchas fuentes, determina cuál de las requisiciones entrantes es la de mayor prioridad y envía una interrupción al procesador basada en esta determinación. Para mejorar la velocidad de la operación, cada fuente de interrupción tiene una dirección vector propia para acceder directamente a su propia rutina de servicio. De manera que no se necesita un sondeo. Este circuito es un **codificador de prioridad**. La lógica de este codificador es tal, que si llegan dos o más niveles de entrada al mismo tiempo, entonces la entrada que tenga la mayor prioridad será la primera. La salida de un codificador de prioridad genera una dirección parcial para que el vector de interrupción suministre la dirección de bifurcación. La dirección parcial que sale del codificador se usa para conformar la dirección vector para cada fuente de interrupción. Este método es más rápido que el anterior.
+
+## Periféricos
+
+Unidades de almacenamiento de información
+
+Generalidades
+
+Las unidades de almacenamiento corresponden a aquellos dispositivos encargados de guardar la información permanente los datos y/o programas para ser utilizados en el momento adecuado y poder ser modificados, vueltos a guardar y recuperados cuando se desee. Son por lo tanto dispositivos que guardan permanentemente la información en ausencia de alimentación, siendo mucho de ellos capaces de ser transportables, es decir, poder llevar la información a otro equipo o guardarla como copia de seguridad.
+
+En la actualidad existen muchos tipos de unidades de almacenamiento para cubrir un amplio abanico de posibilidades de uso y que están pensadas para aplicaciones específicas, como son:
+
+- Unidad de disco rígido.
+- Unidad lectora de CD ROM/DVD (grabables y regrabables).
+- Unidad de disco flexible, Floppy o Disquete.
+- Unidades USB (Pen drive, reproductores de MP3 y MP4, cámaras digitales, etc.)
+- Unidad LS-120.
+- Unidad DITTO
+- Unidad JAZ
+- Unidad EZFleyer
+- Unidades Magneto-ópticas MO.
+- Unidades de Back-up.
+- CD grabables y regrabables.
+- Etc.
+
+Estructura física y lógica
+
+La estructura es la forma en que se guarda la información en el soporte y se puede dividir en dos partes: estructura física y estructura lógica.
+
+**La estructura física** es la forma en que está dividido el medio de almacenamiento, ya sea disco, cinta, etc.: corresponde a los lugares donde se guardará la información y que están preparado para ello; se crea cuando se construye en la fábrica.
+
+**La estructura lógica** es la forma en que está guardada la información en el soporte correspondiente.
+
+<img src="Pictures/10000000000000C70000017936B25C0B.png" style="width:5.265cm;height:8.938cm" />
+
+**Área Reservada:** También llamada sector de arranque o sector 0.
+
+**FAT (Tabla de localización de ficheros):** es el lugar donde se indica la posición que ocupa cada uno de los espacios mínimos que se utilizan para guardar la información.
+
+**Directorio Raíz:** se almacenan aquí todos los nombres y otros datos de los archivos y carpetas que hay en el directorio raíz.
+
+**Área de ficheros:** el resto del elemento se utiliza como espacio para almacenar los archivos de usuario. Suele ser del orden del 98% del espacio total de almacenamiento, lo cual implica que las otras tres zonas ocupan muy poco espacio.
+
+### ESTRUCTURA LÓGICA DE UN DISPOSITIVO DE ALMACENAMIENTO
+
+### Unidades de disco flexible o disquete
+
+El disco flexible, floppy o disquete es el soporte magnético que almacena permanentemente la información, de forma que el usuario pueda recuperarla en cualquier momento y trabajar con ella.
+
+<img src="Pictures/1000000000000128000000ACA81C2D58.png" style="width:5.715cm;height:3.665cm" />Las unidades de discos flexibles o disqueteras son aquellas que leen/escriben la información contenida en los disquetes, los cuales son independientes de la unidad.
+
+Los primeros disquetes hicieron su aparición en 1970, y pronto se convirtieron en el medio más utilizado para intercambiar información (dato e instrucciones) entre ordenadores. La complejidad de los programas y el tamaño de algunos archivos de bases de datos o imágenes, hizo que los disquetes fuesen insuficientes para esta tarea y, a mediados de la década de 1990, fueron progresivamente sustituidos por CD-ROM y otros dispositivos de almacenamiento.
+
+El tamaño de los disquetes puede ser: de 8’’ de diámetro, con una capacidad de almacenamiento que varía entre 100 y 500 KBytes; de 5 ¼’’ pulgadas de diámetro, con capacidad entre 100 KBytes y 1,2 MBytes, y de 3 ½’’ pulgadas de diámetro, con capacidad entre 400 KBytes y 2,8 MBytes, aunque los más populares son de 1,44 MBytes. Los dos primeros son realmente discos flexibles, pero el tercero tiene la carcasa rígida.
+
+Funcionamiento físico
+
+Cuando se introduce un disquete de 3 ½’’en la unidad, este presiona contra un sistema de palancas. Su lámina metálica de protección se desplaza automáticamente para exponer el disco circular magnético que tiene en su interior. Otro movimiento de palancas y engranajes mueve dos cabezas de lectura/escritura hasta que casi tocan el disco por ambos lados. Las cabezas son electroimanes muy pequeños que utilizan impulsos magnéticos cambiar la orientación de las partículas magnéticas incorporadas en el revestimiento del disco.
+
+El disco se pone a girar gracias a un motor eléctrico, por medio de un tope que se inserta en la muesca del centro del disco. Los circuitos de la unidad de disco reciben señales de la controladora incluyendo instrucciones e información para escribir en el disco. Estos circuitos traducen las instrucciones en señales que controlan el movimiento del disco y de las cabezas de lectura/escritura. Si esas señales incluyen instrucciones para escribir en el disco, se comprueba que no pasa ninguna luz a través de la ventana de protección contra escritura. Si la ventana está abierta y el rayo de un diodo emisor de luz puede ser detectado por un fotodiodo, la unidad sabe que el disco está protegido contra escritura y rehúsa registrar nueva información. Las cabezas se desplazan de delante hacia atrás gracias a un eje helicoidal arrastrado por un motor paso a paso. Este motor gira un cierto ángulo cada vez que recibe un impulso eléctrico. Cada impulso provoca un desplazamiento de las cabezas igual a la distancia de separación entre dos pistas. Cuando las cabezas están en la posición correcta, los impulsos eléctricos crean un campo magnético en una de las cabezas para escribir la información. Cuando las cabezas leen los datos del disco, reaccionan ante los campos magnéticos generados por las partículas magnéticas del disco.
+
+Estructura física de un disquete
+
+Un disquete de 3 ½’’ es un disco de un material llamado mylar (materia plástica) recubierto de una capa magnética. Contiene en su centro un núcleo metálico con un orificio que permite su giro.
+
+El disco está situado en una cubierta de plástico rígido que le protege de los golpes, del polvo y de agresiones diversas. Esta cubierta posee una abertura en su entorno, que deja ver el núcleo. Otra abertura permite a la cabeza de lectura acceder a la superficie magnética. Esta está cerrada por una lámina metálica que posee también una abertura desfasada. Cuando se inserta el disquete en la disquetera, se desplaza la lámina de cierre en sentido lateral, para que su abertura coincida con la de la cubierta de plástico. Un muelle devuelve la lámina a su posición cuando se expulsa el disquete.
+
+<img src="Pictures/1000000000000149000000C866C4AC64.png" style="width:5.715cm;height:3.346cm" />
+
+<img src="Pictures/100000000000011000000095B89DAAE3.png" style="width:6.047cm;height:3.334cm" />
+
+El disquete contiene igualmente uno o dos agujeros de forma cuadrada en el lado opuesto a la lámina. El de la derecha (visto desde el lado de la etiqueta) siempre existe y puede cerrarse impulsando un taquito de plástico. Cuando se cierra el agujero, puede leerse y escribirse en el disquete, pero cuando el agujero está libre es imposible escribir. Un disquete con un agujero está protegido contra escritura. El agujero del lado izquierdo sirve para indicar que se trata de un disquete de alta densidad, de 1,44 Mbytes. Los disquetes de 720 Kbytes de doble densidad no poseen este agujero.
+
+Los datos se almacenan en el disco en círculos concéntricos llamados pistas, y cada una de esas pistas se divide en sectores de 512 bytes. El número total de sectores de un disco es:
+
+Nº total de sectores = número de caras × número de pistas por cara × número de sectores por pista.
+
+Los sectores que se encuentran en las pistas más cercanas al centro del disco son físicamente más pequeños que los sectores del exterior, sin embargo almacenan la misma cantidad de información, 512 bytes.
+
+Dependiendo del tipo de disquete, tendrá un número u otro de pistas y sectores.
 
 <table>
 <tbody>
 <tr>
-<td>0</td>
-<td></td>
-<td></td>
-<td></td>
-<td>4</td>
-<td>5</td>
-<td>6</td>
-<td>7</td>
-<td> 8</td>
-<td></td>
-<td>10</td>
-<td> 11</td>
-<td></td>
-<td></td>
-<td>14</td>
-<td> 15</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td>23</td>
+<td rowspan="2">Parámetro</td>
+<td colspan="5">Tamaño del disquete</td>
 </tr>
 <tr>
-<td colspan="5">SUM</td>
-<td>0</td>
-<td colspan="2">1 0</td>
-<td colspan="3">0 1 1</td>
-<td colspan="4">0 1 0 0</td>
-<td colspan="9">D</td>
+<td>720K (3 ½’’)</td>
+<td>1,44MB (3 ½’’)</td>
+<td>2,88MB (3 ½’’)</td>
+<td>360K (5 ¼’’)</td>
+<td>1,2MB (5 ¼’’)</td>
 </tr>
 <tr>
-<td colspan="5"></td>
-<td></td>
-<td colspan="2"></td>
-<td colspan="3">X = 3</td>
-<td colspan="4">R = 4</td>
-<td colspan="9"></td>
+<td>Caras</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>2</td>
 </tr>
 <tr>
-<td colspan="5"></td>
-<td></td>
-<td colspan="2"></td>
-<td colspan="16">Direccionamiento relativo por referencia anterior a R0</td>
+<td>Pistas/Caras</td>
+<td>80</td>
+<td>80</td>
+<td>80</td>
+<td>40</td>
+<td>80</td>
 </tr>
 <tr>
-<td colspan="5"></td>
-<td></td>
-<td colspan="2"></td>
-<td colspan="16">Direccionamiento directo</td>
-</tr>
-</tbody>
-</table>
-
-#### Segundo ejemplo de instrucción y direccionamiento:
-
-SuperAbacus tendrá una palabra de 32 bits con el siguiente formato:
-
-<table>
-<tbody>
-<tr>
-<td>0</td>
-<td></td>
-<td></td>
-<td></td>
-<td>4</td>
-<td>5</td>
-<td>6</td>
-<td></td>
-<td></td>
+<td>Sectores/Pistas</td>
 <td>9</td>
-<td> 10</td>
-<td></td>
-<td></td>
-<td>13</td>
-<td> 14</td>
-<td></td>
-<td></td>
-<td>17</td>
-<td> 18</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td>31</td>
+<td>18</td>
+<td>36</td>
+<td>9</td>
+<td>15</td>
 </tr>
 <tr>
-<td colspan="5">CO</td>
-<td>I</td>
-<td colspan="4">X</td>
-<td colspan="4">R</td>
-<td colspan="4">B</td>
-<td colspan="14">desplazamiento</td>
+<td>Bytes/Sector</td>
+<td>512</td>
+<td>512</td>
+<td>512</td>
+<td>512</td>
+<td>512</td>
+</tr>
+<tr>
+<td>TPI (pistas por pulgadas</td>
+<td>135</td>
+<td>135</td>
+<td>135</td>
+<td>48</td>
+<td>96</td>
+</tr>
+<tr>
+<td>Total sectores</td>
+<td>1.440</td>
+<td>2.880</td>
+<td>5.760</td>
+<td>720</td>
+<td>2.400</td>
+</tr>
+<tr>
+<td>Densidad</td>
+<td>Doble</td>
+<td>Alta</td>
+<td>Extra</td>
+<td>Doble</td>
+<td>Alta</td>
 </tr>
 </tbody>
 </table>
 
-|  |  |  |
-|----|----|----|
-| CO | 5 bits | Código de operación, capaz para 32 instrucciones |
-| I | 1 bit | I = 0 : direccionamiento directo, I = 1 : direccionamiento indirecto (un nivel) |
-| X | 4 bits | Direccionamiento indexado. Si X = 0000: no indexado, sino, X indica la dirección de uno de lo registros R1 a R15, que tendrá que usarse como registro índice. |
-| R | 4 bits | Contiene el registro con el primer operando. |
-| B | 4 bits | Direcciona el registro de base a considerar, si B=0000 se tiene automáticamente direccionamiento relativo por referencia al contador de programa, puesto que se toma a este como base. |
-| Desp | 14 bits | Capaz de direccionar una zona de 2<sup>14 </sup>= 16K palabras a partir de un registro base. |
+Capacidad = nº Caras × nº Pistas × nº Sectores/pista × 512 bytes.
 
-## SECUENCIAMIENTO DE LA INSTRUCCIONES
+Por ejemplo, un disquete de 3 ½’’ de alta densidad tiene 2 caras, 80 pistas y 18 sectores por pista, su capacidad será de 2×80×18×512 = 1.474.560 bytes = 1,406 Mbytes, aunque se indica de 1,44 Mbytes ya que se calcula como 1M = 1.024.000 bytes de forma incorrecta.
 
-### Concepto de Secuenciador Central
+Las características más importantes de las disqueteras son: sensibilidad, alineación radial, histéresis, centrado de la sujeción, tangencia y velocidad de rotación, aunque los fabricantes no suelen incluir estos valores con las disqueteras (se supone que todas cumplen los criterios mínimos exigibles).
 
-El secuenciador central de un ordenador es el órgano que genera las microórdenes, que son distribuidas a lo largo de la ruta de datos para activarla y gobernar sus diversos elementos constituyentes.
+Unidades de disco rígido IDE
 
-### Entradas y Salidas del Secuenciador.
+Los discos rígidos constituyen la unidad de almacenamiento principal de la computadora. En ellos se guardan una gran cantidad de datos y programas. Constituyen la memoria de almacenamiento masivo. Estos datos y programas no los puede procesar directamente el microprocesador, sino que en un paso previo deben ser transferidos a la memoria principal donde si se los puede manejar.
 
-Las Informaciones de salida del secuenciador son las microórdenes que deben distribuirse por la ruta de datos según cronogramas precisos a causa de los tiempos de respuesta de los órganos gobernados. Las informaciones de entrada al secuenciador son suministradas, de una parte, por la instrucción (código de operación, condiciones de direccionamiento y las direcciones de registros), de otra parte, por el estado de la máquina, que agrupa un cierto número de informaciones (indicadores de error, demandas de interrupción, indicadores del estado de la memoria y de las unidades funcionales, etc.).
+<img src="Pictures/10000000000001C200000160540B3EA8.png" style="width:8.266cm;height:6.465cm" />
 
-<img src="./ObjectReplacements/Object 26" style="width:9.063cm;height:5.775cm" />
+Las unidades de disco rígido contienen uno o más platos discos (platos) apilados sobre un eje central y aislados completamente del exterior.
 
-Fig. Entorno de un secuenciador
+Los elementos móviles de los discos rígidos están mucho mejor construidos que los de los disquetes, el sistema gira a más velocidad y los discos son de mayor densidad. Esto hace que la capacidad de los discos rígidos sea mucho mayor que la de los discos flexibles, pudiendo llegar a los 256 Gbytes y más en la actualidad. En la parte inferior del disco rígido hay una tarjeta de circuito impreso que recibe los comandos de la controladora de la placa base o tarjeta controladora, que es controlada por el sistema operativo. Esta tarjeta traduce esos comandos en variaciones de tensión que fuerzan el movimiento de las cabezas de lectura/ escritura a través de la superficie de los discos. La tarjeta también se asegura de que el eje de los discos tenga una velocidad constante e informa a la unidad de cuando leer y cuando escribir sobre el disco. En un disco IDE, el controlador de disco es parte integral de esta tarjeta.
 
-### Calculadores Síncronos a Asíncronos
+Un eje conectado a un motor eléctrico, efectúa miles de giros por minuto (normalmente 4.500, aunque en discos duros más modernos llega a 7.200) en ocho capas como máximo, de platos magnéticos (lo normal 2 ó 3 platos). La cantidad de platos y la composición del revestimiento magnético determinan la capacidad de la unidad.
 
-El secuenciamiento de las microórdenes en el tiempo puede llevarse a cabo de dos maneras distintas:
+Una cabeza coloca y empuja el grupo de brazos o cabezales de lectura/escritura sobre las superficies de los platos con gran precisión. Alinea las cabezas y las pistas que están formadas por círculos concéntricos en la superficie de los platos.
 
-*Ordenador Síncrono:* el secuenciador conoce los tiempos de respuesta de los diferentes órganos gobernados. Entonces hace intervenir los retardos apropiados entre las diferentes órdenes sucesivas de manera que tengan tiempo de ejecutarse las operaciones.
+Los cabezales de lectura/escritura incluidos a los extremos de los brazos en movimiento, se mueven al unísono a través de la superficie de los platos giratorios del disco rígido. Las cabezas escriben la información procedente del controlador de disco en los platos alineando las partículas magnéticas en la superficie de éstos; también leen la información detectando las polaridades de las partículas que ya fueron alineadas.
 
-*Ordenador Asíncrono:* el secuenciador recibe de los diferentes órganos del calculador señales indicando que han terminado las operaciones indicadas y que se liberan, aquel puede eventualmente comprobar su estado. No lanzará una nueva operación más que después de haber quedado advertido de que las operaciones precedentes han sido ejecutadas completamente y de haberse asegurado que el órgano que debe realizarla está libre.
+Cuando el usuario o el software pide al sistema operativo que lea o escriba un determinado sector del disco, el sistema operativo ordena a la controladora del disco rígido que mueva la cabeza de lectura/escritura sobre la pista que contiene ese sector. Los cabezales de lectura/escritura no tienen más que esperar que ese sector pase exactamente por debajo de ellos, para leer o escribir sobre él.
 
-### 
+Estructura física
 
-### Secuenciadores Cableados y Secuenciadores Microprogramados
+<img src="Pictures/10000000000001F400000161C45405D0.png" style="width:8.015cm;height:5.715cm" />
 
-Secuenciadores Cableados: realizados en forma de circuito secuencial electrónico.
+Un disco rígido está formado por una serie de discos o platos apilados unos sobre otro dentro de una carcasa impermeable al aire y al polvo. El diámetro de los platos oscila entre 2’’ (5 cm) y 5 ¼’’ (13,3 cm). Los más comunes son los platos de 3 ½’’ (8,9 cm)
 
-Secuenciadores Microprogramados: corresponden a la introducción en la UC de una memoria con un pequeño programa llamado microprograma para cada instrucción.
+Cada plato tiene dos caras. A cada cara le corresponde una cabeza de lectura/escritura, soportada por un brazo. En la práctica cada brazo situado entre dos platos contiene dos cabezas de lectura/escritura y a veces 3 en una cara.
 
-### 
+La superficie de los platos se divide en pistas concéntricas numeradas desde la parte exterior empezando por la pista 0. Cuantas más pistas tenga un disco de una dimensión dada, más elevada será su densidad, y mayor será su capacidad.
 
-### Secuenciadores de Lógica Cableada
+Todas las cabezas de lectura/escritura se desplazan a la vez, por lo que es más rápido escribir en la misma pista de varios platos que llenar los platos unos después de otros. El conjunto de pistas del mismo número en los diferentes platos se denomina cilindro. Así por ejemplo, el cilindro 0 será el conjunto formado por la pista 0 de la cara 0, la pista 0 de la cara 1, la pista 0 de la cara 2, etc.
 
-Principio del Secuenciamiento:
+Por consiguiente, un disco rígido posee tantos cilindros como pistas hay en la cara de un plato.
 
-El Objetivo es generar microórdenes distanciadas en el tiempo por retardos apropiados, Una cadena de retardos permite, en el plano teórico, realizar esta función. Por ejemplo, el inicio de la instrucción de almacenamiento en Abacus, suponiendo que la dirección de la instrucción se encuentre sobre el bus S será efectuado por la cadena de retardos, muy esquemáticamente indicada a continuación:
+Las pistas están divididas a su vez en sectores. El número de sectores por pista es variable desde 17 a más de 50. Estos sectores son de tamaño variable: los situados más cerca del centro son más pequeños que los del exterior, aunque almacenan sin embargo, la misma cantidad de datos: 512 bytes. La densidad de bits es mayor en los sectores internos que en los externos.
 
-<img src="Pictures/1000000000000286000000E11934164E.jpg" style="width:14.861cm;height:5.221cm" />
+Un aumento de la capacidad de los discos poniendo más sectores en las pistas exteriores que en las interiores complicaría la organización de la información: Es más fácil controlar pistas que tienen todas un mismo número de sectores, que pistas en las que el número de sectores varía dependiendo de la posición de la pista.
 
-Fig. Búsqueda en memoria (solución síncrona)
+La cabeza de lectura/escritura flota sobre la superficie del disco, no está en contacto físico. Es el desplazamiento de las capas de aire arrastradas por el movimiento de rotación de la superficie del disco el que provoca, por un fenómeno aerodinámico, el despegue de las cabezas y su colocación a una distancia de unas 0,5 micras por encima de la superficie.
 
-### El Distribuidor de Fases
+<img src="Pictures/10000000000001DC0000015F29EFA63D.png" style="width:7.13cm;height:6.459cm" />
 
-En la mayoría de los casos se sincronizan las distintas microórdenes con señales temporales regularmente espaciadas, provenientes de un mismo reloj. A cada impulso de reloj debe ser generado un cierto número de microórdenes.
+Durante el funcionamiento debe evitarse que se introduzca ninguna partícula de ninguna especie en el espacio situado entre el disco y la cabeza de lectura. Si una de esas partículas llegara a introducirse sufrirían daños importantes tanto la cabeza como la superficie del disco. Por este motivo los discos rígidos están protegidos con carcasas herméticas.
 
-Al ser idénticas todas las señales de reloj, es preciso dar al secuenciador los medios para situarse por referencia al tiempo, por ejemplo, para saber en que fase del ciclo de la instrucción se encuentra; en ésta la función del distribuidor de fases, que partiendo de los impulsos periódicos del reloj, produce señales de impulso o de nivel acordes a las diferentes fases del ciclo de memoria o de la instrucción.
+Otro problema importante con la cabeza de lectura/escritura es que cuando el disco no está en funcionamiento debe reposar sobre la superficie magnética. Se produce un despegue de la cabeza cuando se conecta la corriente y un aterrizaje cuando se interrumpe dicha corriente. Durante estas dos fases la cabeza roza la superficie del disco. Para evitar dañar las zonas que contienen datos, se reserva una pista especial para esta acción pegada al eje del disco, la que tiene el número más elevado, conocida como pista de aterrizaje (landing zone).
 
-<img src="Pictures/10000000000002E8000001599CB05442.jpg" style="width:14.58cm;height:6.809cm" />
+Las dos operaciones que realiza la cabeza de lectura/escritura son:
 
-Fig. Distribuidor de fases
+- **Escritura de datos:** los datos se escriben en la superficie del disco por medio de una corriente enviada al electroimán que porta la cabeza de lectura/escritura. Esta corriente produce un campo magnético que modifica la superficie del disco. Cuando el disco está virgen, no presenta particularidades magnéticas. Un impulso de corriente enviado al bobinado de la cabeza produce un campo magnético en el entrehierro del electroimán. El campo magnético imanta la superficie del disco formándose entonces un dipolo magnético, es decir, una zona que contiene, al igual que los imanes, un polo norte y un polo sur. Juntando dos dipolos se forma el elemento de la información que una computadora puede manejar, el bit, que puede tomar el valor 1 o el valor 0. Si el bit representa el valor binario 1, los dos dipolos magnéticos están alineados con direcciones opuestas. Si representa el valor 0, ambos dipolos magnéticos quedan alineados en la misma dirección.
 
-En un instante determinado, solamente uno de los biestables B<sub>0</sub>, B<sub>1</sub>, B<sub>2</sub>, B<sub>3</sub> está posicionado a 1. El próximo impulso de reloj devolverá este biestable a cero y posicionará el siguiente biestable a 1. Los niveles lógicos Θ<sub>0</sub>, Θ<sub>1</sub>, Θ<sub>2</sub>, Θ<sub>3</sub>, serán ciertos uno a continuación del otro, pero solo uno en un momento dado. Los impulsos θ<sub>0</sub>, θ<sub>1</sub>, θ<sub>2</sub>, θ<sub>3</sub>, sincronizados con las señales de reloj, se producirán cada cuatro batidos. Suponiendo que el tiempo de basculamiento de los biestables sea igual a la anchura del impulso de reloj, se obtiene el cronograma de base siguiente:
+- **Lectura de los datos:** la lectura de los datos se basa en el fenómeno inverso: una variación del campo magnético en las proximidades de un electroimán provoca la aparición de una corriente eléctrica en el bobinado de este. Los datos se escriben en el disco por impulsos de corriente. Su lectura provoca impulsos de la misma naturaleza. El desplazamiento de los dipolos que se encuentran en la superficie del disco con respecto a la cabeza de lectura produce una inversión del campo magnético. Esta inversión provoca la aparición de una corriente inducida en el bobinado. Esta corriente tendrá un sentido u otro según se haya leído un bit 0 o un bit 1. Conociendo el sentido de la corriente, el controlador del disco detecta si la cabeza de lectura pasa sobre un 0 o un 1.
 
-<img src="./ObjectReplacements/Object 27" style="width:11.231cm;height:8.948cm" />
+Características técnicas de los discos rígidos
 
-Fig. Cronograma de un distribuidor de fases
+- **Velocidad de rotación:** está entre 5.400 rpm (revoluciones por minuto) y 7.200 rpm. Cuanto mayor sea esta velocidad, mayor será la velocidad de transferencia pero el disco y los circuitos se calentaran más.
+- **Número de sectores por pista:** Cuanto mayor sea el número de sectores mayor será la capacidad del disco y más datos podrá leer en una vuelta.
+- **Tiempo de búsqueda:** tiempo medio necesario para que las cabezas se posicionen en una pista determinada requerida. Se suele dar un tiempo medio. Cuanto menor sea el diámetro del disco, menor será el tiempo de búsqueda.
+- **Tiempo de conmutación de cabezas:** es el tiempo medio que tarda el disco en conmutar para leer/escribir información con dos cabezas distintas.
+- **Tiempo de conmutación de cilindros:** tiempo medio para mover las cabezas a la próxima pista para leer o escribir datos.
+- **Latencia de rotación:** después de que la cabeza está posicionada sobre la pista, hay que esperar a que llegue el sector para leer o escribir en él. Este tiempo se denomina latencia de rotación y se mide en milisegundos. A mayor velocidad de giro, mayor latencia de rotación. Es típico una latencia de 4 ms a 7.200 rpm y de 6 ms a 5.400 rpm.
+- **Tiempo de acceso a datos:** es la combinación del tiempo de búsqueda, tiempo de conmutación de cabezas y latencia de rotación medido en ms.
+- **Caché:** los discos rígidos modernos disponen de una memoria intermedia donde precargan datos del disco para enviarlos a memoria cuando los pida el sistema, sin tener que leerlos del disco físico. La cantidad de caché es variable de unos discos a otros.
 
-En el caso de Abacus, en el que el ciclo de memoria equivale a dos batidas de reloj, resultará cómodo emplear un distribuidor de dos fases (respectivamente lectura y escritura).
+Grabación magnética de la información
 
-### 
+Para grabar la información en el disco hay que codificarla para escribirla y decodificarla para leerla. Lo que persigue una buena técnica de codificación es manejar una misma información con un mínimo número de pulsos, y una serie de no pulsos no muy grande.
 
-### Decodificación de la Instrucción
+Fundamentalmente hay tres técnicas de grabación magnéticas de la información
 
-La instrucción consta de diferentes campos de información de interés para el secuenciador, como son el código de operación, las condiciones de direccionamiento, la dirección de registros o de unidades periféricas, etc. El decodificador de instrucción se encarga de realizar esta decodificación.
+- **Codificación FM** (Frecuency Modulation – modulación en frecuencia). Cada bit de información se codifica con dos pulsos: el 1 se codifica con dos cambios de flujo seguidos (dos pulsos), y el 0 con un pulso seguido de un no pulso. La codificación FM es un sistema de codificación simple utilizado por los primeros discos flexibles, pero que hoy en día no se usa.
+- **Codificación MFM** (Modified Frecuency Modulation – modulación en frecuencia modificada). Esta codificación es empleada por los discos flexibles y por los primeros discos rígidos. MFM codifica los 1 con un no pulso seguido de un pulso, y los 0 los diferencia entre los que están precedidos por un cero y los que están precedidos por un 1. Los primeros los codifica PN (P = pulso N = no pulso), y los segundos con NN. Los discos rígidos que utilizan la codificación MFM tienen 17 sectores por pista.
+- **Codificación RLL** (Run Length Limited – ejecución de longitud limitada). La codificación RLL fue desarrollada para conseguir mayores densidades de almacenamiento de información. Pudiéndose almacenar hasta un 50% más de información que con el procedimiento MFM en un mismo disco, necesitando solo tres pulsos, donde FM necesitaba 9 y MFM necesitaba 4. Esta complicada codificación es lo suficientemente segura como para formatear los discos duros con 26 sectores por pistas. El sistema RLL es empleado comúnmente por muchos de los discos rígidos. Una versión de la codificación RLL, es la llamada ARLL o ERLL (RLL avanzada), la cual consigue más de 26 sectores por pista (33, 34 o 51) y es la que fundamentalmente se utiliza actualmente, en la que los discos rígidos suelen tener 63 sectores/pista.
 
-Puede utilizarse una matriz de diodos o de transistores. Por ejemplo, para Abacus, dotado de las operaciones indicadas en la siguiente tabla y capaz de direccionamiento indirecto, se necesitaría el decodificador de la siguiente figura:
+Lectores de CD-ROM/DVD IDE ATAPI
 
-Nombre Nemotécnico Código Operación Efecto de la instrucción
+El disco CD-ROM
 
-PAC 000 Puesta a cero del acumulador
+Las unidades CD-ROM (Compact Disk ROM) son capaces de leer la información contenida en unos discos compactos o compact disc, idénticos en aspecto físico a los CD de música. Estas unidades permiten leer información del disco, pero no pueden modificarla. Están formadas por un láser y un mecanismo de control asociado.
 
-SUM 001 Suma con el acumulador
+<img src="Pictures/1000000000000140000001409A99DF20.png" style="width:3.493cm;height:3.413cm" />
 
-SUS 010 Sustracción del acumulador
+El disco CD-ROM, al igual que el compact disc, es un plato de plástico, con una fina capa de aluminio y otra capa de plástico par protección. La forma de almacenas la información difiere bastante a la utilizada en los discos rígidos. Hay una pista en espiral de unos 6 Km de longitud que se divide en sectores de 2.352 bytes. Cada disco contiene 270.000 sectores, lo que da una capacidad total de 605,62 Mbytes. El sector es la mínima unidad direccionable.
 
-AND 011 Intersección con el acumulador
+Cada sector se compone de 98 cuadros. Cada cuadro contiene 24 bytes de datos, 27 bits de sincronismo, un bit de control y 8 bytes de detección y corrección de errores. Los bytes de datos se codifican mediante el código Reed-Solomon (que extiende los 8 bits a 14), obteniendo un flujo de datos listo para su grabación en el CD-ROM. Sólo se graban las transiciones de 0 a 1 del flujo de datos. Al final, cada byte se codifica en 17 bites (y no en 14) ya que hay que añadir 3 bits de guarda (entre byte y byte).
 
-OR 100 Reunión con el acumulador
+Al contrario que en un disquete o disco rígido, un disco compacto no está dividido en cilindros. Los datos están todos situados en la misma pista enrollada en espiral y los sectores se encuentran unos detrás de otros. Todos ellos poseen el mismo tamaño, lo que implica que la velocidad de rotación debe variar de forma continua cuando la cabeza de lectura se desplaza desde la periferia hacia el centro. Su velocidad de giro varía entre 400 revoluciones por minuto en el exterior del disco y las 1.000 revoluciones por minuto en el interior del mismo.
 
-ALM 101 Almacenamiento del acumulador
+La característica fundamental del CD-ROM es que permite almacenar en un disco gran cantidad de información, hasta 654 Mbytes, lo cual necesitaría 455 discos flexibles de 1,44 Mbytes. Un disco normal de música puede contener hasta 74 minutos de grabación, almacenados en 680 Mbytes de información general.
 
-SAI 110 Salto incondicional
+Las características de grabación del disco CD vienen establecidas por el estándar CD-DA consignado en el libro rojo publicado por la ISO (Internacional Standard Organization):
 
-SAP 111 Salto si (AC)\>=0
+- Diámetro exterior: 120 mm.
+- Espesor: 1,2 mm.
+- Masa de 14 a 33 g.
+- Sentido de rotación: horario (cuando el movimiento del disco se observa desde arriba, por la cara serigrafiada).
+- Velocidad de rotación: de 1,2 m/s a 1,4 m/s, aproximadamente. La velocidad lineal de lectura es constante y permite obtener un flujo de información de audio digital de 176.000 bytes/s. La grabación se lee empezando por la pista situada más hacia el centro del disco. La primera área ubicada en el centro del disco contiene el índice, también llamado TOC (Table Of Contens) o directorio. Para poder reproducir el disco, el lector obligatoriamente debe haber leído con anterioridad este directorio.
+- El tiempo máximo de reproducción es de 74 minutos (también hay discos de 80 minutos), es decir, equivalente a una capacidad de 640 Mbytes, que se corresponde con la información de audio digital. A éste, hay que añadir 360 Kbytes, utilizados para información de servicio y de sistema.
+- La profundidad de impresión de grabado es de 0,13 µm. El diámetro del punto de luz (spot) láser es de aproximadamente 1 µm.
 
-<img src="Pictures/10000000000001E7000001CD62786227.jpg" style="width:10.453cm;height:9.915cm" />
+El estándar CD-ROM ha sido desarrollado a partir del estándar CD-DA (compact disc – digital audio). La estructura del CD-ROM se describe en el libro amarillo, publicado por la ISO en 1985. Está pensado para el almacenamiento y archivo de datos, soporta una arquitectura de tipo informático que permite un rápido acceso a un dato concreto. Los registros también están organizados en sectores. Cada sector está formado por 2.352 bytes, organizados según uno de los siguientes modos:
 
-Fig. Decodificador del código de operación de Abacus
+- **Modo 1:** esta organización de datos está adaptada a la grabación de programas informáticos o de texto. Si se cuela un error durante la grabación, el byte en fallo no puede ser recuperado por interpolación. La garantía en la veracidad de los datos útiles debe ser máxima. Por esta razón, se disminuye la velocidad de transferencia de los datos útiles. La capacidad del disco en este modo es de 650 Mbytes.
+- **Modo 2:** los sectores grabados están peor protegidos contra cierto tipo de errores: así, la velocidad de transferencia de datos útiles es mayor, pero puede incluir algún error. Éste modo se aplica a la grabación de datos de audio y video. Capacidad del disco 742 Mbytes.
 
-Se observa en este esquema que la decodificación puede ser considerada prácticamente instantánea y las señales salidas de la matriz permanecen posicionadas todo el tiempo que la instrucción correspondiente se encuentra en el registro de instrucción.
+En 1989, el estándar CD-ROM se amplió para incluir los multimedias, dando origen al CD-ROM XA. Éste es un CD-ROM que funciona en modo 2.
 
-### 
+El estándar CD-ROM XA permite la grabación del disco en varias secuencias, independientes unas de otras. De esta forma, es posible añadir nuevos ficheros mientras no se alcance el limite máximo de capacidad. Se dice que este disco es multisesión. Existen tantas TOC como sesiones haya en el disco.
 
-### 
+Aunque los discos ópticos más extendidos son los discos compactos CD de música y los CD-ROM de datos, en realidad existe toda una amplia gama de tipos de discos y normativas que intentan cubrir un amplio campo de aplicaciones. Las especificaciones de cada tipo de disco CD están recogidas en una serie de libros publicados por la ISO.
 
-### Biestables de Estado
+El lector de CD-ROM
 
-Se define al estado del calculador por el contenido de un cierto número de biestables, llamados biestables de estado. Los hay de dos clases:
+Las unidades de CD-ROM tienen un motor que varía constantemente la velocidad con la que gira un disco CD-ROM. También tienen una cabeza de lectura por un diodo que emite un rayo láser y un detector de luminosidad que sirve de receptor. Esta cabeza va corriendo la pista helicoidal del disco detectando las reflexiones de luz que se producen al pasar por una hendidura de la superficie del disco, o bien la falta de reflexión cuando pasa por una zona sin hendidura.
 
-Los primeros memorizan lo que hemos denominado el estado de la máquina. Son posicionados por las instrucciones y los resultados de operaciones, o también por acontecimientos exteriores, petición de ciclo de memoria, interrupción, etc.
+En presencia de una hendidura, el ángulo de incidencia del rayo varía, este es desviado y alcanza el receptor. El circuito electrónico del lector interpreta esta variación de radiación como un 1. Cuando no hay hendidura, el rayo no se desvía y no llega al receptor, interpretándose como un 0.
 
-Sus salidas figuran entre las informaciones de entrada al secuenciador. Los segundos constituyen parte integrante del secuenciador.
+Cada marca, cada hendidura, consiste en una pequeña perforación de tan sólo un micra de ancho, consiguiéndose densidades lineales de 1.500 bits por pulgada, o lo que es lo mismo, aproximadamente 590 bits por centímetro.
 
-Es éste quien los posiciona y quien utiliza su salida. Esencialmente sirven de marcas temporales. En cierto modo, los biestables del distribuidor de fases podrían incluirse dentro de esta categoría.
+Así, es posible leer los datos de forma continua (lo que es indispensable para los CD de audio). Por el contrario, el acceso a datos que se encuentren en el centro del disco requiere una búsqueda que puede llevar cierto tiempo.
 
-Abacus consta de los cuatro biestables representados en la siguiente figura:
+Los lectores de CD-ROM tienen una velocidad lineal constante (a diferencia de los magnéticos que tienen una velocidad angular constante) de 153,60 Kbits/s. Ésta es la velocidad básica 1x, pero ha ido en aumento: 2x, 4x,…, 12x,…, 40x, etc.
 
-<img src="Pictures/10000000000001DA000000E2B15C0D49.jpg" style="width:11.218cm;height:5.394cm" />
+Al ser velocidad lineal, la velocidad de rotación disminuye conforme nos alejamos del centro del disco. Ésta es una de las razones por la que los CD-ROM es más lento, ya que la variación de velocidad consume un tiempo. Además, es mucho más complicado encontrar un sector a lo largo de una espiral de 6 km que encontrarlo en un medio elegante y limpiamente dividido en pistas y sectores. El tiempo de acceso es de unos 200 a 300 ms.
 
-Fig. Biestables de estado de Abacus
+El inconveniente de los lectores de CD-ROM es su baja velocidad de acceso. Las unidades de CD-ROM más rápidas pueden tener un tiempo de acceso del orden de 100 milisegundos, mientras que las más lentas llegan a los 1.500 milisegundos. Un disco rígido puede tener un tiempo de acceso del orden de 15 milisegundos, y un disco flexible del orden de 150 milisegundos.
 
-<img src="Pictures/10000000000001C8000004EB772791AE.jpg" style="width:9.095cm;height:25.083cm" />
+En cuanto a velocidad de transferencia de información, ésta varía entre los 150 Kbytes por segundo para las unidades de velocidad sencilla (1x), 300 Kbytes para las unidades de doble velocidad (2x), 600 Kbytes para las de cuádruple, y así sucesivamente según la fórmula 150 × N, siendo N el multiplicador de transferencia del CD-ROM, y que distingue a los distintos lectores de CD-ROM en el mercado a nivel comercial.
 
-### Funcionamiento De La Unidad De Control
+Los lectores también tienen una caché o buffer para acelerar el acceso a los datos del disco.
 
-Para especificar la funcionalidad de una CPU es necesario el conocimiento de los siguientes conceptos:
+El lector de CD-ROM contiene en su cara delantera: un botón para ordenar la inserción y extracción del disco. Eventualmente contendrá también una toma para auriculares, una rueda o dos pulsadores para ajustar el volumen, una lámpara de indicación de lectura del disco, la bandeja portadiscos y en los casos actuales el botón de play y de paso a la siguiente canción. Los lectores de CD-ROM permiten leer discos de audio. Para ello será necesario disponer del software adecuado o del botón de play en el panel frontal.
 
-1.  Operaciones (códigos de operación)
-2.  Modos de direccionamiento
-3.  Registros
-4.  Interfaz con el módulo de E/S
-5.  Interfaz con el módulo de memoria
-6.  Estructura del procesamiento de interrupciones.
+<img src="Pictures/10000000000001A9000000B73F7CF9E4.png" style="width:11.245cm;height:4.842cm" />
 
-Estos puntos determinan lo que debe hacer una CPU. Los distintos elementos de la CPU que proporcionan esta funcionalidad están gobernados por la UC (unidad de control). Estudiando su funcionamiento se determina como se llevan a cabo estas funciones.
+El lector de DVD
 
-### 
+El DVD (disco versátil digital, también conocido al principio como vídeo disco digital), es un disco que aumenta la capacidad del disco CD-ROM y admite características añadidas.
 
-### Microoperaciones
+Desde el nacimiento de la televisión, la señal de vídeo ha sido analógica. Este tipo de señales son difíciles de transmitir y almacenar, más aún, la tecnología digítal de los ordenadores tiene ciertas dificultades para tratar las señales analógicas.
 
-La función de un computador es ejecutar programas, la ejecución de un programa consiste en la ejecución secuencial de instrucciones. Cada instrucción se ejecuta durante un ciclo de instrucción compuesto de subciclos más cortos (por ejemplo, subciclo de captación, indirecto, de ejecución, de interrupción). La ejecución de cada subciclo involucra una o más operaciones elementales, es decir, microoperaciones. Las microoperaciones son las operaciones funcionales, o atómicas, de una CPU.
+El DVD es el primer medio diseñado para la distribución de vídeo digital. El vídeo digital puede ser almacenado y distribuido de forma más barata que el analógico y puede ser almacenado sobre soportes de acceso aleatorio (como discos magnéticos u ópticos), permitiendo aplicaciones interactivas.
 
-#### Ciclo de Captación o Fase de Búsqueda de la Instrucción
+El soporte empleado en DVD es óptico, con una densidad de información mayor que el CD normal, permitiendo por ejemplo, la grabación de hasta 9 horas de video de alta calidad con sonido envolvente multicanal, y de 30 horas de audio de calidad similar al CD. Esta alta capacidad para almacenar información ha hecho el DVD muy atractivo para la industria del PC, y cada día están apareciendo nuevas aplicaciones.
 
-Tomando de ejemplo la instrucción de suma, analizamos el comportamiento de la CPU. Suponemos que la dirección de la siguiente instrucción se encuentra en el registro P (contador de programa). Lo siguiente será llevar esta dirección al registro S (de selección de memoria). Una vez que la dirección se encuentra en el registro S, el contenido de la célula de memoria direccionada por S pasa al registro M (de palabra de memoria).
+Las características principales del DVD son:
 
-En resumen sería:
+- **Capacidad de almacenamiento:** de hasta 17 Gbytes de datos. Un DVD-ROM de simple cara y una capa tendrá una capacidad de 4,7 Gbytes, lo cual es siete veces la capacidad de un CD-ROM normal; un DVD de doble capa dispondrá de 8,5 Gbytes. Doble cara con doble capa implica una capacidad de hasta 17 Gbytes. (Una película de 135 minutos se puede almacenar en un DVD de una capa, y por lo tanto serán los más comunes.)
+- **La velocidad de reproducción:** es de aproximadamente 10,7 Mbits/s.
+- **La naturaleza digital:** lo que permite a este medio muchas más facilidades que el procesamiento analógico, como interactividad, soporte para múltiples idiomas simultáneamente, control de contenidos, múltiples ángulos de cámara, pago por visión, etc.
+- **La capacidad de vídeo y audio ofrecida:** basada en vídeo digital MPEG-2<sup>5</sup> (Motion Picture Expert Group – grupo de expertos para imagen en movimiento) y Dolby AC3 o MPEG-2 para audio (sonido envolvente de alta calidad), es muy superior a la de otros sistemas actuales.
+- **Otros sistemas de difusión de vídeo:** como difusión directa por satélite y TV por cable utilizan la misma tecnología digital que el DVD, siendo previsible su convergencia.
+- **Considerable mejora en calidad:** teniendo en cuenta sistemas como el VHS con 320 píxeles por línea horizontal, frente 720 de los sistemas actuales de reproducción.
+- **Capacidad de reproducción de películas en varios formatos:** (4:3), (16:9) y (20:9).
+- **Control de reproducción:** permitiendo la reproducción o no de ciertas escenas según la introducción de ciertos códigos.
 
-\(P\) → S SRP, ENS, ICM, PACM
+La gran capacidad del DVD se consigue haciendo los “pits” (agujeros en el CD) más pequeños, la pista más estrecha y grabando los datos en varias capas, hasta dos capas por cada cara. El agujero en el disco DVD puede tener un tamaño de 0,4 µm y el espaciado entre pistas de 0,47µm.
 
-((S)) → M LEC
+Los láseres requeridos deben tener una longitud de onda más corta (650 a 635 mm (10<sup>9</sup> m) frente a los 780 mm del CD) y mecanismos de enfoque más precisos que el CD. Para leer la segunda capa el haz se enfoca con un poco más de profundidad.
 
-\(P\) → S es la *microoperación* que indica que el contenido del registro P pasa al reg. S.
+El panel frontal de un lector de DVD-ROM es similar al de los lectores de CD-ROM, aunque cambia el CD por un DVD, e incluso hay modelos que no llevan bandeja de inserción del disco, sino que es aspirado como en algunos lectores de CD audio.
 
-((S)) → M es la *microoperación* que indica que el contenido de la memoria direccionado por S pasa al registro M.
+### Otros Dispositivos de almacenamiento
 
-Las órdenes SRP (salida del registro P), ENS (entrada al registro S), ICM (inicio de ciclo de memoria), PACM (puesta a cero del registro M) y LEC (lectura de memoria) son señales de impulsos o de nivel empleadas para gobernar las distintas operaciones en el desarrollo de una instrucción. Se las denomina señales de control, señales de gobierno o microórdenes. Es de destacar que la microoperación P → (P) + 1 es factible de realizar simultáneamente con la microoperación ((S)) → M ya que estas dos no interfieren entre sí y, además, permite un ahorro de tiempo, sin afectar el funcionamiento.
+### Unidad LS-120 o Superdisk
 
-Si la instrucción por ejecutar sería un salto, el incremento de P no afectaría el desarrollo de la instrucción, pero si lo dejamos para el final, y la condición de salto resultara negativa, agregaría una unidad de tiempo más para su ejecución. Ahora bien, considerando el ejemplo de Abacus, con un distribuidor de fases de dos fases, los instantes de ejecución de cada microoperación serían:
+<img src="Pictures/100000000000012C000000E1A06E8DE7.jpg" style="width:6.782cm;height:5.087cm" />El **SuperDisk**, también conocido como el **LS-120** y su posterior variante el **LS-240**, es un dispositivo de almacenamiento desarrollado por la división de almacenamiento de [3M](http://es.wikipedia.org/wiki/3M), posteriormente conocida como [Imation](http://es.wikipedia.org/wiki/Imation), y lanzado en [1997](http://es.wikipedia.org/wiki/1997) como una alternativa de alta capacidad y velocidad a los [disquetes](http://es.wikipedia.org/wiki/Disquete) de 3,5 y 1.44 [MB](http://es.wikipedia.org/wiki/Megabyte). Las unidades SuperDisk son capaces de leer y escribir disquetes de 1,44 y 720 en formato [MFM](http://es.wikipedia.org/w/index.php?title=MFM&action=edit&redlink=1) (Modified Frequency Modulation, lo que excluye, por ejemplo, los discos del [Apple Macintosh](http://es.wikipedia.org/wiki/Apple_Macintosh) de doble densidad ) además de sus formatos nativos. Las unidades LS-240 son capaces además de formatear los discos de alta densidad (HD) a mayores capacidades.
 
-t<sub>0</sub>: (P) → S
+La verdadera capacidad de las unidades de "120 MB" es de 120,375 [MB](http://es.wikipedia.org/wiki/Mebibyte) (6848 cilindros x 36 bloques/cilindro x 512 bytes[<sup>\[</sup>](/C:/Documents%20and%20Settings/Frankus/Escritorio/Arquitectura2/#cite_note-0)[<sup>1</sup>](/C:/Documents%20and%20Settings/Frankus/Escritorio/Arquitectura2/#cite_note-0)[<sup>\]</sup>](/C:/Documents%20and%20Settings/Frankus/Escritorio/Arquitectura2/#cite_note-0) ). Las unidades de "240 MB" tiene una capacidad de 240,75 MB.
 
-t<sub>1</sub>: ((S)) → M
+El diseño del sistema SuperDisk proviene de un proyecto de [Iomega](http://es.wikipedia.org/wiki/Iomega) de principios de los 90. Es uno de los últimos ejemplo de la tecnología [Floptical](http://es.wikipedia.org/wiki/Floptical) en la que, mediante [lasers](http://es.wikipedia.org/wiki/Laser) se guiaba a una cabeza lectograbadora magnética mucho más pequeña que la de los [disquetes](http://es.wikipedia.org/wiki/Disquete) tradicionales. Iomega abandonó el proyecto en las fecha en que lanzó el [Iomega Zip](http://es.wikipedia.org/wiki/Iomega_Zip) en [1994](http://es.wikipedia.org/wiki/1994). La idea acabó eventualmente en 3M, donde se refina el concepto y se licencia el concepto a varios de los mayores fabricantes de unidades de disquete como [Matsushita](http://es.wikipedia.org/wiki/Matsushita) (Panasonic) y [Mitsubishi](http://es.wikipedia.org/wiki/Mitsubishi). Otras compañías involucradas en el desarrollo del SuperDisk fueron [Compaq](http://es.wikipedia.org/wiki/Compaq) y [OR Technology](http://es.wikipedia.org/w/index.php?title=OR_Technology&action=edit&redlink=1).
 
-t<sub>1</sub>: P → (P) + 1
+Imation vendió principalmente unidades fabricadas por Matsushita bajo la marca SuperDisk; otras compañías prefirieron usar el nombre LS-120, y utilizaron unidades Mitsubishi. Sin embargo el sistema no alcanzó gran éxito. Pocos [OEMs](http://es.wikipedia.org/wiki/OEM) lo soportaron, aparte de Compaq y [Dell](http://es.wikipedia.org/wiki/Dell). Muchas unidades SuperDisk sufrieron problemas de rendimiento lento y fiabilidad. La mayor dificultad que encontró fue el éxito del [Iomega Zip](http://es.wikipedia.org/wiki/Iomega_Zip) que ya llevaba 3 años en el mercado. Tenía la suficiente popularidad para provocar falta de interés del público en el SuperDisk pese a su diseño superior y la compatibilidad con el disquete estándar. No obstante alcanza la suficiente popularidad para que varias [BIOS](http://es.wikipedia.org/wiki/BIOS) comiencen a incluirlo como dispositivo de arranque, incluso antes que al ZIP.
 
-#### Ciclo Indirecto o Fase de Búsqueda del Operando
+Antes del 2000, toda la categoría de discos removibles quedan obsoletos debido al desplome de los precios de las unidades y consumibles [CD-R](http://es.wikipedia.org/wiki/CD-R) y [CD-RW](http://es.wikipedia.org/wiki/CD-RW), y con posterioridad a [2006](http://es.wikipedia.org/wiki/2006), de las unidades de [disco de estado sólido](http://es.wikipedia.org/wiki/Disco_de_estado_sólido) (Pendrives de [Memoria USB](http://es.wikipedia.org/wiki/Memoria_USB) y los diferentes formatos de [tarjetas de memoria Flash](http://es.wikipedia.org/wiki/Tarjeta_de_memoria)). El SuperDisk ha sido descatalogado y hoy en día es difícil de encontrar unidades y consumibles, con la excepción de sitios de subastas como [eBay](http://es.wikipedia.org/wiki/EBay).
 
-Una vez que la instrucción se encuentra en M es transferida al registro I (de instrucción). Se analiza el código de operación y las condiciones de direccionamiento, luego el contenido del registro D (parte de dirección del registro I) se envía al registro S para localizar el operando en memoria. Paso siguiente, el contenido de la célula de memoria señalada por S pasa al registro M. En resumen sería:
+Unidad Zip
 
-\(M\) → I SRM, ENI
+<img src="Pictures/10000000000000B4000000811C88CC93.jpg" style="width:4.577cm;height:3.281cm" />El **Iomega Zip** (también llamado unidad Zip o disco Zip) es una [unidad de almacenamiento masiva](http://es.wikipedia.org/wiki/Unidad_de_disco) extraíble de media capacidad, lanzada por [Iomega](http://es.wikipedia.org/wiki/Iomega) en [1994](http://es.wikipedia.org/wiki/1994). La primera versión tenía una capacidad de 100 [MB](http://es.wikipedia.org/wiki/Megabyte), pero versiones posteriores lo ampliaron a 250 y 750 MB.
 
-\(D\) → S SRD, ENS, ICM, PACM
+Se convirtió en el más popular candidato a suceder al [disquete](http://es.wikipedia.org/wiki/Disquete) de 3,5 [pulgadas](http://es.wikipedia.org/wiki/Pulgada), seguido por el [SuperDisk](http://es.wikipedia.org/wiki/SuperDisk). Aunque nunca logró conseguirlo, sustituyó a la mayoría de medios extraíbles como los <img src="Pictures/10000000000000B4000000B3A2AEC935.jpg" style="width:4.165cm;height:4.128cm" />[SyQuest](http://es.wikipedia.org/w/index.php?title=SyQuest&action=edit&redlink=1) y robó parte del terreno del [Disco magneto-óptico](http://es.wikipedia.org/wiki/Disco_magneto-óptico) al ser integrado de serie en varias configuraciones de [portátiles](http://es.wikipedia.org/wiki/Ordenador_portátil) y [Apple Macintosh](http://es.wikipedia.org/wiki/Apple_Macintosh).
 
-((S)) → M LEC
+La caída de precios de grabadoras y consumibles [CD-R](http://es.wikipedia.org/wiki/CD-R) y [CD-RW](http://es.wikipedia.org/wiki/CD-RW) y, sobre todo de los [pendrives](http://es.wikipedia.org/wiki/Memoria_USB) y las [tarjetas flash](http://es.wikipedia.org/wiki/Tarjeta_de_memoria) (que sí han logrado sustituir al disquete), acabaron por sacarlo del mercado y del uso cotidiano.
 
-Siguiendo la línea temporal, estas microoperaciones se ejecutarían en el siguiente orden:
+El disco Zip se basa en el mismo principio que el [Iomega Bernoulli Box](http://es.wikipedia.org/wiki/Iomega_Bernoulli_Box); en ambos casos, un sistema de cabezas de lectura/escritura montado en un [actuador](http://es.wikipedia.org/wiki/Actuador) linear que sobrevuela un disco de polímero similar a un [disquete](http://es.wikipedia.org/wiki/Disquete) que gira rápidamente en el interior de una carcasa rígida. El actuador linear utiliza la tecnología de la [Bobina de voz](http://es.wikipedia.org/wiki/Bobina_de_voz), relacionada con los modernos [discos duros](http://es.wikipedia.org/wiki/Disco_duro). El disco Zip tiene un tamaño de 9 centímetros (3,5 [pulgadas](http://es.wikipedia.org/wiki/Pulgada)) en lugar del tamaño similar al de un [CD-ROM](http://es.wikipedia.org/wiki/CD-ROM) del Bernoulli, y un diseño simplificado de la unidad lectograbadora que redujo su coste total.
 
-t<sub>2</sub>: (M) → I
+Esto dio lugar a un disco que tiene el mismo tamaño de un disquete, pero es capaz de almacenar mucha más información, con un rendimiento mucho más rápido que el disquete estándar. Sin embargo no es competencia directa del [disco duro](http://es.wikipedia.org/wiki/Disco_duro). La unidad Zip 100 tiene una [tasa de transferencia](http://es.wikipedia.org/wiki/Tasa_de_transferencia) de cerca de 1 [megabyte](http://es.wikipedia.org/wiki/Megabyte)/segundo y un [tiempo de búsqueda](http://es.wikipedia.org/wiki/Tiempo_de_búsqueda) de 28 [milisegundos](http://es.wikipedia.org/wiki/Milisegundo) de promedio. En comparación un [disquete](http://es.wikipedia.org/wiki/Disquete) estándar de 1,44 MB tiene 500 [kbit/s](http://es.wikipedia.org/wiki/Bit_rate) (62,5 KB/s) de ratio y varios cientos de milisegundos de tiempo de búsqueda. Un disco de hoy en día con 7200 RPM tiene un tiempo de búsqueda de 8,5–9 ms.
 
-t<sub>3</sub>: (D) → S
+La primera generación de discos Zip tuvo que competir con el [SuperDisk](http://es.wikipedia.org/wiki/SuperDisk), que almacena un 20% más de datos y puede leer/escribir discos estándar de 3,5 y 1,44 MB, pero tiene una menor velocidad de transferencia debido a una menor velocidad de rotación. La rivalidad duró hasta la llegada de la era USB.
 
-t<sub>4</sub>: ((S)) → M
+<img src="Pictures/100000000000012C0000007B117AB4D4.jpg" style="width:10.583cm;height:4.339cm" />Unidad Jaz
 
-#### Ciclo de Ejecución de la Instrucción
+La **Iomega Jaz** es un sistema de almacenamiento masivo removible creado por [Iomega](http://es.wikipedia.org/wiki/Iomega) y lanzado inicialmente en [1997](http://es.wikipedia.org/wiki/1997). En la actualidad ha sido descatalogado, aunque su tecnología se usa en las unidades [Iomega REV](http://es.wikipedia.org/w/index.php?title=Iomega_REV&action=edit&redlink=1).
 
-Consiste en sumar el operando contenido en M con el contenido del registro Acumulador (AC):
+Existen dos versiones de la unidad, la inicial con una capacidad de 1 GB, y una versión revisada con una capacidad de 2 GB. En ambos casos son un aumento significativo sobre el producto estrella de Iomega, la [Iomega Zip](http://es.wikipedia.org/wiki/Iomega_Zip), por entonces con una capacidad de 100 MB. A diferencia de este último, que usa una variante de la tecnología del [disquete](http://es.wikipedia.org/wiki/Disquete), la Jaz utiliza tecnología de [disco duro](http://es.wikipedia.org/wiki/Disco_duro). Esencialmente consta de dos platos de disco en un cartucho removible, con el motor y las cabezas magnéticas en la unidad lectograbadora. Al introducirse el cartucho se retiraba la protección metálica por donde accedían las cabezas.
 
-\(M\) + (AC) → AC SRM, ENA, SUM, EAC
+Utiliza una interfaz [SCSI](http://es.wikipedia.org/wiki/SCSI) y se comercializa como unidad interna de 3,5 pulgadas (de serie viene con un adaptador a 5,25) o como unidad externa (8,0 x 5,33 x 1,5 [pulgadas](http://es.wikipedia.org/wiki/Pulgada) y 2 libras de peso). Iomega comercializar además varios productos complementarios :
 
-Siguiendo la línea temporal, estas microoperaciones se ejecutarían en el siguiente orden:
+- [**Iomega Jaz Traveller**](http://es.wikipedia.org/w/index.php?title=Iomega_Jaz_Traveller&action=edit&redlink=1) adaptador de SCSI a [puerto paralelo](http://es.wikipedia.org/wiki/Puerto_paralelo), pensado principalmente para su uso con un [ordenador portátil](http://es.wikipedia.org/wiki/Ordenador_portátil)
+- [**Iomega Jaz Jet PCI**](http://es.wikipedia.org/w/index.php?title=Iomega_Jaz_Jet_PCI&action=edit&redlink=1) tarjeta controladora [Ultra SCSI](http://es.wikipedia.org/w/index.php?title=Ultra_SCSI&action=edit&redlink=1) [PCI](http://es.wikipedia.org/wiki/PCI), con la ventaja de que puede usarse en un PC o un Mac sin problemas de drivers.
+- [**Iomega Jaz Jet ISA**](http://es.wikipedia.org/w/index.php?title=Iomega_Jaz_Jet_ISA&action=edit&redlink=1) tarjeta controladora Fast [SCSI](http://es.wikipedia.org/wiki/SCSI) [ISA](http://es.wikipedia.org/wiki/ISA)
+- [**Iomega Jaz Card PCMCIA**](http://es.wikipedia.org/w/index.php?title=Iomega_Jaz_Card_PCMCIA&action=edit&redlink=1) tarjeta [PCMCIA](http://es.wikipedia.org/wiki/PCMCIA) Tipo II controladora SCSI
+- [**Iomega Jaz USB**](http://es.wikipedia.org/w/index.php?title=Iomega_Jaz_USB&action=edit&redlink=1) cable adaptador [USB](http://es.wikipedia.org/wiki/USB) a [SCSI](http://es.wikipedia.org/wiki/SCSI)
+- Con posterioridad, lanzará cables adaptadores SCSI-[USB](http://es.wikipedia.org/wiki/USB) y SCSI-[FireWire](http://es.wikipedia.org/wiki/FireWire)
 
-t<sub>5</sub>: (M) + (AC) → AC
+Las cifras de la Jaz sencillamente casi no pueden distinguirse de las de un disco duro estándar de la época, debido a la tecnología empleada. Dispone internamente de una caché de 215 KB para lectura/escritura, los tiempos de búsqueda son de 10 ms para lectura, 12 ms para escritura y entre 15,5 y 17,5 ms para acceso. La transferencia de datos es :
 
-#### Ciclo de Interrupción
+- Máxima sostenida : 8,7 MB/segundo
+- Normal sostenida : 7,35 MB/segundo
+- Mínima sostenida : 3,4 - 8,7 MB/segundo
+- Modo burst : 20MB/s
 
-Cuando termina el ciclo de ejecución, se realiza una comprobación para determinar si ha ocurrido alguna interrupción habilitada. Si es así, tiene lugar un ciclo de interrupción. La naturaleza de este ciclo varía mucho de una máquina a otra. Se observa aquí una secuencia muy simple de eventos:
+Sin embargo la Jaz nunca obtiene la penetración en el mercado ni el éxito de la ZIP. A esto contribuye el alto precio inicial (es más económico comprar un disco duro de igual capacidad que la unidad + consumible, y sólo se obtiene ventaja cuando hablamos de 3 o más cartuchos), el desplome de los precios de consumibles y lectograbadoras [CD-R](http://es.wikipedia.org/wiki/CD-R) y [CD-RW](http://es.wikipedia.org/wiki/CD-RW) y la escalada de capacidad y velocidad de los discos [IDE](http://es.wikipedia.org/wiki/IDE). Sólo ofrece atractivo para el mercado empresarial, principalmente para copias de seguridad y clonado de servidores, pero al subir la capacidad de los discos duros acaban relegados de ese mercado.
 
-t<sub>1</sub>: (P) → M
+<img src="Pictures/10000200000001BB0000012BE384E0E7.png" style="width:7.636cm;height:5.154cm" />Pen Drive o Memory Flash:
 
-t<sub>2</sub>: Dirección de salvaguarda → S
+Es un pequeño dispositivo de almacenamiento que utiliza la memoria flash para guardar la información sin necesidad de [pilas](http://www.monografias.com/trabajos11/pila/pila.shtml). Los Pen Drive son resistentes a los rasguños y al polvo que han afectado a las formas previas de almacenamiento portable, como los CD y los disquetes. Los sistemas operativos más modernos pueden leer y escribir en ello sin necesidad de controladores especiales. En los equipos antiguos (como por ejemplo los equipados con [Windows 98](http://es.wikipedia.org/wiki/Windows_98/oWindows%2098)) se necesita instalar un controlador de dispositivo.
 
-Dirección de la rutina → P
+Pc Cards
 
-t<sub>3</sub>: M → memoria
+<img src="Pictures/10000000000000A900000085D21D19D9.jpg" style="width:7.62cm;height:5.715cm" />
 
-En el primer paso, el contenido de P se transfiere a M, de modo que pueda guardarse para el retorno de la interrupción. Entonces S se carga con la dirección en la cual va a guardarse el contenido de P, y P se cara con la dirección de comienzo de la rutina de procesamiento de interrupción.
+ La norma de PCMCIA es la que define a las PC Cards. Las PC Cards pueden ser almacenamiento o tarjetas de I/O. Estas son compactas, muy fiable, y ligeras haciéndolos ideal para notebooks, palmtop, handheld y los PDAs,. Debido a su pequeño tamaño, son usadas para el almacenamiento de datos,   aplicaciones,  tarjetas de memoria, cámaras electrónicas y  teléfonos celulares. Las PC Cards tienen el tamaño de una tarjeta del [crédito](http://www.monografias.com/trabajos15/financiamiento/financiamiento.shtml), pero su espesor varía. La norma de PCMCIA define tres PC Cards diferentes: Tipo I  3.3 milímetros (mm) de espesor, Tipo II son 5.0 mm espesor, y Tipo III son 10.5 mm espesor.
 
-Cada una de estas dos acciones puede ser una única microoperación. Sin embargo, ya que la mayoría de las CPUs. Tienen múltiples tipos y/o niveles de interrupciones, podrían hacer falta una o más microoperaciones adicionales para obtener la dirección de salvaguarda y la dirección de la rutina antes de que puedan transferirse a S y a P, respectivamente.
+El monitor
 
-En todo caso, una vez hecho esto, el paso final es almacenar M, que contiene el antiguo valor de P, en la memoria. La CPU está entonces preparada para iniciar el siguiente ciclo de instrucción.
+Generalidades
 
-### Señales de Control o Microórdenes
+<img src="./ObjectReplacements/Object 1" style="width:6.999cm;height:4.81cm" />El monitor es una de las partes más importantes de la computadora, ya que es el primer medio por el que el usuario conoce los resultados de su trabajo. El monitor se conecta a la tarjeta gráfica, estando dicha tarjeta integrada en la placa base, o conectada a un bus de expansión, actualmente PCI, AGP o PCI Express.
 
-Para que la unidad de control realice su tarea debe tener entradas que le permitan determinar el estado del sistema y salidas que le permitan controlar el comportamiento del mismo.
+Los monitores de las computadoras funcionan de manera muy parecida a como lo hacen los televisores, aunque hay una diferencia sustancial, y es que en los receptores de TV, las señales de color y sincronización van juntas en la misma señal, mientras que en un monitor van por separado.
 
-Como se ha indicado anteriormente, continuando con el ejemplo de Abacus, las entradas al secuenciador serán:
+En los monitores, la imagen en la pantalla está formada por un grupo de líneas horizontales que se van explorando secuencialmente. Un haz de electrones barre cada línea de la pantalla sucesivamente de izquierda a derecha desde la parte superior izquierda. A medida que el haz barre cada línea, el color y brillo de cada uno de los cientos de puntos que componen la pantalla (píxels) se modifican por la información suministrada por la tarjeta gráfica hasta formar una imagen coherente procedente de dicha tarjeta. Esta imagen de vídeo se refresca de una cíclica, a una frecuencia que envía la tarjeta gráfica.
 
-- Las señales del distribuidor de fases.
+Una vez que el haz de electrones ha barrido todas las líneas horizontales, la señal de activación de pantalla se sitúa en “off” (no aparece nada en pantalla), y el controlador del tubo de rayos catódicos genera una señal de **sincronismo vertical**, que le dice al monitor que desvíe el haz de electrones desde el final de la pantalla hacia el borde superior izquierdo.
 
-- Señal de los biestables que indican el subciclo que se está ejecutando (I-subciclo de búsqueda de la instrucción, O-subciclo de búsqueda del operando)
+El *tamaño del punto* representa la distancia en milímetros entre cada uno de los puntos luminiscentes que forman los píxels. De acuerdo con esto, cuanto más pequeño sea el tamaño del punto más nitidez alcanzará la imagen del monitor. Un tamaño de 0,28 mm se considera bastante apropiado para la mayoría de los monitores, pero tener en cuenta que si se desminuye esta medida se conseguirá mayor claridad en definición de imagen.
 
-- Señal del biestable S que indica el signo del acumulador
+La frecuencia de barrido horizontal es el número de líneas por segundo que la tarjeta gráfica envía al monitor.
 
-- Código de operación y condiciones de direccionamiento del reg. de instrucción.
+Por ejemplo, una pantalla VGA está formada por 480 líneas (640 × 480 píxels), mostrándose 60 pantallas por segundo (frecuencia de refresco), lo que quiere decir que la tarjeta gráfica tiene que enviar al monitor 60 × 480 = 28.800 líneas por segundo: La frecuencia de barrido horizontal sería en este caso 28.800 líneas, o sea 28.800 Hz o 28,8 Khz. Sin embargo, el monitor tiene algunas líneas que no pueden ser vistas, lo que hace que un monitor VGA tenga una frecuencia de barrido horizontal de 31,5 Khz. El número de líneas que no son vistas depende del modo de vídeo.
 
-- Señales de control de bus de control, incluye interrupciones, de reconocimiento, etc. (no se contempla en el análisis a fin de facilitar el estudio del funcionamiento)
+Una pantalla CGA tiene una frecuencia de barrido horizontal de 15,8 Khz, y una pantalla EGA, de 21,8 Khz.
 
-Las salidas del secuenciador serán:
+La frecuencia de barrido vertical o frecuencia de refresco es el número de veces que se forma la pantalla en un segundo. Esta formación de imagen puede ser entrelazada o no entrelazada. Si es entrelazada, se barren primero todas las líneas impares y luego todas las pares; en caso de no entrelazada se barren todas las líneas seguidas.
 
-- Señales de control que gobiernan la transferencia de datos, funciones específicas de la ALU, control de memoria y control de los módulos de entrada/salida.
+El ojo humano es capaz de registrar del orden de 25 imágenes por segundo; de hecho, esas son las imágenes por segundo que muestra un receptor de televisión.
 
-Resumiendo, se podría decir que el objetivo del secuenciador es general las señales de control o microórdenes para gobernar el funcionamiento del computador. En la siguiente figura se observa un esquema general de lo descrito anteriormente.
+La frecuencia de barrido vertical de un monitor de un PC varía entre 50 y 70 veces por segundo, es decir, entre 50 y 70 Hz.
 
-<img src="./ObjectReplacements/Object 28" style="width:14.93cm;height:8.438cm" />
+La imagen de la pantalla está formada por una serie de puntos o píxels. En los monitores a color cada uno de estos puntos o píxels está formado por una triada muy pequeña de puntos luminiscentes rojo, verde y azul, o por tres franjas de los mismos colores. Por ello en los monitores a color el haz de electrones está formado en realidad por tres haces, cada uno de los cuales ilumina uno de esos tres puntos luminiscentes. Para no mezclar entre sí cada uno de estos puntos y conseguir una imagen lo más nítida posible, en el interior de la pantalla del monitor existe una rejilla perforada llamada rejilla de potencial o mascara de sombra.
 
-Fig. Modelo de la Unidad de Control
+<img src="Pictures/100000000000013F0000016D49E9E221.png" style="width:6.856cm;height:7.846cm" />
 
-### Generación de las Señales de Control
+Cada perforación de la mascara coincidirá con cada una de las triadas de puntos de la imagen (cada punto de la imagen está formado por tres colores, rojo-verde-azul), y por lo tanto, cuanto más separadas estén unas perforaciones de otras, menos precisa resultará la imagen que se forme, y menor definición tendrá el monitor. Dicho de otra forma, cuanto menos distancia exista entre los centros de las perforaciones, mayor resolución admitirá el monitor con una misma nitidez. La resolución de un monitor es el número de puntos o píxels en que se divide la pantalla.
 
-Para lograr diseñar los circuitos que generan estas señales se deben seguir dos pasos:
+Por otro lado, cuanto más grande sea el monitor, más separación admitirá entre los centros de las perforaciones sin sacrificar la resolución. A esta separación se le llama dot pitch (separación de puntos).
 
-1.  Trazar los cronogramas deseados para cada instrucción del conjunto de instrucciones que admite la CPU.
+Existen en la actualidad dos tipos de monitores VGA en cuanto a su rejilla de potencial: de 0,28 y de 0,26 mm de separación de centros.
 
-2.  Relacionar cada microórden que aparece en los cronogramas con los batidos del reloj del distribuidor de fases y con las distintas informaciones de entrada y de estado del secuenciador. Esto se denomina formular las ecuaciones lógicas de la máquina.
+El tamaño del monitor, la resolución de trabajo y la rejilla de potencial idóneos están relacionados entre sí. Para un monitor de 14 pulgadas y una resolución de 640 × 480 puntos es suficiente con una rejilla de potencial de 0,34 mm, mientras que para un monitor de ese mismo tamaño, pero con una resolución de 1.024 × 768 puntos resultaría más ideal una rejilla de potencial de 0,28 mm; los monitores actuales tienen el máximo en 0,28 mm.
 
-### Trazado de Cronogramas
+Tipos de monitores
 
-A fin de lograr la realización de los cronogramas se deberá tener en cuenta los tiempos de respuesta de los diferentes operadores implicados en la ejecución de cada microoperación y de el se deducen las microórdenes a generar a cada batido de reloj. Para poder explicar la forma de realizar esta tarea tomaremos el ejemplo de Abacus, para el cual definimos lo siguiente:
+Cada tarjeta gráfica tiene su tipo de monitor. Un mismo monitor puede conectarse a distintas tarjetas gráficas, sin embargo no siempre una misma tarjeta gráfica puede conectarse a distintos monitores.
 
-Abacus está provisto:
+Tampoco existe una relación entre el tipo de monitor y el tipo de computadora. A una computadora XT se le puede conectar un monitor de alta resolución, de la misma manera que a un equipo basado en un µP 486 se le puede conectar una tarjeta y un monitor CGA. Otra cosa distinta es que resulte lógico o no.
 
-1.  De un distribuidor de fases de dos fases
-2.  De un decodificador de instrucciones descrito anteriormente.
-3.  De los biestables de estado definidos anteriormente. Se supondrá que el funcionamiento del reloj está condicionado por la señal de detención-marcha, y que la puesta en marcha inicializa el distribuidor de fases.
+Los tipos de monitores que han existido son:
 
-Se observa a continuación los cronogramas de las diferentes instrucciones de abacus, partiendo del cronograma del secuenciador.
+- **Monitores composite:** Fueron los primeros monitores que se utilizaron en el mundo informático. Funcionaban de forma similar a una televisión, donde la señal de entrada de vídeo es una señal de vídeo compuesto (combinación de las señales de barrido horizontal y vertical con los datos de la memoria de vídeo). El conector de este tipo de monitores era redondo, no como el resto de los monitores, que son conectores tipo DB de 9 o de 15 patillas.
+- **Monitores TTL:** Son monitores monocromáticos, bien ámbar y negro, o bien verde y negro. Los monitores TTL se caracterizan porque la comunicación entre la tarjeta gráfico y el monitor se realiza con señales digitales. La tarjeta envía dos informaciones por cada punto. La primera dice si el punto está iluminado o no y la segunda información si la señal es intensa o no intensa. Las tarjetas gráficas MDA, CGA, Hércules y EGA utilizan monitores de este tipo.
+- **Monitores RGB:** A los monitores en color que reciben señales de Vídeo TTL se les llama monitores RGB (Red-Green-Blue). Estos monitores reciben de la tarjeta gráfica cuatro informaciones por cada punto. Reciben si el punto es rojo o no rojo, azul o no azul, verde o no verde e intenso o no intenso, consiguiéndose representar hasta 16 colores diferentes como combinación de los estados anteriores. Las tarjetas CGA y EGA utilizan monitores de este tipo.
+- **Monitores analógicos:** Los monitores analógicos se diferencian de los TTL en que mientras estos últimos reciben señales digitales TTL de la tarjeta gráfica, los monitores analógicos reciben de las tarjetas gráficas una señal analógica con valores de tensión variable entre 0 y 0,7 voltios. Pueden representar tantos colores como se desee, siendo las tarjetas gráficas las que limitan su número. Los monitores analógicos monocromos transforman los colores en tonos de grises. Un monitor monocromo VGA transforma los 256 colores que recibe de la tarjeta en 64 tonalidades de diferentes grises. Todas las tarjetas gráficas modernas, como VGA, superVGA o XGA utilizan monitores analógicos.
+- **Monitores multisync:** Este tipo de monitores, también llamados multifrecuencias, son capaces de detectar y sincronizar automáticamente cualquier tipo de frecuencia desde 15 KHz hasta 50 KHz en barrido horizontal, y desde 50 a 80 Hz en barrido vertical. Dicho de otra forma, un monitor multisync puede conectarse tanto a una tarjeta CGA como EGA o SuperVGA, aceptando distintos tipos de señales, al contrario que los monitores anteriores que eran de frecuencia fija y donde cada monitor sólo se podía utilizar para un tipo de tarjeta gráfica determinada.
 
-<img src="Pictures/1000000000000123000000835C4E65BF.jpg" style="width:12.524cm;height:5.565cm" />
+El precio de los monitores crece conforme crece la frecuencia de barrido vertical y el tamaño de pantalla. Cuanto mayor sea esta frecuencia, mucho menor resulta el cansancio al trabajar con esa pantalla. Esto quiere decir que si se va a estar muchas horas delante de la computadora de forma continua, la inversión en un monitor con una frecuencia de barrido elevada y mayor tamaño, quizás no sea tan excesiva.
 
-Fig. Cronograma del distribuidor de fases
+Estructura interna de un monitor
 
-<img src="Pictures/100000000000011D000002095F4B2B66.jpg" style="width:6.449cm;height:11.695cm" /><img src="Pictures/10000000000001CC0000028DE7915D89.jpg" style="width:8.326cm;height:11.725cm" />
+La estructura interna o diagrama de bloques de un monitor es igual que la sección de color de un receptor de televisión.
 
-<table>
-<tbody>
-<tr>
-<td><p>Fig. Cronograma de puesta a cero del acumulador</p></td>
-<td>Fig. Cronograma de las instrucciones de procesamiento</td>
-</tr>
-</tbody>
-</table>
+<img src="Pictures/1000000000000303000002214B4F7391.png" style="width:14.991cm;height:10.596cm" />
 
-<img src="Pictures/10000000000001E9000002C96EF836BE.jpg" style="width:11.322cm;height:16.484cm" />
+Las funciones de cada una de las partes son las siguientes:
 
-Fig. Cronograma del almacenamiento en memoria
+1.  Las señales de color R, V, A, son amplificadas, controladas en brillo y contraste y aplicadas al tubo de rayos catódicos.
+2.  Las señales de sincronismo proporcionan la sincronización en la desviación horizontal y vertical del haz de electrones del tubo de rayos catódicos.
+3.  El MAT se encarga de aplicarle la Muy Alta Tensión al tubo de imagen.
+4.  Las señales de identificación de monitor (SDA, SCL), se encargarán de comunicar la unidad de control del monitor con la tarjeta gráfica a fin de optimizar los resultados. Esta comunicación no existe en todos los monitores, aunque cada vez es más frecuente.
+5.  Los controles son activados por la unidad de control que actuará según los valores introducidos por el teclado del monitor.
+6.  La fuente de alimentación suministra la energía necesaria a cada módulo.
 
-<img src="Pictures/1000000000000278000002C974A3B209.jpg" style="width:14.319cm;height:16.164cm" />
+Muchos monitores actuales son digitales, en los cuales todo el proceso de la señal se hace de forma digital. Esto implica que en las entradas de señal llevarán unos convertidores analógico-digital con el fin de proceder al tratamiento digital de dicha señal, una vez procesada se vuelve a convertir en analógica para aplicársela al tubo de imagen. Las señales de sincronismo pueden tener también un tratamiento digital..
 
-Fig. Cronograma de las instrucciones de salto
+Tipos de Pantallas
 
-En cada uno de esto cronogramas hemos anotado la evolución de diversas informaciones de entrada en el secuenciador, de una cierta importancia para la instrucción en curso. Cada cronograma permite definir de forma analítica el comportamiento del secuenciador.
+Pantallas CRT
 
-### Ecuaciones Lógicas
+<img src="./ObjectReplacements/Object 2" style="width:9.269cm;height:6.948cm" />La imagen que se muestra en la pantalla se obtiene por un recorrido definido de arriba a abajo, y se crea la imagen haciendo variar la intensidad del flujo de electrones a lo largo del recorrido. El flujo en todos los monitores modernos es desviado por un campo magnético aplicado sobre el cuello del tubo, que está formado por bobinas (a menudo dos) envueltas sobre ferrita y controladas por un circuito electrónico.
 
-Un vez realizados todos los cronogramas, el paso siguiente consiste en, microórden por microórden, buscar todas las veces que debe ser activada y de ellas deducir la expresión lógica en relación con las informaciones de entrada y de estado del secuenciador. El conjunto de estas expresiones constituye las ecuaciones lógicas del ordenador.
+Los monitores en color se muestran así de una forma sencilla. Cada píxel tiene tres puntitos, uno de cada color primario (rojo, verde, azul). Hay tres cañones de electrones, uno para cada color. Cada cañón puede encender solo su píxel. Así, combinando cada cañón de forma sincrona con el barrido anteriormente descrito, se muestran las imágenes en el cristal en el que resultan proyectadas.
 
-Por ejemplo, analicemos la señal SRM:
+### Ventajas
 
-- Todos los casos en que está activa en el intervalo <sub>0</sub> :
+La principal ventaja es que al ser una tecnología muy desarrollada en el tiempo, ofrece mucha calidad a un precio muy reducido. La calidad de los colores mostrados son muy nítidos y fieles, y el tiempo de refresco (tiempo que tarda una imagen en cambiar en la pantalla) es de los más reducidos.
 
-Cuando se trata de un ciclo de búsqueda de la instrucción, es decir I = 1, se escribe I . <sub>0 </sub> ;
+### Inconvenientes
 
-Cuando se trata de un ciclo del operando para las instrucciones SUM, SUS, OR, AND, durante todo el tiempo que se efectúe la operación en la ALU, esto corresponde a <sub>0</sub> + <sub>1</sub> , O = 1. Se escribe O . (<sub>0</sub> + <sub>1</sub>) . (
-``` math
-{{{\text{sum} + \text{sus}} + \text{or}} + \text{and}}{}
-```
-)
+Son voluminosos, muy voluminosos. Consumen mucha energía. Además, el uso de bobinas magnéticas y haces de electrones implican emisiones de RX y de campos electromagnéticos que son potencialmente nocivos para la salud. Además, su fabricación implica el empleo de materiales tóxicos difíciles de procesar en su reciclaje.
 
-Como (<sub>0</sub> + <sub>1</sub>) valdría siempre 1, no es necesario incluirlo en la ecuación, quedando esta de la siguiente manera: O . (
-``` math
-{{{\text{sum} + \text{sus}} + \text{or}} + \text{and}}{}
-```
-)
+<img src="Pictures/100000000000016A00000134FB39A317.png" style="width:7.673cm;height:6.53cm" />
 
-Hilando un poco más fino se observa que las instrucciones implicadas son todas aquellas que necesitan un ciclo de operando excepto
-``` math
-\text{alm}{}
-```
-, teniendo en cuenta esto, se puede rescribir la ecuación de la siguiente manera: O .
-``` math
-\overline{\text{alm}}{}
-```
+### Pantallas FED y SED
 
-De esta manera logramos reducir a una expresión más simple.
+. Cada píxel es un micro tubo de vacío con un cátodo que emite electrones hacia una superficie con fósforos que generan los colores cuando los electrones chocan en ellos. Para formar una imagen entera se necesitan cientos de miles de píxeles (millones en alta definición). Por lo tanto actualmente se está estudiando la colocación de los cañones de electrones en un reducido espacio, sin que ello signifique una pérdida de funcionalidad por parte de dichos cañones o una pérdida de homogeneidad en la imagen.
 
-- Todos los casos en que está activa en el intervalo <sub>1</sub>:
+****
 
-Cuando se presenta un direccionamiento indirecto, es decir la señal IND = 1, en este caso también se da que I = 0 y O = 0, se ecribe: IND . Ī . Ō . <sub>1</sub>
+### Ventajas
 
-Analizado esto y considerando que son lo únicos casos en que se activará la señal SRM, es decir cuando se produzcan las microoperaciones (M) → I, (M) → ALU, (M) → S, la ecuación completa para esta señal será:
+Combina lo bueno del CRT y del LCD:  Calidad de imagen increíble, colores muy bien definidos, contraste altísimo, y un consumo que puede llegar a ser un 75% inferior al del Plasma. Además, el tiempo de respuesta es increíblemente bajo, menor de 1 milisegundo. Además la pérdida de emisores de electrones no provoca la muerte del píxel.
 
-SRM = I . <sub>0 </sub> + O .
-``` math
-\overline{\text{alm}}{}
-```
-+ IND . Ī . Ō . <sub>1</sub>
+### Inconvenientes
 
-De esta manera, microórden por microórden, podemos deducir las expresiones lógicas del ordenador. Además de las ecuaciones de las microórdenes, también serán necesarias las ecuaciones de entrada a los biestables de estado del secuenciador, los biestables I y O.
+Mayor radiación, por la emisión de electrones contra una película de fósforo, aunque con el uso de nanotubos de carbono, que emitirán mucha menos radiación.
 
-Por ejemplo:
+### Pantallas OLED
 
-I debe ser posicionado a 1 al final del ciclo del operando:
+<img src="Pictures/100000000000028700000146063074DE.jpg" style="width:9.816cm;height:4.939cm" />
 
-``` math
-{\text{SI} = {\Theta_{0} \cdot O}}{}
-```
+OLED (Diodo orgánico de emisión de luz) Básicamente se trata de una capa electroluminiscente formada por una película de componentes orgánicos que reaccionan, a una determinada estimulación eléctrica, generando y emitiendo luz por sí mismos.
 
-I de ser puesto a cero al final del ciclo de búsqueda de la instrucción de aquellas instrucciones que necesitan ciclo de operando:
+Hay dos capas muy finas: una de conducción y otra de emisión, que a su vez están entre otras dos capas que hacen de ánodo y cátodo. Todas estas capas están formadas por semiconductores orgánicos (moléculas muy largas que ni son conductores ni aislantes, pero que pueden actuar como ambos dependiendo de la situación).
 
-``` math
-\left. {\text{RI} = {{\theta_{0} \cdot I} \cdot (}}{{{{\text{sum} + \text{sus}} + \text{or}} + \text{and}} + \text{alm}} \right){}
-```
+**
 
-O debe ser puesto a 1 al final de un ciclo de instrucción cuando la instrucción a ejecutar es con operando y no es con direccionamiento indirecto, y luego de la búsqueda de la dirección del operando en una instrucción con direccionamiento indirecto:
+Cuando se aplica un voltaje a través del OLED, se genera una corriente desde el ánodo al cátodo. Gracias a esto, la capa de emisión comienza a cargarse negativamente y la capa de conducción se “llena de huecos” que dejan los electrones. Las fuerzas electroestáticas atraen a los electrones y a los huecos, los unos con los otros, y se recombinan. Esto sucede más cercanamente a la capa de emisión, porque en los semiconductores orgánicos los huecos son más movidos que los electrones. Esta recombinación libera energía en forma de fotones.
 
-``` math
-{{\text{SO} = {{{\overline{\text{IND}} \cdot \theta_{0}} \cdot I} \cdot (}}{{{{\text{sum} + \text{sus}} + \text{or}} + \text{and}} + \text{alm}}{) + {{{\text{IND} \cdot \theta_{0}} \cdot \overline{I}} \cdot \overline{O}}}}{}
-```
+Utilizando voltajes determinados, se obtienen recombinaciones de valores predeterminados, para que la energía liberada como fotones se encuentre en una frecuencia determinada (lo que podríamos llamar “región visible”), y así generar colores e imágenes. La suma de muchas recombinaciones simultaneas genera las imágenes de las pantallas.
 
-O debe ser puesto a cero al final del ciclo de operando:
+### Ventajas
 
-``` math
-{\text{RO} = {\theta_{0} \cdot O}}{}
-```
+Al no necesitar de capas de cristal como en otras tecnologías, y usar capas orgánicas de polímeros, las pantallas son más delgadas luminosas y flexibles.
 
-A continuación se observan todas las ecuaciones para formar el secuenciador de Abacus:
+Debido a que los píxeles OLED emiten luz directamente, su rango de color, brillo, contraste y ángulo de visión es muy grande, superior al resto. Debido a esto también, no necesitan consumir electricidad para mostrar el negro, por lo que cuesta menos potencia energética que funcionen
 
-|  |  |
-|----|----|
-| ENS | = 
-``` math
-\theta_{0}{}
-``` |
-| ICM | = 
-``` math
-\theta_{0}{}
-``` |
-| PACM | = 
-``` math
-\theta_{0}{}
-``` |
-| LEC | = 
-``` math
-\left. {{I + {O \cdot \overline{\text{alm}}}} + (}{\overline{I} \cdot \overline{O}} \right){}
-``` |
-| ESC | = 
-``` math
-{O \cdot \text{alm}}{}
-``` |
-| SRM | = I . <sub>0 </sub> + O . 
-``` math
-\overline{\text{alm}}{}
-```
-+ IND . <sub>1</sub> . (Ī . Ō) |
-| TMS | = 
-``` math
-{{{\text{IND} \cdot \overline{I}} \cdot \overline{O}} \cdot \Theta_{1}}{}
-``` |
-| ENI | = 
-``` math
-{\theta_{1} \cdot I}{}
-``` |
-| SRD | = 
-``` math
-\left. {{\Theta_{1} \cdot I} \cdot (}{{{{{{\text{sum} + \text{sus}} + \text{and}} + \text{or}} + \text{alm}} + {\text{sap} \cdot \text{AP}}} + \text{sai}} \right){}
-``` |
-| SRP | = 
-``` math
-{{{\Theta_{1} \cdot I} \cdot (}{\text{pac} + {\text{sap} \cdot \text{AN}}}{) + {\Theta_{1} \cdot O}}}{}
-``` |
-| INCP | = 
-``` math
-{\theta_{1} \cdot I}{}
-``` |
-| ENP | = 
-``` math
-\left. {\theta_{0} \cdot (}{{\text{sap} \cdot \text{AP}} + \text{sai}} \right){}
-``` |
-| SUM | = 
-``` math
-{\text{sum} \cdot O}{}
-``` |
-| SUS | = 
-``` math
-{\text{sus} \cdot O}{}
-``` |
-| AND | = 
-``` math
-{\text{and} \cdot O}{}
-``` |
-| OR | = 
-``` math
-{\text{or} \cdot O}{}
-``` |
-| ENA | = 
-``` math
-{O \cdot \overline{\text{alm}}}{}
-``` |
-| EAC | = 
-``` math
-{{O \cdot \overline{\text{alm}}} \cdot \theta_{0}}{}
-``` |
-| PAC | = 
-``` math
-{\text{pac} \cdot \theta_{0}}{}
-``` |
-| SAC | = 
-``` math
-{{O \cdot \Theta_{0}} \cdot \text{alm}}{}
-``` |
-| ENM | = 
-``` math
-{{O \cdot \theta_{1}} \cdot \text{alm}}{}
-``` |
-| SI | = 
-``` math
-{\text{SI} = {\Theta_{0} \cdot O}}{}
-``` |
-| RI | = 
-``` math
-\left. {\text{RI} = {{\theta_{0} \cdot I} \cdot (}}{{{{\text{sum} + \text{sus}} + \text{or}} + \text{and}} + \text{alm}} \right){}
-``` |
-| SO | = 
-``` math
-{{\text{SO} = {{{\overline{\text{IND}} \cdot \theta_{0}} \cdot I} \cdot (}}{{{{\text{sum} + \text{sus}} + \text{or}} + \text{and}} + \text{alm}}{) + {{{\text{IND} \cdot \theta_{0}} \cdot \overline{I}} \cdot \overline{O}}}}{}
-``` |
-| RO | = 
-``` math
-{\text{RO} = {\theta_{0} \cdot O}}{}
-``` |
+### Inconvenientes
 
-El secuenciador de abacus será la materialización de sus biestables de estado y del circuito combinacional correspondiente a las ecuaciones lógicas. Es de destacar que el ordenador Abacus es una máquina simple con un conjunto de instrucciones reducido para facilitar su estudio.
+Su tiempo de vida es corto, sobre todo para la luz azul, que se reduce a tan solo 1000 horas de vida. Además, su proceso de fabricación es, por el momento, muy caro, hasta que no se popularice la tecnología lo suficiente como para que se produzca en masa. Además, las moléculas y polímeros empleados en su fabricación son difíciles de reciclar, por lo que su impacto medioambiental es alto.
 
-En una compleja CPU moderna, el número de ecuaciones booleanas necesarias para definir la unidad de control es muy grande. La tarea de implementar un circuito combinacional que satisfaga todas esas ecuaciones llega a ser muy difícil.
+### Pantallas LCD
 
-El resultado es que, por regla general, se usa una aproximación mucho más sencilla, conocida como microprogramación.
+<img src="Pictures/100002010000012C000000F02D45CE43.png" style="width:7.938cm;height:6.35cm" />
 
-### Secuenciamiento de los operadores aritméticos
+Esta tecnología funciona con una capa de moléculas alineadas entre dos electrodos transparentes y dos filtros de polarización, perpendiculares entre si. El cristal líquido entre el filtro polarizante es el que permite que la luz pase de un filtro a otro. Cuando se aplica un voltaje a través de los electrodos, las moléculas de cristal líquido distorsionan su estructura, dejando o no pasar la luz a través de ellas. Es la diferencia de polarización entre las dos capas la que produce que pase la luz. Al necesitar un gran número de píxeles, no es viable que cada píxel tenga un electrodo, por lo que estos se agrupan en columnas y filas, y cada uno tiene una fuente de voltaje.
 
-En máquinas complejas, el control de los operadores aritméticos de funcionamiento secuencial está frecuentemente descentralizado y cada operador posee su órgano de control. En estos casos, el secuenciador general envía una orden especificando el tipo de operación a ejecutar y los batidos del reloj central, si el operador no tuviese uno propio.
+El color se consigue de forma análoga a lo visto con anterioridad: dividiendo cada píxel en 3: rojo, verde y azul. Por lo que lo descrito anteriormente hay que multiplicarlo por 3: cada píxel de color tiene su propia fuente de voltaje.
 
-El operador se encarga, entonces, del secuenciamiento de la operación aritmética.
+Las pantallas modernas de alta resolución utilizan una estructura de matriz activa. Esto quiere decir que a la polarización y a los filtros de color como formas de generar imágenes, hay también una matriz de transistores dedicados. Cada píxel tiene su propio transistor para ser activado, lo que permite, a efectos prácticos, dispositivos con mayor brillo y tamaño, e imágenes más rápidas, ya que la actualización de la imagen en la pantalla es mucho más fidedigna y rápida.
 
-Una vez terminada la operación, el operador envía al secuenciador central una señal de fin de operación. El secuenciador de un operador secuencial puede poseer su propio decodificador de órdenes, su contador de fase, sus biestables de estado e incluso su propio reloj.
+### Ventajas
 
-#### 
+Múltiples. Es una tecnología más nueva, y con un campo de crecimiento mayor que el Plasma, por ejemplo. Producir estas pantallas a nivel industrial es muy económico, y su consumo energético es menor. Si bien es cierto que no ofrecen un contraste tan alto como otras tecnologías, se están haciendo grandes progresos en este campo y ofrecen un brillo muy fidedigno para la mayoría de situaciones, permitiendo además una gran calidad de imagen en pantallas de tamaño mediano (menos de 40 pulgadas), consiguiendo desde hace poco, gran calidad con pantallas de gran tamaño.
 
-#### Secuenciamiento de un operador de multiplicación por suma-desplazamiento
+### Inconvenientes
 
-En la siguiente figura se observa en que entrono trabaja el secuenciador del operador. Este recibe del secuenciador general la orden de multiplicación y los batidos del reloj, a su vez, este secuenciador enviará al secuenciador general una señal de fin de operación (una vez finalizada la multiplicación), y al operador una orden de SUM de posicionamiento del sumador, la validación de la suma EAC y la orden de desplazamiento a derecha DESD. Del último biestable del multiplicador-cociente recibe una señal indicativa de su estado.
+<img src="Pictures/1000020100000280000001E0ED1E2949.png" style="width:8.266cm;height:6.2cm" />Las pantallas LCD tienen una resolución nativa. Si bien pueden mostrar imágenes a otra resolución, el salirse de esta significa perder calidad. Al estar basada su tecnología en luz polarizada, el color negro y los colores oscuros no son tales, sino distintos grados de polarización de luz, por lo que nunca se representan correctamente. Su ángulo de visión es reducido, y tienen, por último, el problema de la imagen fantasma (por déficit en el barrido de la imagen) y los “píxeles muertos” (colores bloqueados por transistores estropeados).
 
-<img src="Pictures/100000000000031C000000EEC9328C41.jpg" style="width:15.879cm;height:4.787cm" />
+### Pantallas de Plasma
 
-Fig. Entorno del secuenciador de multiplicación.
+Las pantallas de plasma se basan en una tecnología que comenzó a gestarse a mediados de la década de 1960, aunque hasta hace apenas 10 años no se empezaron a producir pantallas a color para el mercado de consumo.
 
-En la figura siguiente se representa al secuenciador. Este diseño se hace bajo las siguientes hipótesis:
+Su funcionamiento se basa en una serie de diminutas celdas situadas entre dos paneles de cristal que contienen una mezcla de gases nobles (neon y xenon). El gas en las celdas se convierte eléctricamente en plasma el cual provoca que los fósforos emitan luz, gracias a unos electrodos que están empotrados entre la parte frontal y posterior de las celdas (unos detrás y otros rodeados de un aislante, en el frontal). La diferencia de voltaje entre la trasera y la frontal al cargarse eléctricamente hace que el gas se cargue eléctricamente y se convierta en plasma, emitiendo así fotones.
 
-- El sumador permanece activado mientras dure la multiplicación para ejecutar la adición de los contenidos del registro B y del acumulador.
+Cada píxel está formado por tres celdas, una de cada color primario. La mezcla de los tres produce los colores finales, de forma similar a como lo hace un monitor CRT. Esta similitud hace que las pantallas de plasma sean tan fieles en la muestra de colores como los monitores CRT, en especial mostrando el color negro, ya que, a diferencia de otras tecnologías, aquí el negro es que no hay celdas cargadas. En el LCD, por ejemplo, el negro se consigue cargando el píxel de una determinada forma, y el negro no se ve totalmente negro.
 
-- La duración máxima de la suma es de dos batidos de reloj.
+### Ventajas
 
-- En ausencia de suma (MC0 = 0), se produce un desplazamiento a cada batido de reloj
+Las principales comprenden la calidad de la imagen. Ofrecen una calidad de colores muy alta, un ángulo de visión muy elevado y un contraste altísimo, de hasta 20.000:1. Los tonos oscuros, el negro y la escala de grises están muy bien representados, y este tipo de pantallas tiene una vida útil de unas 60000 horas (unos 30 años, si funciona 5 horas diarias). Además, al contrario que en otros tipos de pantallas, no hay tiempo de respuesta con esta tecnología, por lo que no hay efecto fantasma (ya veremos más adelante las LCD), y en su fabricación no se emplean materiales como el mercurio.
 
-<img src="Pictures/10000000000001DB0000059078BD6441.jpg" style="width:6.879cm;height:20.95cm" />
+### Inconvenientes
 
-El funcionamiento es el siguiente:
+Son más caras de fabricar y consumen más electricidad que otros modelos de pantallas planas. Además, no son buenas para reproducir imágenes estáticas, ya que esto estropea las celdas de los gases.
 
-1)  La orden de inicio de multiplicación (MUL) carga el descontador de desplazamientos con una cantidad igual al número de dígitos de los operandos, posiciona el biestable Θ, el que estará en 1 durante toda la multiplicación, habilitando las puertas de entrada al sumador paralelo (SUM).
-2)  Al primer batido de reloj siguiente al posicionamiento de Θ comienza la operación:
+### Pantallas Láser
 
-Si MC0 = 0, se produce un desplazamiento a derecha en el conjunto acumulador-MC y un decremento en el descontador.
+<img src="Pictures/1000000000000160000001062932BFBE.jpg" style="width:7.726cm;height:5.75cm" />
 
-Si MC0 = 1, se ejecuta la suma que dura dos batidos de reloj, antes de desplazar. Se memoriza el primer batido en el biestable Φ lo que permite validar, al segundo batido, el resultado de la suma EAC y reponer a cero el biestable MC0, con lo que se producirá, al tercer batido, el desplazamiento a derecha, el decremento del descontador y la puesta a cero de Φ.
+Este tipo de pantallas se basa en un chip conocido como GLV, cuyo funcionamiento se basa en tres láseres: uno rojo, otro verde y otro azul. La luz que forman pasa por una lente, y después por el GLV, que los combina entre si y los proyecta hacia un espejo que proyecta la luz en la pantalla creando líneas de 1080 píxeles, a una frecuencia de 60 por segundo.
 
-3)  Se repite el paso 3 hasta que el descontador valga cero.
+Cada GLV tiene 1080 grupos de cintas móviles, cada una de las cuales crea un píxel de color. Este grupo está formado por seis cintas colocadas en paralelo, cubiertas con una capa reflectante y enganchadas en sus extremos con un sustrato de silicona. Tres de ellas son fijas y tres son móviles. Dependiendo de la posición de las cintas se creará una luz con más o menos intensidad.
 
-4)  Cuando el descontador vale cero, se genera un impulso que pone a cero Θ, y una señal al secuenciador central de fin de operación.
+La luz del láser que pasa por el GLV llega a una lente encargada de recogerla, y descarta la luz reflejada, lo que se consigue con un filtro de Fourier. Antes de llegar al espejo, la luz pasa por una lente de proyección para darle potencia para la pantalla. La forma de proyección en la misma es similar a la que usan los antiguos retroproyectores.
 
-Este circuito posee tres biestables de estado: MC0, Θ y Φ, y un descontador de desplazamiento, que ejerce una función análoga al distribuidor de fases del secuenciador de un ordenador.
+Aplicaciones tiene muchas. Dado lo liviano de su implementación, puede ser usado desde monitores para equipos informáticos, consiguiendo una calidad de colores similar al plasma, hasta dispositivos móviles como teléfonos o PDAs.
 
-### 
+### Ventajas
 
-### Secuenciadores Microprogramados
+Proveen una paleta de colores más rica e intensa que las pantallas convencionales de plasma o LCD, y tiene la mitad de peso y coste. Además, consume un 75% menos que las pantallas de Plasma y son tan delgadas como ellas, unido a una vida útil de más de 50000 horas.
 
-#### 
+### Inconvenientes
 
-#### Microinstrucciones
+La industria de los monitores ha invertido mucho en otras tecnologías más antiguas, y no ha tenido muy en cuenta a esta, por lo cual no existe en el mercado una amplia gamma de dispositivos con esta tecnología.
 
-El diseño de un secuenciador cableado para un ordenador complejo, como lo son los actuales, es una tarea muy difícil, además, el diseño es relativamente inflexible. Es difícil cambiar el diseño si se desea añadir una nueva instrucción máquina. La alternativa actual es un secuenciador microprogramado.
+### El teclado y el ratón
 
-Si se consideramos las microoperaciones observaremos que están descriptas en notación simbólica. En realidad es un lenguaje conocido como lenguaje de microprogramación. Cada línea describe un conjunto de microoperaciones que suceden a la vez y se conoce como microinstrucción. Una secuencia de microinstrucciones se conoce como microprograma, o firmware. Este último término refleja el hecho de que un microprograma está a mitad de camino entre hardware y software. Es más fácil diseñar en firmware que en hardware, pero es más difícil escribir un programa firmware que un programa software.
+### Introducción
 
-Para usar el concepto de microprogramación en el diseño de un secuenciador debemos considerar que para cada microoperación, todo lo que la unidad de control puede hacer es generar un conjunto de señales de control, de modo que, para cualquier microoperación, cada línea de control procedente de la unidad de control está activa o inactiva. Esta condición puede representarse con un dígito binario para cada línea de control. De este modo, podríamos construir una palabra de control en la que cada bit representara una línea de control. Entonces, cada microoperación se representaría mediante un patrón diferente de 1s y 0s en la palabra de control. Supongamos que se ensarta una secuencia de palabras de control para representar la secuencia de microoperaciones ejecutadas por la unidad de control.
+El teclado es el elemento esencial gracias al cual es posible comunicarse con el ordenado. Permite enviar a éste instrucciones o datos en forma de texto, cifras o símbolos diversos. El teclado es una copia del de las máquinas de escribir, aunque con algunas espaciales. La aparición de la interfaz gráfica como el entorno Windows hizo que tomase relevancia un dispositivo señalador que es el ratón (mouse). Ésta es la herramienta de apuntamiento más utilizada, sin embargo hay que indicar que se limita a actuar al servicio de la computadora o de sus programas. La introducción de datos es una tarea de la que sigue ocupándose, casi exclusivamente el teclado.
 
-A continuación, hemos de admitir que la secuencia de microoperaciones no es fija. Algunas veces tenemos un ciclo indirecto; otras no. Por tanto, coloquemos nuestras palabras de control en una memoria, cada palabra en una dirección única. Añadamos ahora un campo de dirección a cada palabra de control, indicando la posición de la siguiente palabra de control a ejecutar si una determinada condición es cierta (por ejemplo, que el bit de direccionamiento indirecto de una instrucción que referencia a la memoria sea 1). Añadamos también algunos bits para especificar la condición.
+### El teclado
 
-El resultado se conoce como microinstrucción horizontal y se muestra en la figura siguiente. El formato de la microinstrucción o palabra de control es el siguiente. Hay un bit para cada línea de control interna a la CPU y un bit para cada línea de control del bus del sistema. Hay un campo de condición que indica la condición bajo la cual debe producirse un salto, y hay un campo con la dirección de la microinstrucción a ejecutar cuando el salto se produzca. Esta microinstrucción se interpreta como sigue:
+### Generalidades
 
-1.  Para ejecutar la microinstrucción, se activan todas las líneas de control con el bit correspondiente a 1; y se dejan inactivas todas las líneas de control indicadas con un bit a 0. Las señales de control resultantes harán que se ejecuten una o más microoperaciones.
+<img src="Pictures/100000000000026000000150B590F57D.png" style="width:9.594cm;height:5.295cm" />El teclado es el elemento esencial gracias al cual es el posible comunicarse con la computadora, permitiéndole enviar datos o instrucciones en forma de texto, cifras o símbolos diversos.
 
-2.  Si la condición indicada por los bits de condición es falsa, se ejecuta la siguiente microinstrucción secuencial.
+Según el tipo de computadora al que vaya a conectarse, existen tres tipos de teclado:
 
-3.  Si la condición indicada por los bits de condición es cierta, la siguiente microinstrucción a ejecutar se indica en el campo de dirección.
+- Teclado XT de 83 teclas.
+- Teclado AT de 83 teclas.
+- Teclado expandido de 102 teclas (101 en versión americana), que más reciente de 105 teclas.
 
-<img src="Pictures/100000000000040E00000264E0F1423D.jpg" style="width:15.879cm;height:9.349cm" />
+Los *teclados XT y AT* se diferencian principalmente en que el XT tiene el procesador de teclado en el propio teclado, mientras que el AT asume que ese procesador se encuentra en la placa base. Esto hace que los teclados XT y AT sean incompatibles entre sí, no pudiéndose usar un teclado XT en una computadora AT, ni al contrario. En ese sentido, los teclados de algunos equipos clónicos incorporaban un interruptor por la parte inferior que permitía configurarlos como teclado XT o como teclado AT. En la actualidad sólo existen estos últimos. En los teclados expandidos el procesador de teclado también se encuentra en la placa base.
 
-La figura siguiente muestra como se pueden organizar estas palabras de control o microinstrucciones en una memoria de control. Las microinstrucciones de cada rutina se ejecutarán secuencialmente. Cada rutina termina con una instrucción de bifurcación o salto indicando a dónde ir a continuación.
+Desde el punto de vista de las teclas en sí, existen dos tipos de teclado: **teclado de contacto y teclado capacitivo**.
 
-Hay una rutina especial de ciclo de ejecución cuyo único objetivo es indicar que una de las rutinas de las instrucciones máquina (and, sum, etc.) se va a ejecutar a continuación, dependiendo del código de operación en curso.
+El teclado de contacto puede ser de dos tipos:
 
-La memoria de control de esta figura, es una descripción concisa de todo lo que hace la unidad de control. Define la secuencia de microoperaciones a realizar en cada ciclo (captación, indirecto, ejecución, interrupción), y especifica el secuenciamiento de estos ciclos. Si solo fuera eso, esta notación sería un recurso útil para documentar el funcionamiento de una unidad de control para un computador particular. Pero es más que eso. Es también una forma de implementar la unidad de Control.
+- **Mecánico**: usa pequeños interruptores individuales para cada tecla. Cuando se presiona una tecla se cierra el interruptor y permite el paso de corriente. Tiene el inconveniente de ser bastante vulnerable a la suciedad, de forma que después de un tiempo de uso es posible que alguna de sus piezas empiece a fallar; este teclado se nota porque al pulsar una tecla, suena el tic del pulsador.
 
-#### Unidad de Control Microprogramada
+- **De membrana**: las teclas llevan una membrana de goma que al pulsar hace que se unan dos pistas conductoras en la parte inferior y permite el paso de corriente: son similares a las que llevan las calculadoras. Estas membranas pueden ser individuales para cada tecla o bien una lámina completa con membranas que se mueven con cada tecla. Al pulsar una tecla, no suena como el mecánico.
 
-La memoria de control de la figura siguiente contiene un programa que describe el funcionamiento de la unidad de control. Resulta que podríamos implementar la unidad de control sencillamente suministrando los mecanismos necesarios para la ejecución de ese programa.
+El teclado capacitivo es de más capacidad y más caro que el de contacto, teniendo una vida de uso bastante más larga. Éste teclado está construido sobre una tarjeta de circuito impreso grabada, de tal forma que cuando se pulsa una tecla, esta hace presión sobre un condensador, el cual produce una señal eléctrica que es detectada e interpretada por el procesador de teclado.
 
-<img src="./ObjectReplacements/Object 63" style="width:11.957cm;height:15.222cm" />
+Podemos encontrarnos modelos especiales de teclados, como por ejemplo:
 
-Fig. Organización de la memoria de control
+- **Teclados inalámbricos**: caracterizados por la ausencia de cable. La comunicación se realiza a través de rayos infrarrojos o de frecuencia; cada vez son más utilizados.
+- **Teclados TrackBall** (seguimiento de bola): incluyen una pequeña bola en la carcaza que puede girar libremente comportándose como si fuera un ratón.
+- **Teclados ergonómicos**: con diseños especiales para adaptarse a la posición natural que tienen las manos al escribir; también se denominan teclados naturales.
+- <img src="Pictures/100000000000025800000172DEFBEF06.jpg" style="width:6.033cm;height:3.718cm" />**Teclados con funciones especiales**: contienen todas las teclas de una máquina de escribir más algunas suplementarias. Estas teclas permitan realizar funciones especiales como: desplazamiento del cursor, inserción, borrado, bloqueo del deslizamiento de imagen, etc.
 
-La figura siguiente muestra los elementos clave de esta implementación. El conjunto de microinstrucciones se almacena en la memoria de control. El registro de dirección de control contiene la dirección de la siguiente microinstrucción a leer. Cuando se lee una microinstrucción de la memoria de control, se transfiere al registro intermedio de control. La parte izquierda de ese registro se conecta a las líneas de control que salen de la unidad de control. De este modo, leer una microinstrucción de la memoria de control es lo mismo que ejecutar la microinstrucción. El tercer elemento que muestra la figura es una unidad de secuenciamiento que carga el registro de dirección de control y emite una orden de lectura.
+<img src="Pictures/10000000000001F40000010DD70AA854.jpg" style="width:6.033cm;height:3.246cm" />
 
-<img src="./ObjectReplacements/Object 64" style="width:11.749cm;height:8.819cm" />
+Funcionamiento
 
-Fig. Microarquitectura de la Unidad de Control
+El teclado contiene un pequeño procesador que s encarga de comprobar si se ha pulsado alguna tecla, se sigue un proceso hasta que su código queda almacenado en la memoria, y es el siguiente:
 
-Examinando la estructura de la figura siguiente vemos la UC tiene las mismas entradas (reg. I, Indicadores de la ALU, reloj) que una UC cableada, y las mismas salidas (señales de control). La UC funciona como sigue:
+- Se pulsa una tecla \[Si se pulsan varias teclas simultáneamente, el controlador de teclado las almacena en un buffer interno (de unos 10 caracteres). Este buffer no se llena nunca ya que la transmisión es demasiado rápida para que el usuario pueda mantener el ritmo\].
+- El controlador de teclado detecta la pulsación:
+- Generar el código de muestreo (llamado *sean code*) de tecla pulsada y lo envía al puerto del teclado.
+- Activa una solicitud de interrupción al controlador de interrupciones del sistema (IRQ 1).
+- El controlador genera un vector de interrupción (INT 9).
+- El microprocesador accede a la tabla de vectores de interrupción a la dirección correspondiente al vector solicitad. Esta dirección contiene la dirección de comienzo de la rutina del controlador de teclado (en la RON-BIOS, controlador americano).
+- Se ejecuta la rutina del controlador de teclado:
 
-1.  Para ejecutar una instrucción, la unidad lógica de secuenciamiento emite una orden de lectura a la memoria de control.
+<!-- -->
 
-2.  La palabra cuya dirección se especifica en el registro de dirección de control se lee en el registro intermedio de control.
+- Lee el código de muestreo (depositado en el puerto 6011).
+- Verifica el estado del teclado. Mayúsculas, Ctrl, Alt, AltGr, etc.
+- Traduce el código de muestreo.
+- Guarda los códigos en la cola de teclado y queda a la espera de que el programa solicite la entrada de teclado.
 
-3.  El registro intermedio de control genera las señales de control y contiene además la información de dirección siguiente para la unidad lógica de secuenciamiento.
+Cuando se suelta la tecla, el controlador de teclado genera un código de tecla solicitada (*break code*).
 
-4.  La unidad lógica de secuenciamiento carga en el registro de dirección de control una nueva dirección, basada en la información siguiente del registro intermedio de control y en los indicadores de la ALU.
+El carácter que aparezca, se corresponde con la tecla pulsada y depende de la página de códigos cargada en el sistema operativo.
 
-Todo esto sucede durante un pulso de reloj.
+El Ratón
 
-El último paso recién mencionado requiere cierta elaboración. Al final de la ejecución de cada microinstrucción, la unidad lógica de secuenciamiento cara una nueva dirección el registro de dirección de control.
+Generalidades
 
-<img src="Pictures/10000000000002BB000003A87C58E020.jpg" style="width:13.226cm;height:17.759cm" />
+<img src="Pictures/100000000000027C00000189F43D9FA3.jpg" style="width:5.398cm;height:3.334cm" />**Mecánicos:** tienen una gran bola de plástico, de varias capas, en su parte inferior para mover dos ruedas que generan pulsos en respuesta al movimiento de éste sobre la superficie. Una variante es el modelo de *Honeywell* que utiliza dos ruedas inclinadas 90 [grados](http://es.wikipedia.org/wiki/Grado) entre ellas en vez de una bola. La circuitería interna cuenta los pulsos generados por la rueda y envía la información a la [computadora](http://es.wikipedia.org/wiki/Computadora), que mediante software procesa e interpreta.
 
-Fig. Funcionamiento de la unidad de control microprogramada
+- <img src="Pictures/10000000000000D7000000749B5E364A.jpg" style="width:5.689cm;height:3.069cm" />**Ópticos**: Es un ratón óptico, la bola y las ruedas de codificación son sustituidas por unos componentes ópticos: diodos emisores de luz y fototransistores. Su funcionamiento se basa en el reflejo de un haz de luz es una superficie reflectante que utiliza como soporte, que incorpora unas líneas formando cuadros que sirven para medir el desplazamiento del ratón y con ello la posición del cursor en la pantalla. Los diodos producen dos rayos dirigidos hacia abajo. Al estar situado el ratón sobre una superficie reflectante que contiene finas rayas horizontales y verticales, cuando se desplaza el ratón se reenvían hacia arriba y los fototransistores detectan las variaciones de luz que resultan de ello. Los componentes electrónicos del ratón transforman estos impulsos luminosos en señales eléctricas. Estos ratones son de manejo más suave que los ratones de bola. Sin embargo, no pueden utilizarse sin su tapete o superficie reflectante. No han tenido mucho éxito.
 
-Dependiendo del valor de los indicadores y del registro intermedio de control, se toma una de las tres siguientes decisiones:
+**De láser:** este tipo es más sensible y preciso, haciéndolo aconsejable especialmente para los [diseñadores gráficos](http://es.wikipedia.org/wiki/Diseñador_gráfico) y los fanáticos de los [videojuegos](http://es.wikipedia.org/wiki/Videojuego). También detecta el movimiento deslizándose sobre una superficie horizontal, pero el haz de luz de tecnología óptica se sustituye por un láser con resoluciones a partir de 2000 ppp, lo que se traduce en un aumento significativo de la precisión y sensibilidad.
 
-- Captar la microinstrucción siguiente: se suma 1 al registro de dirección de control.
+- <img src="Pictures/10000000000000B40000008F8771BD0D.jpg" style="width:5.398cm;height:3.81cm" />**Trackball:** el concepto de [*trackball*](http://es.wikipedia.org/wiki/Trackball) es una idea novedosa que parte del hecho: se debe mover el puntero, no el dispositivo, por lo que se adapta para presentar una bola, de tal forma que cuando se coloque la mano encima se pueda mover mediante el [dedo pulgar](http://es.wikipedia.org/wiki/Dedo_pulgar), sin necesidad de desplazar nada más ni toda la mano como antes. De esta manera se reduce el esfuerzo y la necesidad de espacio, además de evitarse un posible dolor de [antebrazo](http://es.wikipedia.org/wiki/Antebrazo) por el movimiento de éste. A algunas personas, sin embargo, no les termina de resultar realmente cómodo. Este tipo ha sido muy útil por ejemplo en la informatización de la navegación marítima.
 
-- Saltar a una nueva rutina según indica una microinstrucción de salto: El campo de dirección del registro intermedio de control se carga en el registro de dirección de control.
+- **Con teclas especiales**: han salido recientemente al mercado algunos modelos con teclas en la parte superior además de las habituales, con las que se pueden efectuar funciones especiales, algunas de ellas asignadas comúnmente al teclado, estos ratones se suministran con un disco con el controlador para los sistemas operativos gráficos más usuales. Los más extendidos son los que llevan un pulsador o rueda en la parte central que hacen la función de las barras de desplazamiento por las páginas Web (Net-mouse) dentro de la propia página, sin recurrir a las barras de desplazamiento del lateral de la página.
 
-- Saltar a la rutina de una instrucción máquina: se carga el registro de dirección de control en función del código de operación almacenado en el registro I.
+<img src="Pictures/10000201000000B4000000F07A855FA5.png" style="width:4.445cm;height:3.81cm" />**Inalámbrico:** en este caso el dispositivo carece de un cable que lo comunique con la computadora, sino que utiliza algún tipo de tecnología inalámbrica. Para ello requiere un receptor de la señal inalámbrica que produce, mediante [baterías](http://es.wikipedia.org/wiki/Batería_eléctrica), el *mouse*. El receptor normalmente se conecta a la computadora por USB, o por PS/2. Según la tecnología inalámbrica usada pueden distinguirse varias posibilidades: 
 
-Se observa también en la figura dos módulos rotulados decodificador. El decodificador de arriba traduce el código de operación del registro I en una dirección de memoria de control.
+- - **Radio Frecuencia (RF)**: Es el tipo más común y económico de este tipo de tecnologías. Funciona enviando una señal a una frecuencia de 2.4[Ghz](http://es.wikipedia.org/wiki/Herzio), popular en la [telefonía móvil](http://es.wikipedia.org/wiki/Telefonía_móvil) o celular, la misma que los estándares [IEEE 802.11b](http://es.wikipedia.org/wiki/IEEE_802.11b) y [IEEE 802.11g](http://es.wikipedia.org/wiki/IEEE_802.11g). Es popular, entre otras cosas, por sus pocos errores de desconexión o interferencias con otros equipos inalámbricos, además de disponer de un alcance suficiente: hasta unos 10 metros.
+  - **Infrarrojo (IR)**: Esta tecnología utiliza una señal de onda infrarroja como medio de trasmisión de datos, popular también entre los controles o mandos remotos de [televisiones](http://es.wikipedia.org/wiki/Televisión), [equipos de música](http://es.wikipedia.org/wiki/Equipo_de_música) o en telefonía celular. A diferencia de la anterior, al tener un alcance medio inferior a los 3 metros, y como emisor y receptor deben estar en una misma línea visual de contacto directo ininterrumpido, para que la señal se reciba correctamente, su éxito ha sido menor, llegando incluso a desaparecer del mercado.
 
-El otro decodificador no se usa con microinstrucciones horizontales pero sí con microinstrucciones verticales. Como se mencionó, en una microinstrucción horizontal cada bit del campo de control corresponde a una línea de control.
+<!-- -->
 
-En una microinstrucción vertical, se usa un código para cada acción a realizar, por ejemplo, (P) → S, y el decodificador traduce este código en señales de control individuales.
+- - **Bluetooth (BT)**: [Bluetooth](http://es.wikipedia.org/wiki/Bluetooth) es la tecnología más reciente como transmisión inalámbrica (estándar [IEEE 802.15.1](http://es.wikipedia.org/wiki/IEEE_802.15.1)), que cuenta con cierto éxito en otros dispositivos. Su alcance es de unos 10 metros o 30 pies (que corresponde a la Clase 2 del estándar Bluetooth).
 
-La ventaja de las microinstrucciones verticales es que son más compactas (ocupan menos bits) que las microinstrucciones horizontales, a costa de añadir una pequeña lógica y cierto retardo de tiempo.
+### El controlador
 
-#### Control de Wilkes
+<img src="Pictures/10000000000000B400000087D778BA0B.jpg" style="width:4.763cm;height:3.572cm" />Es, desde hace un tiempo, común en cualquier [equipo informático](http://es.wikipedia.org/wiki/Computadora), de tal manera que todos los sistemas operativos modernos suelen incluir de serie un software [controlador](http://es.wikipedia.org/wiki/Controlador_de_dispositivo) (*driver*) básico para que éste pueda funcionar de manera inmediata y correcta. No obstante, es normal encontrar software propio del fabricante que puede añadir una serie de funciones opcionales, o propiamente los controladores si son necesarios.
 
-La configuración que propuso Wilkes se representa en la siguiente figura. El núcleo del sistema es una matriz parcialmente llena de diodos. Durante un ciclo máquina, se activa una fila de la matriz mediante un pulso. Esto produce señales en aquellos puntos en los que un diodo está presente (indicados mediante un punto en el diagrama). La primera parte de la fila genera las señales de control que gobiernan el funcionamiento de la CPU. La segunda parte genera la dirección de la fila que será seleccionada mediante un pulso en el siguiente ciclo máquina. Por tanto, cada fila de la matriz es una microinstrucción, y el trazado de la matriz es la memoria de control.
+<span id="anchor"></span>Uno, dos o tres botones 
 
-Al comienzo de un ciclo, la dirección de la fila a seleccionar está almacenada en el registro I. Esta dirección es la entrada del decodificador, el cual, cuando se activa mediante un pulso de reloj, selecciona una fila de la matriz. Dependiendo de las señales de control, durante el ciclo se pasa al registro II bien el código de operación almacenado en el registro de instrucción, o bien la segunda parte de la fila activada. El contenido del registro II se lleva entonces al registro I mediante un pulso de reloj. Se usan pulsos de reloj alternos para activar una fila de la matriz y para transferir el contenido del registro II al registro I. La configuración con dos registros es necesaria ya que el decodificador es sencillamente un circuito combinacional; con un solo registro, la salida se convertiría en entrada dentro del mismo ciclo, originando un estado inestable.
+<img src="Pictures/10000000000000B4000000996858CCA4.jpg" style="width:4.763cm;height:4.048cm" />Hasta mediados de [2005](http://es.wikipedia.org/wiki/2005), la conocida empresa [Apple](http://es.wikipedia.org/wiki/Apple), para sus sistemas Mac apostaba por un ratón de un sólo botón, pensado para facilitar y simplificar al usuario las distintas tareas posibles. Actualmente ha lanzado un modelo con dos botones [simulados](http://es.wikipedia.org/wiki/Simulación) virtuales con sensores debajo de la cubierta plástica, dos botones laterales programables, y una bola para mover el puntero, llamado [Mighty Mouse](http://es.wikipedia.org/wiki/Mighty_Mouse).
 
-Este esquema es muy similar a la aproximación de microprogramación horizontal descrita anteriormente. La principal diferencia es ésta: en la descripción previa, el registro de dirección de control podía incrementarse en 1 para acceder a la siguiente dirección. En el esquema de Wilkes, la dirección siguiente está contenida en la microinstrucción.
+En Windows, lo más habitual es el uso de dos o tres botones principales. En sistemas [UNIX](http://es.wikipedia.org/wiki/UNIX) como [GNU/Linux](http://es.wikipedia.org/wiki/GNU/Linux) que utilicen entorno gráfico ([*X Window*](http://es.wikipedia.org/wiki/X_Window_System)), era habitual disponer de tres botones (para facilitar la operación de copiar y pegar datos directamente). En la actualidad la funcionalidad del tercer botón queda en muchos casos integrada en la rueda central de tal manera que además de poder girarse, puede pulsarse.
 
-Para permitir bifurcaciones, una fila debe contener dos partes de direcciones, controladas por una señal condicional (por ejemplo, un indicador), como muestra la figura.
+Hoy en día cualquier sistema operativo moderno puede hacer uso de hasta estos tres botones distintos e incluso reconocer más botones extra a los que el software reconoce, y puede añadir distintas funciones concretas, como por ejemplo asignar a un cuarto y quinto botón la operación de copiar y pegar texto.
 
-Después de proponer este esquema, Wilkes proporciona un ejemplo de su utilización para implementar la unidad de control de una máquina sencilla. Este ejemplo, el primer diseño conocido de una CPU microprogramada, merece repetirse aquí porque ilustra muchos de los principios actuales de la microprogramación.
+La sofisticación ha llegado a extremos en algunos casos, por ejemplo el [MX610](http://es.wikipedia.org/w/index.php?title=MX610&action=edit&redlink=1) de Logitech, lanzado en [Septiembre](http://es.wikipedia.org/wiki/Septiembre) de [2005](http://es.wikipedia.org/wiki/2005). Preparado anatómicamente para diestros, dispone de hasta 10 botones.
 
-<img src="Pictures/100000000000042B000002D48FE91AFF.jpg" style="width:15.24cm;height:10.303cm" />
+<span id="anchor-1"></span>Problemas frecuentes
 
-Fig. UC microprogramada de Wilkes
+- **Puntero que se** ***atasca*** **en la pantalla**: Es el fallo más frecuente, se origina a causa de la acumulación de suciedad, frenando o dificultando el movimiento del puntero en la pantalla. Puede retirarse fácilmente la bola de goma por la parte inferior y así acceder a los ejes de plástico para su limpieza, usando un pequeño pincel de cerdas duras. Para retardar la aparición de suciedad en el interior del ratón es recomendable usar una [alfombrilla](http://es.wikipedia.org/wiki/Alfombrilla). Este problema es inexistente con tecnología óptica, ya que no requiere partes mecánicas para detectar el desplazamiento. Es uno de los principales motivos de su éxito.
 
-### 
+<!-- -->
 
-### Secuenciamiento De Microinstrucciones
+- **Pérdida de sensibilidad o contacto de los botones**: se manifiesta cuando se pulsa una vez un botón y la computadora lo recibe como ninguno, dos o mas clics consecutivos, de manera errónea. Esto se debe al desgaste de las piezas de plástico que forman parte de los botones del ratón, que ya no golpean o pulsan correctamente sobre el pulsador electrónico. Para solucionarlo normalmente debe desmontarse completamente y colocar varias capas de papel adhesivo sobre la posible zona desgastada hasta recuperar su forma original. En caso de uso frecuente, el desgaste es normal, y suele darse a una cifra inferior al [milímetro](http://es.wikipedia.org/wiki/Metro) por cada 5 años de vida útil.
 
-Las dos tareas básicas realizadas por una UC microprogramada son:
+<!-- -->
 
-- El secuenciamiento de microinstrucciones: Obtener la siguiente microinstrucción de la memoria de control.
-- La ejecución de microinstrucciones: Generar las señales de control necesarias para ejecutar la microinstrucción.
+- **Dolores musculares causados por el uso del ratón**: Si el uso de la computadora es frecuente, es importante usar un modelo lo mas [ergonómico](http://es.wikipedia.org/wiki/Ergonomía) posible, ya que puede acarrear problemas físicos en la [muñeca](http://es.wikipedia.org/wiki/Muñeca) o [brazo](http://es.wikipedia.org/wiki/Brazo) del usuario. Esto es por la posición totalmente plana que adopta la mano, que puede resultar forzada, o puede también producirse un fuerte desgaste del huesecillo que sobresale de la muñeca, hasta el punto de considerarse una enfermedad profesional. Existen [alfombrillas](http://es.wikipedia.org/wiki/Alfombrilla) especialmente diseñadas para mejorar la comodidad al usar el ratón.
 
-Al diseñar una UC, las dos tareas deben considerarse a la vez, ya que las dos afectan al formato de la microinstrucción y a la temporización de la UC.
+La impresora
 
-#### 
+Introducción
 
-#### Consideraciones de diseño
+Una impresora es un dispositivo electromecánico capaz de plasmar sobre un soporte físico (papel, transparencia, etc.) la información (textos, gráficos, etc.) creados en una computadora. Es por lo tanto un periférico de salida tan utilizado que se puede afirmar que es una parte más de la computadora personal, ya que difícilmente se trabaja con una PC si no se tiene una impresora para sacar una copia en papel del trabajo realizado.
 
-Hay dos cuestiones involucradas en el diseño de una técnica de secuenciamiento de microinstrucciones: el tamaño de la microinstrucción y el tiempo de generación de la dirección.
+A través de la conexión (ya sea utilizando un puerto paralelo o un puerto USB) la computadora envía una serie de códigos hexadecimales (o códigos ASCII) que representan los caracteres, signos de puntuación y movimiento de impresora como tabuladores, retornos de carro, avance de página, etc. Estos códigos hexadecimales se almacenan en la memoria RAM de la impresora (de unos cuantos Kbytes e incluso Mbytes) que liberan a la computadora para realizar otras funciones durante el proceso de impresión. El procesador de la impresora lee estos datos de la memora y según el tipo de impresora, dará las órdenes necesarias a las partes móviles, mecánicas y electromecánicas de la impresora para que los datos se representen de forma adecuada en el papel. Cuando el buffer de la impresora se llena, el controlador de la impresora envía un código de control para indicar a la computadora que interrumpa la transmisión de datos. En el momento en que se vacía en buffer, la impresora envía un nuevo código que reanuda el envío de datos.
 
-El primer asunto es evidente; minimizar el tamaño de la memoria de control reduce su costo. El segundo asunto es sencillamente un deseo de ejecutar las microinstrucciones tan rápido como sea posible.
+El procesador de la impresora tomará toda la información, calculará el posicionamiento más eficaz de las distintas partes encargadas de la impresión, y enviará las señales de control a los distintos elementos de movimiento, para que todo salga a la perfección. Al mismo tiempo, se dispone de censores que detectan los movimientos y posición de cada elemento, con el fin de que el procesador contraste los datos enviados con los reales y corrija las deficiencias detectadas.
 
-Cuando se ejecuta un microprograma, la dirección de la siguiente microinstrucción a ejecutar está en una de estas situaciones:
+Una de las características que define la calidad de una impresora es su resolución que se mide en puntos por pulgada (DPI – Dot Per Inch). No hay que dejarse llevar por las cifras , ya que el número de puntos no lo es todo; por ejemplo; por ejemplo, en impresoras matriciales es posible que el grueso de las agujas indique que es posible alcanzar una resolución de 360 puntos por pulgadas, pero esos puntos, debido a su tamaño, no puedan ser diferenciados unos de otros. Un cabezal de impresión de alta resolución no puede compensar la poca precisión del mecanismo conductor de la impresora. También es importante la calidad del punto (forma, tamaño regular y constante), así como su precisión. En este sentido, la impresora láser es la que mayor calidad de punto y precisión tiene. Por tanto, a igualdad de definición, la láser da mayor calidad de impresión.
 
-- Determinada por el registro de instrucción
-- Siguiente dirección secuencial
-- Salto
+Existe otro factor a la hora de determinar la calidad de una impresora, al que no se suele prestar la debida atención, es la densidad (porcentaje de negro) que puede ofrecer la impresora. Algunos métodos de impresión, tales como el láser, pueden mantener la misma densidad de impresión incluso cuando se está acabando, cosa que no ocurren con las impresoras de agujas o matriciales.
 
-La primera situación tiene lugar solo una vez por ciclo de instrucción, justo tras la captación de la instrucción. La segunda situación es la más común en la mayoría de los diseños.
+Un factor que a veces se utiliza como reclamo comercial es la velocidad de impresión, el significado de este indicador suele sobrevalorarse e incluso se le puede dar importancia artificialmente por parte de los fabricantes para ganar un mercado más amplio. La velocidad de impresión suele definirse en caracteres por segundo (cps) o páginas por minuto (ppm). De todas formas, los fabricantes suelen indicar el valor de dicho parámetro para el modo de calidad de borrador, que no es probable que se utilice frecuentemente. La misma impresora es posible que tarde mucho más en imprimir con una calidad superior.
 
-No obstante, el diseño no se puede optimizar solo para los accesos secuenciales. Los saltos, tanto condicionales como incondicionales, son una parte necesaria del microprograma. Además, las secuencias de microinstrucciones tienden a ser cortas; una de cada tres o cuatro microinstrucciones podría ser un salto.
+<img src="./ObjectReplacements/Object 3" style="width:15.575cm;height:6.108cm" />
 
-Por consiguiente, es importante diseñar técnicas compactas y eficientes en cuanto al tiempo para los saltos a microinstrucciones.
+- **Entrada:** Consiste en adaptar las señales de entrada por el conector Centronics al microcontrolador. Dicha adaptación incluye un buffer en memoria RAM.
+- **Sensores y actuadores:** su misión es la de mover, detectar y corregir la posición y movimiento de los distintos elementos importantes en el mecanismo de impresión de cada tipo de impresora.
+- **Salida:** Consiste en actuar los mecanismos necesarios (inyectores, electroimanes, etc.) para sacar la copia directamente en papel.
+- **Microcontrolador:** Se engloba aquí un circuito encargado de procesar la información recibida de la computadora y tratarla adecuadamente para que actuando sobre los distintos dispositivos de impresión, se obtenga como resultado la copia impresa con la calidad elegida. Este bloque incluye una memora ROM donde se realiza un autochequeo del sistema y posicionado de los elementos, cada vez que se enciende la impresora. Al mismo tiempo tiene el software de control para comunicarse con la computadora, para imprimir páginas de prueba, etc; en definitiva, es el cerebro de la impresora.
 
-#### 
+Todos estos elementos son distintos en función de cada tipo de impresora y en función del estado de la tecnología en cada momento; por ejemplo, un detector de posición en las antiguas impresoras era un simple pulsador miniatura, mientras que actualmente puede ser un optoacoplador o un detector de proximidad, por lo tanto, no se puede generalizar el tipo de componentes electrónicos, mecánicos, electromecánicos que incorporan los distintos modelos de impresoras, ya que son muy variables con el tiempo.
 
-#### Técnicas de secuenciamiento
+Clasificación
 
-A partir de la microinstrucción en curso, de los indicadores de condición, y del contenido del registro de instrucción, hay que generar una dirección de la memoria de control para la siguiente microinstrucción.
+En la actualidad, tres son los métodos que se utilizan para la impresión: el impacto matricial o por agujas, la inyección de tinta y la impresión mediante tecnología láser. En la figura se muestra un diagrama de clasificación de los tipos de impresoras más utilizados actualmente, aunque las de transferencia térmica se utilizan en ambiente profesional y se llama “transferencia térmica de cera”.
 
-Se ha usado una gran variedad de técnicas. Podemos agruparlas en tres categorías, como ilustran las figuras siguientes.
+Esta clasificación se refiere a la tecnología de impresión utilizada; cada uno de los tipos puede dividirse a su vez en blanco y negro (grises) y en color, teniendo cada una sus ventajas e inconvenientes en cada una de sus versiones.
 
-Estas categorías se basan en el formato de la información de dirección de la microinstrucción:
+La impresora de agujas
 
-- Dos campos de dirección
-- Un único campo de dirección
-- Formato variable
+<img src="Pictures/1000000000000190000001A9851CE326.jpg" style="width:5.332cm;height:5.671cm" />Durante la aparición de los primeros PC, las impresoras se clasificaban en dos categorías: las de margarita y las de agujas. Las impresoras de margarita eran muy lentas y ruidosas. Ofrecían una calidad de impresión correcta, así como la posibilidad de obtener varios tipos de letra, pero al coste de tener que hacer molestas manipulaciones. Así, había que cambiar la rueda que contenía los caracteres (denominada margarita ) para cada cambio de tipo. Con frecuencia, el cambio se limitaba a la utilización de itálica. Estas impresoras eran capaces de simular los caracteres en negrita golpeando dos veces con el mismo carácter y haciendo un ligero desplazamiento horizontal.
 
-La aproximación más simple es tener dos campos de dirección en cada microinstrucción. La figura indica como se va a usar esta información. Se tiene un multiplexor que sirve de destino de los dos campos de dirección y del registro de instrucción. Basándose en la entrada de selección de dirección, el multiplexor transmite el código de operación o una de las dos direcciones al registro de dirección de control. Este se decodifica a continuación para producir la dirección de la siguiente microinstrucción.
+Las impresoras de agujas, también llamadas matriciales, eran igual de ruidosas y ofrecían un resultado de calidad mediocre. Pero eran mucho más rápidas y baratas. Desde el momento de su aparición, las impresoras de margarita desaparecieron completamente. Habría podido pensarse que ocurriría lo mismo con las impresoras de agujas. Sin embargo, éstas ocupan un segmento de mercado, por ejemplo cuando se necesitan hacer varias copias con papel de calco o para imprimir facturas, gracias a las posibilidades que ofrece el papel continuo.
 
-Las señales de selección de dirección son suministradas por un módulo de lógica de salto, cuyas entradas son los indicadores de la unidad de control y ciertos bits de la parte de control de la microinstrucción.
+Las impresoras de agujas producen una imagen en una hoja de papel con ayuda de una serie de finas láminas metálicas (agujas) que golpean dicha hoja. Entre las agujas y la hoja se pone una cinta entintada, de forma similar a como se hace en una máquina de escribir. El choque de las agujas provoca una transferencia de la tinta desde la cinta hasta el papel. Así, los caracteres están formados por los puntos creados por el choque de las agujas. El número de puntos que constituye un carácter (o el número de agujas) determina la resolución, y por tanto, la calidad de impresión. Las más habituales son las de 9 y de 24 agujas.
 
-<img src="Pictures/10000000000002F50000037E05199DBE.jpg" style="width:13.614cm;height:16.067cm" />
+Un diagrama de funcionamiento del mecanismo de este tipo de impresora se muestra en la figura. En ella, podemos observar que el mecanismo es similar al se una maquina de escribir, aunque en lugar de tener todos los caracteres, éstos se dibujan haciendo una impacto con un número determinado de agujas a la vez. Estas agujas están dispuestas de forma vertical sobre el cabezal, junto a un electroimán indicando que será activado por las señales enviadas por el microcontrolador, creando una campo magnético que repele un imán situado en el extremo de la aguja, lo que hace que ésta se desplace hacia la cinta. La aguja golpeará la cinta transfiriendo la tinta al papel, y una vez realizada su función, un muelle la llevará hacia su posición inicial. Mientras tanto, el cabezal se mueve de un lado al otro del papel, dejando a su paso los puntos necesarios para construir los caracteres enviados desde la computadora. El cabezal de impresión irá accionando distintas combinaciones de agujas a medida que se desplaza por la página para ir representando los distintos caracteres (para mejorar la impresión o imprimir caracteres en negrita se hace pasar el cabezal una segunda vez por encima de la línea de texto y para la impresión en color se utilizan cintas con tres o cuatros franjas de tinta de color).
 
-Fig. Lógica de control de salto, dos campos dirección
+Una vez que el cabezal ha terminado de imprimir una línea, el tambor (rodillo) que arrastra el papel girará un poco subiendo el papel para que sea impresa una nueva línea y en ese momento el cabezal podrá realizar una nueva pasada, dejando un nuevo rastro de puntos.
 
-Aunque la aproximación de dos direcciones es sencilla, necesita más bits por microinstrucción que las otras técnicas. Con alguna lógica adicional, se puede conseguir algún ahorro. Una aproximación común es tener un único campo de dirección. Con este enfoque, las opciones para la dirección siguiente son:
+Gracias al movimiento combinado del cabezal de impresión en sentido horizontal y de la hoja de papel en sentido vertical, es posible situar el cabezal en cualquier punto del papel. Por este motivo, sólo es necesario disponer de un mecanismo conductor lo suficientemente preciso para conseguir una buena resolución, incluso con una sola aguja de impresión. Por ello, el número adicional de agujas no supone necesariamente una mejora de resolución, sino un incremento de la velocidad del proceso de impresión.
 
-- Campo de dirección
-- Código del registro de instrucción
-- Siguiente dirección secuencial
+Las ventajas más importantes de este tipo de impresoras son su fiabilidad y bajo coste de mantenimiento (el coste de la cinta es insignificante comparado con el tóner de una láser o los cartuchos de tintas de inyección, aunque también su duración es bastante menor).
 
-Las señales de selección de dirección determinan qué opción se escoge. Esta aproximación reduce el número de campos de dirección a uno. Observemos, sin embargo, que el campo de dirección a menudo no se usa Por tanto, hay alguna ineficiencia en este esquema de codificación.
+Los principales inconvenientes son su baja velocidad y sobre todo, el enorme ruido (comparándola con los otros tipos) que producen las agujas al golpear sobre el papel.
 
-<img src="Pictures/10000000000002E700000309B4BE12C4.jpg" style="width:13.019cm;height:13.631cm" />
+En cuanto al color, existen muy pocos fabricantes que ofrezcan dispositivos destinados a que las impresoras matriciales puedan imprimir a color. En estos casos, llevan una cinta con 4 colores (amarillo, cián-azul, magenta-rojo, negro), de tal forma que los distintos colores se forman con la combinación adecuada de los tres, y el negro para los grises.
 
-Fig. Lógica de control de salto, un único campo de dirección
+La conexión entre el cabezal de impresión y el circuito de control se lleva a cabo mediante un cable flexible con un número de hilos dependiente del número de agujas (número de agujas + 1), y dicho y dicho cable se moverá con el cabezal, por ello es muy importante que siempre tenga el camino libre, ya que en caso contrario se quedará atrapado en dicho movimiento y se romperá, teniendo que ser sustituido por otro idéntico que a veces es difícil encontrar.
 
-Otra aproximación es proporcionar dos formatos de microinstrucción totalmente diferentes. Un bit designa que formato se utilizará. En uno de los dos formatos, los demás bits se usan para activar señales de control. En el otro formato, algunos bits controlan el módulo de lógica de salto, y los bits restantes suministran la dirección. En el primer formato, la dirección siguiente es la siguiente dirección secuencial o una dirección derivada del registro de instrucción. En el segundo formato, se especifica un salto condicional o incondicional. Un inconveniente de esta aproximación, tal como se ha descrito, es que se consume un ciclo completo por cada microinstrucción de salto. Con las otras aproximaciones, la generación de la dirección sucede como parte del mismo ciclo en el que se generan las señales de control, con lo que se minimizan los accesos a la memoria de control.
+La impresora de inyección de tinta
 
-Estas aproximaciones son generales. Las implementaciones específicas con frecuencia usarán una variación o una combinación de estas técnicas.
+La impresora de inyección de tinta, también denominada de chorro de tinta, es una impresora silenciosa, de alta o muy alta calidad y de bajo precio, más rápida que la de agujas aunque más lenta que la láser, y que por sus características se ha impuesto en el sector domestico de forma generalizada. Imprime línea a línea con ayuda de un cabezal de impresión móvil, de forma similar a como lo hace una impresora de agujas. Para crear la imagen impresa, se utiliza un sistema de no impacto, por el cual el cabezal no llega a tocar la hoja en ningún momento, sino que pulveriza pequeños chorros de tinta sobre el papel.
 
-<img src="Pictures/1000000000000337000003CDC8B5EEFC.jpg" style="width:13.335cm;height:15.75cm" />
+El cabezal de impresión de una impresora de chorro de tinta está montado en un carro móvil, como en el caso de las impresoras de agujas. Contiene un cierto número de orificios, a través de los cuales se expulsa la tinta líquida formando un minúsculo punto negro en el papel. Según el dato a imprimir, se expulsará la tinta por unos orificios u otros, formando la imagen en el papel.
 
-Fig. Lógica de control de salto, formato variable
+Existen básicamente dos métodos para inyectar la tinta desde el cabezal: el método térmico y el método piezoeléctrico.
 
-#### Generación de la dirección
+En el proceso térmico, la imagen se forma empleando una cabeza térmica para calentar y fusionar la tinta sobre el papel. Un impulso eléctrico hace que una pequeña resistencia (una por cada inyector) situada en el fondo de la cámara se caliente y caliente a su vez una delgada capa de tinta en el fondo de la cámara hasta una temperatura del orden de 480 ºC durante algunos microsegundos, lo que hace que la tinta hierva y se forme una burbuja de vapor. A medida que se expande la burbuja, empuja la tinta a través de la boquilla para finalmente formar un pequeñísima gota en la punta de ésta. La presión de la burbuja empuja la gota hacia el papel. Tras esto, la resistencia se enfría, la burbuja explota y la succión resultante atrae tinta nueva del depósito hacia la zona de disparo.
 
-Otro punto de vista es considerar las diversas formas en que la siguiente dirección se puede obtener o calcular.
+La tinta tiende a extenderse siguiendo las fibras del papel, por tanto sólo con papeles especiales, satinados o fotográficos, podremos obtener la calidad deseada (los folios suelen tener una cara satinada y otra no; conviene que el lado de la impresión sea el satinado, que se puede ver al trasluz).
 
-La siguiente tabla relaciona las diversas técnicas de generación de la dirección. Estas se pueden dividir en técnicas explícitas, en las que la dirección aparece explícitamente en la microinstrucción, y técnicas implícitas, que requieren lógica adicional para generar la dirección.
+En el método piezoeléctrico, se utiliza como mecanismo de impulsión de las partículas de tinta las propiedades de cambio de forma de un elemento piezoeléctrico al que se le aplica un impulso eléctrico. Cada inyector está formado por un elemento piezoeléctrico que al recibir un impulso eléctrico cambia de forma, aumentando bruscamente la presión del interior del cabezal y provocando la inyección de una partícula de tinta.
 
-|                     |                  |
-|---------------------|------------------|
-| Explícitas          | Implícitas       |
-| Dos Campos          | Traducción       |
-| Salto incondicional | Adición          |
-| Salto condicional   | Control residual |
+El ciclo completo de inyección es más rápido en el proceso piezoeléctrico que en el térmico, pero los cabezales son permanentes, no existiendo la modalidad de cabezales desechables, como sucede con el proceso térmico.
 
-Nos hemos ocupado esencialmente de las técnicas explícitas. Con una aproximación de dos campos, hay dos direcciones alternativas disponibles en cada microinstrucción.
+Dentro del grupo de proceso piezoeléctrico, hay un subgrupo denominado “cabezal actuador multicapa” (Multi-layer Actuator Head) de Epson, que consiste en la superposición de finas capas piezocerámicas de un grosor de unos 20mm que forman una estructura para conseguir que la gota de tinta sea una esfera y no haya restos detrás.
 
-Usando un único campo de dirección o un formato variable, se pueden implementar varias instrucciones de salto. Una instrucción de bifurcación condicional depende de los siguientes tipos de información:
+En el caso de impresión en color, este tipo de impresora tiene cuatro depósitos de tinta independientes; uno negro (para imprimir en blanco y negro) y otro con tres colores básicos: cián, magenta y amarillo (aunque han aparecido en el mercado impresoras con 6 depósitos). (Hay modelos de impresoras en las que cada color es un cartucho independiente). Una imagen en color se forma por combinación de estos tres colores básicos. El procedimiento empleado se ***denomina síntesis sustractiva.*** Consiste en eliminar de la luz blanca ciertos componentes. Así, una tinta roja absorbe el verde y el azul y refleja el rojo. Una tinta azul absorbe el verde y el rojo. Una tinta negra absorbe todos los colores y no refleja nada. Así pues pueden obtenerse los colores en papel con la ayuda de tres colores primarios en mezcla sustractiva: el cián, el magenta y el amarillo. La mezcla de esos tres colores debe producir el negro, aunque en la practica el color el color que dan es un gris verdoso muy oscuro. Es por ese motivo por el cual este procedimiento, llamado ***tricromía***, es poco utilizado. Se prefiere emplear la ***cuatricromía***, en el que una tinta negra permite reforzar los tonos oscuros y obtener el negro perfecto.
 
-- Indicadores de la ALU
-- Parte del código de operación o campos de modo de direccionamiento de la instrucción máquina
-- Partes de un registro seleccionado, tales como el bit de signo
-- Bits de estado dentro de la UC.
+La imagen se imprime por páginas y por pasadas. En cada una de las pasadas se proporciona la cantidad necesaria de tinta de color para cada uno de los puntos de la hoja. Al cabo de tres pasadas, se ha depositado tinta de los tres colores sobre el papel, quedando impresa la imagen en color.
 
-También se usan frecuentemente varias técnicas implícitas. Una de ellas, la traducción, se necesita en casi todos los diseños. La parte de código de operación de una instrucción máquina se traduce a una dirección de microinstrucción.
+El papel entra en la impresora por dos procedimientos: por fricción y por tracción.
 
-Esto se presenta solo una vez por ciclo de instrucción. Una técnica implícita común combina o suma dos partes de una dirección parar formar la dirección completa.
+En el procedimiento de ***fricción***, el papel entra entre el rodillo de presión y unos rodillos con unos muelles, de tal forma que el rodillo de presión gira entrando el papel hacia el mecanismo de impresión; en este tipo de impresoras este es el mecanismo más utilizado.
 
-### 
+En el procedimiento por ***tracción***, el papel lleva unos agujeros que pasan por un mecanismo que va tirando el papel por dichos agujeros, consiguiendo un desplazamiento muy preciso; se utiliza con papel continuo y no es muy utilizado en este tipo de impresoras, aunque si lo es en las matriciales.
 
-### 
+Al elegir un modelo de impresora de inyección de tita uno de los factores que se considera es el precio, pero para ello hemos de tener en cuenta no solo el precio de la impresora en sí, sino también el precio de los cartuchos de tinta y la cantidad de folios que se impriman con cada uno. Esto es importante, ya que a veces entre estos elemento (consumibles) hay una gran diferencia de precio, y es muy importante conocerlos antes de decantarnos por un modelo determinado a otro.
 
-### Ejecución De Microinstrucciones
+En este sentido hay dos versiones; las que llevan los inyectores fijos en la propia impresora y las que llevan los inyectores en los propios cartuchos de recambio. Cada una tiene sus ventajas e inconvenientes, pero para las que llevan los inyectores en los cartuchos, éstos son más caros, mientras que la impresora en si es más económica (se sobreentiende a igualdad de prestaciones). Los inyectores fijos son de mayor calidad, y están fabricados para un tiempo de vida de la impresora bastante alto, mientras que los que van en los cartuchos, están pensados para la duración del cartucho (algo más); al cambiar el cartucho además se cambian los inyectores.
 
-El ciclo de microinstrucción es el evento básico de una CPU microprogramada. Cada ciclo se compone de dos partes: captación y ejecución. La parte de captación depende de la generación de una dirección de microinstrucción, como se vio en la sección precedente. Esta sección se ocupa de la ejecución de una microinstrucción.
+La impresora láser
 
-Recordemos cuales son las consecuencias de la ejecución de una microinstrucción. Fundamentalmente, el resultado de la ejecución es la generación de señales de control. Algunas de estas señales controlan puntos internos de la CPU.
+La impresora láser es una impresora silenciosa, de muy alta calidad, precio elevado (aunque hay modelos a buen precio), más rápida que las de inyección a tinta y que debido a estas características se ha impuesto en el sector profesional y allí donde hay una gran tirada de documentos (secretarias, oficinas de grandes empresas, etc).
 
-Las demás señales van al bus de control externo o a otras interfaces externas. Como función accesoria, se determina la dirección de la siguiente microinstrucción.
+Una vez que los datos provenientes de la computadora llegan a la impresora, deben interpretarse en instrucciones que controlen el movimiento de un rayo láser.
 
-La descripción precedente sugiere la organización de una unidad de control que se muestra en la figura siguiente. Esta versión subraya el centro de atención de esta sección. Los principales módulos de este diagrama ya deben estar claros.
+En una impresora láser, la imagen se obtiene por un procedimiento electroestático, similar al de las fotocopiadoras. La impresión no imprime el papel línea por línea, sino por páginas completas, lo que hace necesario que la computadora transmita a la impresora todos los datos incluidos en la página a través del puerto de impresión. Todos estos datos se almacenan en una memoria RAM propia de la impresora, y cuando los datos de la página están completos tomará una hoja de la bandeja e imprimirá la hoja completa, pasándola entre dos rodillos. El rodillo situado en la parte superior está fabricado con un material fotosensible, que tiene la característica de producir cargas estáticas y eliminarlas cuando es iluminado. Los puntos que forman la impresión son dibujados mediante una haz láser sobre este rodillo. Para ello un espejo giratorio hace que el rayo láser recorra una horizontal en este cilindro llamado cartucho fotoconductor orgánico.
 
-El módulo de lógica de secuenciamiento contiene la lógica que realiza las funciones estudiadas en la sección anterior. Genera la dirección de la siguiente microinstrucción, usando como entradas el registro de instrucción, los indicadores de la ALU, el registro de dirección de control (para incrementarlo), y el registro intermedio de control.
+El rodillo de la impresora va girando y entra en contacto con un polvo muy fino llamado tóner que se adhiere a las zonas cargadas eléctricamente, las zonas donde ha incidido el rayo láser son descargadas y corresponden a las zonas que van en blanco. El rodillo seguirá girando y una vez que tiene toda la página registrada eléctricamente en el rodillo y con el polvo necesario para la impresión, entrará en contacto con el papel siendo fijado mediante calor. La intensidad del láser será la que determine la cantidad de polvo que se depositará en cada parte de la página, consiguiéndose los diferentes tonos de grises deseados. Cada vuelta de rodillo implica una página.
 
-Este último puede proporcionar una dirección real, bits de control, o ambos. Este módulo está controlado por un reloj que determina la temporización del ciclo de instrucción.
+El papel es introducido mediante un sistema de rodillos y engranajes.
 
-El módulo de lógica de control genera las señales de control en función de algunos de los bits de la microinstrucción. Debe quedar claro que el formato y contenido de la microinstrucción determinará la complejidad del módulo de lógica de control.
+Para la impresión láser en color el papel pasará por distintos tóners, uno para cada color.
 
-<img src="Pictures/1000000000000376000003ABFE393FBF.jpg" style="width:14.582cm;height:15.558cm" />
+Estas impresoras suelen utilizar un lenguaje de descripción de página como PostScript o PCL
 
-Fig. Organización de la UC
+Una de las características de este tipo de impresora es el número de páginas por minuto, entendiéndose este número como el número de páginas iguales que se imprimen en un minuto: si las páginas son distintas, esta cifra es notablemente inferior.
 
-#### 
+El escáner
 
-#### Una taxonomía de las microinstrucciones
+Generalidades
 
-Las microinstrucciones se pueden clasificar de varias formas. Las distinciones que generalmente se hacen en la bibliografía incluyen:
+Se puede considerar el “escáner” como el ojo del ordenador, permitiendo convertir imágenes de cualquier formato (papel, diapositivas, negativos, etc.) en imágenes digitales que pueden tratarse posteriormente con un software de edición o tratamiento fotográfico para ser visualizados en pantalla o reproducirlas fielmente en una impresora con papel fotográfico.
 
-- Vertical/horizontal
-- Empaquetada/desempaquetada
-- Microprogramación “hard”/”soft”
-- Codificación directa/indirecta
+Así mismo, con un escáner se puede convertir un texto impreso en un texto digital, mediante un software de reconocimiento óptico de caracteres (OCR – Optical Character Recognition), que puede editarse posteriormente con algún programa editor de textos de los más usuales.
 
-Todas ellas se refieren al formato de la microinstrucción. Ninguno de estos términos se ha usado de una manera coherente y precisa en la bibliografía. No obstante, un examen de estas parejas de cualidades sirve para aclarar las alternativas de diseño de microinstrucciones.
+Algunos escáneres pueden distinguir entre blanco y negro, útiles para texto, otros pueden diferenciar escala de grises, y los más potentes pueden distinguir colores, y son los más utilizados en la actualidad.
 
-En la propuesta original de Wilkes, cada bit de una microinstrucción producía directamente una señal de control o un bit de la dirección siguiente. Hemos visto que son posibles tanto esquemas de secuenciamiento de direcciones más complejos, como esquemas que usen menos bits por microinstrucción.
+Para distinguir la calidad de un escáner respecto de otro se tienen en cuenta:
 
-Estos esquemas requieren un módulo de lógica de secuenciamiento más complejo. Existe un tipo de compromiso semejante para la parte de la microinstrucción que atañe a las señales de control. Se pueden ahorrar bits de la palabra de control codificando la información de control, y decodificándola más tarde para producir las señales de control.
+- **Resolución óptica:** este valor nos indica el grado de exactitud con que es capaz de leer los documentos tanto la mecánica como la unidad lectora. Este valor está relacionado con la calidad real de los lentes del escáner. Cuanto mayor sea la resolución óptica, mejor será el escáner, y también más caro. En la actualidad, es frecuente encontrar escáner de sobremesa de 600x1200 puntos por pulgada (DPI) de resolución óptica a un precio accesible. El tamaño en bytes que ocupara una imagen escaneada será el resultado de multiplicar el total de puntos que contendrá la imagen por la profundidad de color en bytes, esto es:(longitud foto)x(anchura foto)x(resolución horizontal)x(resolución vertical)x3/6,45.
 
-Para hacer esto consideremos que hay un total de K señales de control internas y externas diferentes que tiene que generar la UC. En el esquema de Wilkes, K bits de la microinstrucción se dedicarían a este propósito. Esto permite que se puedan generar las 2<sup>K</sup> combinaciones posibles de señales de control durante cualquier ciclo de instrucción.
+Donde el 3 es suponiendo profundidad de color de 24 bits (3 bytes) y el 6,45 es el resultado de pasar la superficie (longitud x anchura) de cm2 a pulgadas2 (1 pulgada = 2,54 cm; 1 pulgada cuadrada = 2,54 x 2,54 = 6,45 cm2). La resolución que debemos elegir al escanear dependerá de la resolución que nos dé la impresora que utilicemos, y será a menos de dicha resolución, ya que aunque lo hagamos a mayor resolución, después en los resultados impresos no se apreciará.
 
-Pero somos capaces de hacerlo mejor si observamos que no todas las combinaciones posibles se usarán. Por ejemplo:
+- **Profundidad de color:** este parámetro nos dice cuantos colores distintos se pueden representar y por tanto cuanto se pueden reconocer. Con 1 bit de profundidad de color solo tendremos blanco y negro. 8 bits corresponden a 256 colores (2<sup>8</sup> colores), mientras que 24 bits se corresponden con 16 millones de colores (colores verdaderos). Cuando mayor sea el número de colores más fidedigna será la imagen.
 
-- Dos fuentes no se pueden llevar al mismo destino
-- Un registro no puede ser a la vez fuente y destino
-- Solo un patrón de señales de control se puede presentar a la ALU cada vez
-- Solo un patrón de señales de control se puede presentar al bus de control externo cada vez
+- **Resolución interpolada:** es un “engaño” con el que se falsean los datos de la resolución real. Su funcionamiento consiste en introducir un nuevo punto entre dos puntos próximos con un color e intensidad intermedios, así “parece” que tiene mas resolución, pero es la misma imagen perfilada.
 
-De esta manera, para una CPU dada, puede hacerse una lista con todas las posibles combinaciones de señales de control admisibles, obteniendo un número de posibilidades Q\<2<sup>K</sup>, que podrían codificarse con log<sub>2</sub>Q bits, siendo (log<sub>2</sub>Q)\<K.
+Tipos de escáner
 
-Esta sería la forma más estricta posible de codificación que preserva todas las combinaciones permisibles de señales de control. En la práctica, este sistema de codificación no se usa, por dos razones:
+Actualmente se pueden encontrar tres tipos básicos de escáneres, cuya diferencia fundamental está en el modo en que se desplaza el *cabezal lector* y la pagina que contiene la información. Estos tipos son:
 
-- Es tan difícil de programar como un esquema decodificado puro (como el de Wilkes).
-- Requiere un módulo de lógica de control complejo y, por consiguiente, lento.
+**Escáner de rodillo:** Están provistos de un alimentador de hojas y unos rodillos que se encargan de arrastrar el papel para hacerlo pasar la cabeza exploradora.
 
-En lugar de eso, se adoptan algunos compromisos. Los hay de dos tipos:
+**Escáner plano:** la página permanece estática tras un cristal mientras el cabezal pasa por debajo
 
-- Se usan más bits de los estrictamente necesarios para codificar las posibles combinaciones.
-- Algunas combinaciones que son físicamente permisibles no se pueden codificar.
+**Escáner manual:** La mano del usuario es la que se encarga de desplazar el cabezal lector. Este tipo ha desaparecido por completo.
 
-El último tipo de compromiso tiene el efecto de reducir el número de bits. El resultado neto, sin embargo, es que se usan más bits que log<sub>2</sub>Q.
+Cada método tiene sus ventajas e inconvenientes.
 
-Visto lo dicho hasta aquí, podemos ver que el campo de señales de control del formato de microinstrucción se encuadra dentro de un espectro. En un extremo, hay un bit para cada señal de control, en el otro extremo, se usa un formato muy codificado. La tabla siguiente muestra otras características de una unidad de control microprogramada que también se encuadran dentro de espectros de posibilidades, y que en general depende del espectro del grado de codificación.
+El ***escáner plano*** necesita una serie de espejos para enfocar la imagen que capta el cabezal móvil sobre la lente que envía la imagen a los sensores (actualmente un CCD<sup>2</sup>). Como el cristal no es perfecto, la imagen se degrada, aunque permite explorar documentos de hasta un A3 (297 mm x 420 mm). Este tipo es el más utilizado actualmente.
 
-<table>
-<tbody>
-<tr>
-<td colspan="2">Características</td>
-</tr>
-<tr>
-<td>Microinstrucción no codificada</td>
-<td>Microinstrucción muy codificada</td>
-</tr>
-<tr>
-<td>Muchos bits</td>
-<td>Pocos bits</td>
-</tr>
-<tr>
-<td>Visión detallada del hardware</td>
-<td>Visión global de hardware</td>
-</tr>
-<tr>
-<td>Difícil de programar</td>
-<td>Fácil de programar</td>
-</tr>
-<tr>
-<td>Concurrencia explotada completamente</td>
-<td>Concurrencia no explotada completamente</td>
-</tr>
-<tr>
-<td>Poca o ninguna lógica de control</td>
-<td>Lógica de control compleja</td>
-</tr>
-<tr>
-<td>Ejecución rápida</td>
-<td>Ejecución lenta</td>
-</tr>
-<tr>
-<td>Optimización de las prestaciones</td>
-<td>Optimización de la programación</td>
-</tr>
-</tbody>
-</table>
+El *escáner de rodillo* capta las imágenes con mayor nitidez pero solo puede escanear una a una hojas de tamaño A4.
 
-<table>
-<tbody>
-<tr>
-<td colspan="2">Terminología</td>
-</tr>
-<tr>
-<td>Desempaquetada</td>
-<td>Empaquetada</td>
-</tr>
-<tr>
-<td>Horizontal</td>
-<td>Vertical</td>
-</tr>
-<tr>
-<td>“Hard”</td>
-<td>“Soft”</td>
-</tr>
-</tbody>
-</table>
+El ***escáner de mano*** tiene como ventaja principal el precio, aunque en la actualidad no lo es, ya que el escáner plano ha sufrido una bajada de precios tal que lo ha sustituido. Como inconvenientes tiene que la calidad de la imagen depende de la seguridad y la firmeza de la mano del usuario.
 
-#### 
+Elementos y funcionamiento de un escáner
 
-#### Codificación de las Microinstrucciones
+Un escáner está formado por un conjunto de detectores determina la resolución horizontal del escáner. Este valor se mide en puntos por pulgadas, y determina en buena parte la calidad de un escáner.
 
-Existen dos métodos extremos para pasar de la configuración binaria de la microinstrucción a las diversas microórdenes correspondientes. El primer método consiste en asociar un bit de la microinstrucción a cada microórden (mayor longitud de la microinstrucción y difícil programación, permite ejecutar varias microórdenes simultáneas). En el otro extremo, el segundo método consiste en codificar el conjunto de las posibles microórdenes con el número mínimo de bits (menor longitud de microinstrucción y mayor decodificación, se necesitaría una microinstrucción por cada microórden).
+El sistema electro-óptico del escáner hace que la luz reflejada en la imagen de la hoja a escanear, pase a través de un sistema de filtros de colores rojo, verde y azul (en escáner de color). Dividiendo la luz en sus tres componentes cromáticos fundamentales; se digitaliza cada color y se obtiene una imagen de mapa de bits con la imagen completa digitalizada. Esta imagen se almacena en una memoria RAM en el escáner y de ahí se envía al ordenador para poder ser procesada.
 
-En la práctica se dan dos soluciones intermedias.
+Tomando en cuenta el diagrama en bloques de un escáner se puede afirmar que e l bloque fundamental es el óptico, ya que determinara la definición del elemento. Otro bloque importante, es el controlador, encargado de controlar las distintas partes del mecanismo electro-óptico, así como sensores y motores para que todo funcione bien. También permite que el circuito envíe la información al ordenador por la conexión correspondiente.
 
-**Codificación tipo instrucción.** Este tipo de codificación da a la microinstrucción una estructura semejante a la de una instrucción, con código de operación y dirección de operando (en registro o en memoria local).
+<img src="./ObjectReplacements/Object 4" style="width:15.586cm;height:7.059cm" />
 
-La decodificación de las microinstrucciones para obtener las correspondientes microórdenes es relativamente compleja, siendo compensado por la pequeña longitud de la microinstrucción.
+Una forma sencilla de mejorar la calidad de digitalización pasa por el software. La mayoría de las aplicaciones de escáner dispone de un método de interpolación. Con la interpolación el software crea artificialmente un punto suplementario entre cada dos puntos, atribuyéndole como valor de dicho punto suplementario la media de los valores de los puntos vecinos. Este procedimiento no añade ninguna información a la imagen digitalizada, sino que tan solo efectúa un suavizado de la misma. La resolución aparente aumenta por un efecto óptico.
 
-Codificación por campos. Se dividen las distintas microórdenes en grupos independientes de modo tal que sería imposible que, dentro de cada grupo, se den microórdenes simultáneas. Cada grupo, además, corresponde a un determinado tipo de función: apertura de puertas de diversos registros a un mismo bus, gobierno de una unidad funcional, gobierno de la memoria local, etc.
+El proceso de reconocimiento óptico de caracteres (OCR). Consiste en digitalizar un documento mediante escáner al igual que una fotografía, en el lugar de producir un mapa de bits de la imagen, el resultado será una serie de bytes que representan el texto original en formato ASCII. Será necesario disponer de un programa capaz de reconocer las imágenes de carácter digitalizado.
 
-A modo de ejemplo podemos decir que las microórdenes LEC y ESC, de lectura y escritura en memoria, correspondientemente, estarían en el mismo grupo y nunca serían activadas simultáneamente. Cada campo contiene un código que efectúa la decodificación correspondiente y activa una señal de control.
+En primer lugar se realiza un escáner de la página de texto para obtener una imagen compuesta únicamente de puntos blancos y negros. El programa deberá determinar las zonas de la página que contienen texto. Con caracteres separados por un espaciado normal y un documento de buena calidad, no habrá problemas. Pero el reconocimiento puede hacerse muy difícil en ciertos tipos cuyos caracteres estén unidos, e incluso imposible para una escritura manuscrita. Una vez aislados los caracteres empieza la fase más compleja: la del reconocimiento de esos caracteres y su conversión en caracteres ASCII convencionales. Existen en la actualidad programas para OCR con muy buena calidad y son capaces incluso de mantener el formato de las tablas y dibujos y convertir sólo el texto.
 
-<img src="./ObjectReplacements/Object 65" style="width:8.502cm;height:5.142cm" />
+<img src="Pictures/10000000000000D5000000872AC8EEED.jpg" style="width:5.636cm;height:3.572cm" />El escáner de mano
 
-Fig. Codificación por campos con una microórden activa por campo
+En un escáner de mano se indica el comienzo de la digitalización por medio de un botón de encendido situado sobre su carcasa. Durante la exploración de la imagen, un haz de luz iluminara la sección situada debajo de la sección de exploración del escáner, mientras que un espejo con forma de ángulo situada en la parte delantera reflejara la luz hacia una lente colocada en la zona trasera.
 
-#### Acompasamiento
+Esta lente enfocara una línea de luz hacia un dispositivo denominado “dispositivo de acoplo de carga” o CCD que detectará los cambios de tensión. Las tensiones generadas son recibidas por un convertidor analógico-digital que se encargara de realizar la conversión Gamma (cambio del brillo de un nivel de gris en particular; es útil para dar brillo a sombras o a otras aéreas aisladas de la imagen) con el fin de resaltar los tonos oscuros de la imagen. Esta línea de luz convertida en una secuencia de distintas tensiones pasará al convertidor analógico-digital que transformará estos valores en un mapa de bits.
 
-- Si se trabaja con CODIFICACIÓN TIPO INSTRUCCIÓN, el único compás existente es el de la demanda de microinstrucciones.
-- Si se trabaja con CODIFICACIÓN POR CAMPOS, será necesario disponer de un Distribuidor de fases que indique en qué momento emitir las microórdenes de cada campo.
+Dado el escaso volumen de los escáneres de mano, para ir detectando diferentes zonas de la imagen deberemos mover el escáner de forma manual a lo largo del documento. Así, mientras la mano traslada el escáner a lo largo del documento, iremos captando distintas aéreas de la imagen que podremos observar en la pantalla de la computadora. Una mayor rapidez en el recorrido de la página implica menor resolución, por lo tanto, conviene hacer el recorrido lo más lento y constante posible.
 
-<img src="Pictures/10000000000001C30000016BCF607C5F.jpg" style="width:9.5cm;height:7.724cm" /> <img src="Pictures/1000000000000127000001072B69499B.jpg" style="width:6.877cm;height:6.11cm" />
+El mayor inconveniente de este tipo de dispositivos reside en la escasa anchura de su cabeza lectora (10 o 15 cm.) que no permite la digitalización de una página A4.
 
-|  |  |
-|----|----|
-| Fig. Microprogramación horizontal y ritmo fijo | Fig. Ritmo variable definido por la microinstrucción |
+<img src="Pictures/10000000000000DC000000929C1CBEB7.jpg" style="width:5.821cm;height:3.863cm" />El escáner plano
 
-### 
+En un escáner plano o de sobremesa o de página, la imagen a digitalizar deberá estar situada sobre la ventana de vidrio disponible en el mecanismo del equipo. Una vez colocado el documento se debe ordenar vía software el comienzo de la digitalización de la imagen o del texto. Algunos llevan además un pulsador para ordenar el comienzo.
 
-### Ejemplo de máquina microprogramada
+Durante su funcionamiento, un haz de luz ilumina diferentes zonas de la página, el motor del escáner moverá una cabeza lectora compuesta por detectores que capturan la luz reflejada por las distintas áreas de la imagen.
 
-Para este ejemplo hacemos la hipótesis de que se trata de microinstrucciones codificadas por campos con secuenciamiento explícito. Descripción general. Consideremos una ruta de datos formada por un conjunto de registros enlazados por 3 buses una unidad aritmético-lógica. Los buses A y B transfieren los operandos de los registros a la unidad aritmética-lógica, mientras que el bus C permite enviar el resultados a los registros.
+Un conjunto de espejos mantendrá constantemente alineada la luz reflejada con una lente, que enfocará estos rayos hacia el dispositivo de acoplo de carga CCD, encargado de traducir esta luminosidad en corriente eléctrica. El convertidor analógico-digital traducirá las diferentes tensiones en escalas de grises o de colores.
 
-<img src="./ObjectReplacements/Object 66" style="width:16.492cm;height:4.627cm" />
-
-Fig. Ruta de datos de una máquina microprogramada
-
-Una microinstrucción que defina una operación entre registros, puede escribirse sobre cuatro campos: CFA, para designar el registro fuente sobre el bus A, CFB, para el registro fuente sobre el bus B, COP, para el código de operación, CRC, para el registro resultado sobre el bus C.
-
-|  |  |  |  |
-|----|----|----|----|
-| CFA | CFB | COP | CRC |
-| Registro fuente bus A | Registro fuente bus B | Código de operación | Registro resultad |
-
-Por ejemplo, la microinstrucción:
-
-|     |     |     |     |
-|-----|-----|-----|-----|
-| CFA | CFB | COP | CRC |
-| Ri  | Rj  | SUS | Rk  |
-
-Ejecuta: (Ri) –(Rj) → Rk
-
-Mientras la microinstrucción:
-
-|     |     |     |     |
-|-----|-----|-----|-----|
-| CFA | CFB | COP | CRC |
-| Ri  | \-  | NOP | Rj  |
-
-Copia el contenido de Ri en Rj.
-
-A fin de permitir una posibilidad de direccionamiento inmediato, se agrega un quinto campo CIN para albergar al operando inmediato. Uno de los campos CFA o CFB reenvía al nuevo campo cuando resulta activado un indicador. Por ejemplo:
-
-|     |     |     |     |     |
-|-----|-----|-----|-----|-----|
-| CFA | CFB | COP | CRC | CIN |
-| Ri  | CIN | SUS | Ri  | 1   |
-
-Restará 1 de Ri: (Ri) – 1 → Ri
-
-Para utilizar la memoria se agrega otro campo, CM. Así las microinstrucciones 1 y 2 efectuarán respectivamente una lectura en Ri y una escritura de Ri, siendo direccionada la memoria por intermedio del registro S.
-
-|     |     |     |     |     |     |     |
-|-----|-----|-----|-----|-----|-----|-----|
-|     | CFA | CFB | COP | CRC | CIN | CM  |
-| 1   | 0   | 0   | NOP | Ri  | 0   | LEC |
-| 2   | Ri  | 0   | NOP | 0   | 0   | ESC |
-
-Por último añadiremos unos biestables de estado, los que deberán poder ser posicionados por las microinstrucciones, por ejemplo en función de condiciones eventualmente satisfechas en la ALU y servirán para realizar las bifurcaciones pertinentes en el microprograma. Los campos CD y CMP permiten definir la dirección de la siguiente microinstrucción. El campo CD contiene los n-1 bits fuertes de esta dirección y CMP, según el valor de un indicador, bien inmediatamente el bit de menor peso de la dirección, bien la dirección de biestable de estado que contienen dicho bit. Por eso, la microinstrucción por efectuar después de esta:
-
-|     |     |     |     |     |     |     |     |
-|-----|-----|-----|-----|-----|-----|-----|-----|
-| CFA | CFB | COP | CRC | CIN | CM  | CD  | CMP |
-|     |     |     |     |     |     | m   | BEi |
-
-Se encontrará en la dirección: 2m si (BEi) = 0, y 2m + 1 si (BEi) = 1.
-
-Un último campo CSBE permitirá posicionar los biestables de estado. Suponemos a modo de ejemplo, que Ri actúe de registro de índice, cada vez que se llegue al final de bucle de microprograma, Ri será decrementado en 1. Si el resultado de decrementar fuera 0 (indicador de cero CE de la ALU igual a cero), se cargará un biestable Bej, que permitirá operar el salto a la siguiente instrucción:
-
-<table>
-<tbody>
-<tr>
-<td>dirección</td>
-<td>CFA</td>
-<td>CFB</td>
-<td>COP</td>
-<td>CRC</td>
-<td>CIN</td>
-<td>CM</td>
-<td>CD</td>
-<td>CMP</td>
-<td>CSBE</td>
-</tr>
-<tr>
-<td>2m-2</td>
-<td>Ri</td>
-<td>CIN</td>
-<td>SUS</td>
-<td>Ri</td>
-<td>1</td>
-<td>NOP</td>
-<td>m-1</td>
-<td>1</td>
-<td>(CE=0) 1→BEJ</td>
-</tr>
-<tr>
-<td>2m-1</td>
-<td>0</td>
-<td>0</td>
-<td>NOP</td>
-<td>0</td>
-<td>0</td>
-<td>NOP</td>
-<td>m</td>
-<td>Bej</td>
-<td>-</td>
-</tr>
-<tr>
-<td>2m</td>
-<td>0</td>
-<td>0</td>
-<td>NOP</td>
-<td>0</td>
-<td>0</td>
-<td>NOP</td>
-<td colspan="3">direcc. de principio de bucle</td>
-</tr>
-<tr>
-<td>2m+1</td>
-<td colspan="9">Primera instrucción después del bucle</td>
-</tr>
-</tbody>
-</table>
-
-La ruta de datos de microabacus, controlada por las microinstrucciones cuya estructura acaba de ser definida, comprende esencialmente:
-
-- Una memoria central dividida en octetos, direccionada por el registro S, cuyos últimos 8 bits pueden ser cargados desde la ALU o enviados sobre el bus A.
-- Una memoria local (lectura y escritura) con los seudos-registros de varios octetos para operaciones en múltiple longitud y en coma flotante. Esta memoria, dividida en octetos, es direccionada por el registro SMR.
-- 3 registros de 8 bits, actuando A y B de acumulador y de multiplicador-cociente respectivamente y X de índice.
-- 2 biestables de estado BE1 y BE2.
-- Una ALU que opera sobre informaciones de un octeto, SUM, SUS, ANDO, OR, etc (NOP significa no operación). DE es el indicador de desbordamiento y CE, que vale cero si el resultado de la última operación ha sido nulo.
-
-<img src="./ObjectReplacements/Object 67" style="width:16.822cm;height:4.549cm" />
+Toda esta información, una vez convertida en digital la manipulará el software de aplicación suministrado junto con el dispositivo, y posteriormente se almacenará en un formato determinado para su utilización por programas de tratamientos de imágenes o por editores de texto si se trata de texto.
