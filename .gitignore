@@ -53,3 +53,6 @@ $RECYCLE.BIN/
 *~
 .fuse_hidden*
 nohup.out
+
+# Claude Code local config
+.claude/
