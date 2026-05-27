@@ -35,6 +35,9 @@
 
 📒 **Apuntes:** [teoria/UT-1/](teoria/UT-1/)
 
+📝 **Autoestudio:** [guia-autoestudio/](guia-autoestudio/) — sección de circuitos combinacionales
+(álgebra de Boole, compuertas, formas normales y diagramas de Karnaugh).
+
 **CONTENIDOS:** Algebra de Boole. Funciones y formas canonicas. Generalizacion de las formas
 canonicas. Simplificacion. Valor economico de la simplificacion. Metodos de simplificacion.
 Circuitos digitales basicos: sumadores, sustractores, convertidores de codigo. Empleo de los
@@ -48,6 +51,9 @@ circuitos combinacionales.
 ## UNIDAD TEMATICA II: INTRODUCCION A LA ARQUITECTURA DE COMPUTADORAS
 
 📒 **Apuntes:** [teoria/UT-2/](teoria/UT-2/)
+
+📝 **Autoestudio:** [guia-autoestudio/](guia-autoestudio/) — codificación de la información, códigos
+redundantes y código autocorrector de Hamming.
 
 **CONTENIDOS:** Concepto de sistema de Informacion y procesamiento de datos. Computadoras digitales
 y sistemas digitales. Las generaciones de computadoras. Sistemas de numeracion. Representacion de

@@ -229,6 +229,10 @@ ejemplo la primera fila resuelta.
 
 ## Codificación alfanumérica
 
+> Tabla de referencia de los códigos ASCII y EBCDIC para resolver los ejercicios de esta sección:
+>
+> ![Tabla de los códigos ASCII y EBCDIC](img/cod-tabla-ascii-ebcdic.png)
+
 1. Completar el siguiente cuadro utilizando las tablas de ASCII y EBCDIC. Tenga en cuenta que la
    información codificada se refiere a formatos internos de memoria.
 
