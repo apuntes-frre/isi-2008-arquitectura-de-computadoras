@@ -5,6 +5,6 @@ Guías de trabajos prácticos de la UT-1. Ver los apuntes teóricos en
 
 ## Guías
 
-- [Circuitos Combinacionales](guia-combinacionales.md) — tablas de verdad, álgebra de Boole,
+- [Circuitos Combinacionales](01-guia-combinacionales.md) — tablas de verdad, álgebra de Boole,
   Karnaugh, diseño de circuitos. Incluye trabajos prácticos de clase (ej. 1–12) y ejercicios
   complementarios (ej. 1–24).

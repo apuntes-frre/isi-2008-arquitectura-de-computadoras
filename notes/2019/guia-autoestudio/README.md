@@ -226,7 +226,7 @@ Comentarios sobre los códigos:
    siguiente cambia siempre un solo dígito por vez.
 
 > Los ejercicios de codificación de números decimales con cada código están desarrollados en la
-> [Guía de Codificación de la UT-2](../practica/UT-2/guia-codificacion.md).
+> [Guía de Codificación de la UT-2](../practica/UT-2/00-guia-codificacion.md).
 
 ### Codificación de la información no numérica
 
@@ -287,7 +287,7 @@ ceros → función de control; alguno distinto de cero → carácter). La zona n
 el dígito corresponde a la representación BCD del número.
 
 > Para la tabla completa de ambos códigos y los ejercicios de codificación alfanumérica, ver la
-> [Guía de Codificación de la UT-2](../practica/UT-2/guia-codificacion.md).
+> [Guía de Codificación de la UT-2](../practica/UT-2/00-guia-codificacion.md).
 
 ## Códigos redundantes
 
@@ -309,7 +309,7 @@ bit más (generalmente el primero de la izquierda) que hace que la cantidad de u
 PAR (paridad par) o IMPAR (paridad impar).
 
 > Ejercicios de control de paridad en la
-> [Guía de Codificación de la UT-2](../practica/UT-2/guia-codificacion.md).
+> [Guía de Codificación de la UT-2](../practica/UT-2/00-guia-codificacion.md).
 
 ### Control 2 en 3
 
@@ -395,7 +395,7 @@ c2 c1 c0 = 100₍₂₎ = 4 → error en la posición 4 (se invierte ese bit)
 ```
 
 > Ejercicios de codificación y verificación con Hamming en la
-> [Guía de Codificación de la UT-2](../practica/UT-2/guia-codificacion.md).
+> [Guía de Codificación de la UT-2](../practica/UT-2/00-guia-codificacion.md).
 
 ## Circuitos combinacionales
 
